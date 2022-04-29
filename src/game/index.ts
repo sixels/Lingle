@@ -5,13 +5,7 @@ import { messages } from "../message";
 import utils from "../utils";
 import { WordList, WordListNormalized } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
-
-enum GameState {
-  Won,
-  Lost,
-  Playing,
-}
-// type GameState = "won" | "lost" | "playing";
+import { GameState, LingleStore } from "./store";
 
 interface LetterAttempt {
   // Non-normalized letter
@@ -30,31 +24,21 @@ export interface WordAttempt {
 
 export class GameManager {
   private elem: HTMLElement;
+
   private board: BoardRow[];
-  private current_position: BoardPosition;
   private edit_mode: boolean = false;
   private _solution: string;
-  private state: GameState;
 
-  constructor(board: HTMLElement) {
-    this.elem = board;
-    this.current_position = new BoardPosition(0, 0);
-    this.board = [];
-    this.state = GameState.Playing;
+  // private current_position: BoardPosition;
+  // private state: GameState;
 
-    // initialize the game board
-    this.generateBoard();
-
-    // generate a random solution based on the current day
-    this._solution = GameManager.dailyWord();
-
-    document.addEventListener("wordattempt", this.handleWordAttempt);
-  }
+  private store: LingleStore;
 
   static dayOne = (): Date => {
-    return new Date("2022/3/28");
+    return new Date("2022/4/29");
   };
 
+  // Generates a random solution based on the current day
   static dailyWord = (): string => {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
 
@@ -73,15 +57,60 @@ export class GameManager {
     return Math.floor((now - day_one) / day_in_ms);
   };
 
+  constructor(board: HTMLElement) {
+    this.elem = board;
+    this.board = [];
+
+    this._solution = GameManager.dailyWord();
+    this.store = new LingleStore();
+
+    // initialize the game board
+    this.generateBoard();
+    this.loadState();
+
+    document.addEventListener("wordattempt", this.handleWordAttempt);
+  }
+
   get solution(): typeof this._solution {
     return this._solution;
   }
 
   start = () => {
-    this.updatePositionAndState(this.current_position);
+    this.updatePositionAndState(this.store.current_position);
     document.addEventListener("sendkey", this.handleSendKey);
     document.addEventListener("setposition", this.handleSetPosition);
   };
+
+  loadState = () => {
+    if (!this.store.load()) {
+      this.store = new LingleStore();
+      this.reset();
+    }
+
+    const attempts = this.store.attempts;
+    attempts.forEach((attempt, i) => {
+      let row = this.rowAtPosition(new BoardPosition(i, 0));
+      this.paintAttempt(attempt, row);
+    });
+    this.updatePositionAndState(this.store.current_position);
+  };
+
+  saveState = () => {
+    if (!this.store.save()) {
+      this.store = new LingleStore();
+      this.reset();
+    }
+  };
+
+  reset() {
+    for (const row of this.board) {
+      row.reset();
+    }
+    this.edit_mode = false;
+    this._solution = GameManager.dailyWord()
+    this.store.reset()
+    this.updatePositionAndState(this.store.current_position);
+  }
 
   private generateBoard = () => {
     for (let r = 0; r < N_ROWS; r++) {
@@ -93,7 +122,6 @@ export class GameManager {
         );
       }
 
-      row.elem.classList.add("disabled");
       this.board.push(row);
       this.elem.appendChild(row.elem);
     }
@@ -106,12 +134,12 @@ export class GameManager {
     let next_column = this.tryColumnAtPosition(new_position);
     next_column?.setFocused(true);
 
-    this.current_position = new_position;
-    this.currentRow().elem.classList.remove("disabled");
+    this.store.current_position = new_position;
+    this.currentRow().setDisabled(false);
   }
 
   private handleSendKey = (event: Event) => {
-    if (this.state !== GameState.Playing) {
+    if (this.store.state !== GameState.Playing) {
       return;
     }
 
@@ -152,7 +180,9 @@ export class GameManager {
           // When we finish a word, the column goes to N_COLS (an invalid)
           // position. In this case, we first need to go back to the position
           // N_COLS-1, then we can get the actual column.
-          this.updatePositionAndState(this.current_position.step_backward());
+          this.updatePositionAndState(
+            this.store.current_position.step_backward()
+          );
           column = this.currentColumn();
           // Enter edit mode so we don't update the position.
           this.edit_mode = true;
@@ -165,7 +195,9 @@ export class GameManager {
         }
 
         if (!this.edit_mode) {
-          this.updatePositionAndState(this.current_position.step_backward());
+          this.updatePositionAndState(
+            this.store.current_position.step_backward()
+          );
           // We already deleted a letter, just go back a position.
           if (!deleted) {
             this.currentColumn().value = "";
@@ -174,10 +206,12 @@ export class GameManager {
 
         break;
       case "arrowleft":
-        events.dispatchSetPositionEvent(this.current_position.step_backward());
+        events.dispatchSetPositionEvent(
+          this.store.current_position.step_backward()
+        );
         break;
       case "arrowright":
-        let p = this.current_position.step_forward();
+        let p = this.store.current_position.step_forward();
         if (p.col < N_COLS) {
           events.dispatchSetPositionEvent(p);
         }
@@ -195,7 +229,7 @@ export class GameManager {
   };
 
   private handleSetPosition = (event: Event) => {
-    if (this.state !== GameState.Playing) {
+    if (this.store.state !== GameState.Playing) {
       return;
     }
 
@@ -206,7 +240,7 @@ export class GameManager {
       return;
     }
 
-    if (this.current_position.row == position.row) {
+    if (this.store.current_position.row == position.row) {
       this.edit_mode = true;
       this.columnAtPosition(position).animateBounce();
       this.updatePositionAndState(
@@ -217,39 +251,45 @@ export class GameManager {
 
   private handleWordAttempt = (event: Event) => {
     const custom_ev = event as CustomEvent;
-    const attempt_desc = custom_ev.detail["attempt_desc"] as WordAttempt | null;
+    const attempt = custom_ev.detail["attempt_desc"] as WordAttempt | null;
 
-    if (attempt_desc === null) {
+    if (attempt === null) {
       return;
     }
 
+    this.store.attempts.push(attempt);
+
+    // paint letters
+    this.paintAttempt(attempt, this.currentRow());
+
     // update game state
-    if (attempt_desc.right_letters.length == N_COLS) {
-      this.state = GameState.Won;
+    if (attempt.right_letters.length == N_COLS) {
+      this.store.state = GameState.Won;
       events.dispatchSendMessageEvent(messages.gameWin);
     } else {
-      let next_word = this.current_position.next_word();
+      let next_word = this.store.current_position.next_word();
       if (next_word !== null) {
         this.updatePositionAndState(next_word);
       } else {
-        this.state = GameState.Lost;
+        this.store.state = GameState.Lost;
         events.dispatchSendMessageEvent(messages.gameLost(this._solution));
       }
     }
+    this.store.save();
+  };
 
-    // paint letters
-    const row = this.currentRow();
-    for (const letter of attempt_desc.wrong_letters) {
+  private paintAttempt = (attempt: WordAttempt, row: BoardRow) => {
+    for (const letter of attempt.wrong_letters) {
       const col = row.columns[letter.index];
       col.elem.classList.add("wrong");
       col.value = letter.letter;
     }
-    for (const letter of attempt_desc.right_letters) {
+    for (const letter of attempt.right_letters) {
       const col = row.columns[letter.index];
       col.elem.classList.add("right");
       col.value = letter.letter;
     }
-    for (const letter of attempt_desc.occur_letters) {
+    for (const letter of attempt.occur_letters) {
       const col = row.columns[letter.index];
       if (!col.elem.classList.contains("right")) {
         col.elem.classList.add("occur");
@@ -267,17 +307,17 @@ export class GameManager {
     return this.board[position.row].columns[position.col];
   };
   private currentColumn = (): BoardColumn => {
-    return this.columnAtPosition(this.current_position);
+    return this.columnAtPosition(this.store.current_position);
   };
   private tryCurrentColumn = (): BoardColumn | undefined => {
-    return this.tryColumnAtPosition(this.current_position);
+    return this.tryColumnAtPosition(this.store.current_position);
   };
 
   private rowAtPosition = (position: BoardPosition): BoardRow => {
     return this.board[position.row];
   };
   private currentRow = (): BoardRow => {
-    return this.rowAtPosition(this.current_position);
+    return this.rowAtPosition(this.store.current_position);
   };
 }
 
@@ -330,8 +370,6 @@ function compareWords(base: string, cmp: string): WordAttempt {
       index: i,
     });
   }
-
-  console.log(occur_letters);
 
   return {
     right_letters,
