@@ -14,8 +14,11 @@ enum GameState {
 // type GameState = "won" | "lost" | "playing";
 
 interface LetterAttempt {
+  // Non-normalized letter
   letter: string;
+  // Normalized letter
   normalized: string;
+  // The index the letter occurs
   index: number;
 }
 
@@ -283,46 +286,47 @@ function compareWords(base: string, cmp: string): WordAttempt {
   let occur_letters: LetterAttempt[] = [];
   let wrong_letters: LetterAttempt[] = [];
 
-  let letters: (string | undefined)[] = utils.normalizedWord(base).split("");
-  const norm = utils.normalizedWord(cmp);
+  // create a list of base's letters
+  let base_letters: (string | undefined)[] = utils
+    .normalizedWord(base)
+    .split("");
+  // normalize the cmp
+  const cmp_norm = utils.normalizedWord(cmp);
 
-  for (let i = 0; i < norm.length; i++) {
-    const letter = norm[i];
-    const j: Set<number> = new Set();
+  for (let i = 0; i < cmp_norm.length; i++) {
+    const cmp_norm_letter = cmp_norm[i];
+    const cmp_unorm_letter = cmp[i];
+    const occurrences: Set<number> = new Set();
 
-    letters
+    // modify the list to exclude already used letters
+    base_letters
       .map((l) => {
-        if (l === letter) {
-          return l;
-        } else {
-          return undefined;
-        }
+        return l === cmp_norm_letter ? l : undefined;
       })
       .forEach((l, ind) => {
-        if (l === undefined) {
-          return;
+        if (l !== undefined) {
+          occurrences.add(ind);
         }
-        j.add(ind);
       });
 
-    const nonnormalized = cmp[i];
-    let collection: LetterAttempt[] | undefined = undefined;
-    if (j.size > 0) {
-      let ind: number = j.values().next().value;
-      if (j.has(i)) {
-        ind = i;
-        collection = right_letters;
+    // get the reference to the category
+    let category: LetterAttempt[] | undefined = undefined;
+    if (occurrences.size > 0) {
+      let index: number = occurrences.values().next().value;
+      if (occurrences.has(i)) {
+        index = i;
+        category = right_letters;
       } else {
-        collection = occur_letters;
+        category = occur_letters;
       }
-      letters[ind] = undefined;
+      base_letters[index] = undefined;
     } else {
-      collection = wrong_letters;
+      category = wrong_letters;
     }
 
-    collection?.push({
-      letter: nonnormalized,
-      normalized: letter,
+    category?.push({
+      letter: cmp_unorm_letter,
+      normalized: cmp_norm_letter,
       index: i,
     });
   }
