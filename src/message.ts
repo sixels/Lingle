@@ -21,7 +21,7 @@ export const messages = {
   } as Message,
   gameWin: {
     kind: MessageKind.Info,
-    data: "Parabens, você ganhou.",
+    data: "Parabéns, você ganhou!",
   } as Message,
   gameLost: (right_word: string): Message => {
     return {
