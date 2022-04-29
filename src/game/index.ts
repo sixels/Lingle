@@ -137,21 +137,6 @@ export class GameManager {
           events.dispatchWordAttemptEvent(
             compareWords(this.solution, wordlist_word)
           );
-
-          if (this._solution == wordlist_word) {
-            this.state = GameState.Won;
-            events.dispatchSendMessageEvent(messages.gameWin);
-          } else {
-            let next_word = this.current_position.next_word();
-            if (next_word !== null) {
-              this.updatePositionAndState(next_word);
-            } else {
-              this.state = GameState.Lost;
-              events.dispatchSendMessageEvent(
-                messages.gameLost(this._solution)
-              );
-            }
-          }
         } else {
           events.dispatchSendMessageEvent(messages.invalidWord);
           this.currentRow().animateShake();
@@ -235,8 +220,22 @@ export class GameManager {
       return;
     }
 
-    const row = this.currentRow();
+    // update game state
+    if (attempt_desc.right_letters.length == N_COLS) {
+      this.state = GameState.Won;
+      events.dispatchSendMessageEvent(messages.gameWin);
+    } else {
+      let next_word = this.current_position.next_word();
+      if (next_word !== null) {
+        this.updatePositionAndState(next_word);
+      } else {
+        this.state = GameState.Lost;
+        events.dispatchSendMessageEvent(messages.gameLost(this._solution));
+      }
+    }
 
+    // paint letters
+    const row = this.currentRow();
     for (const letter of attempt_desc.wrong_letters) {
       const col = row.columns[letter.index];
       col.elem.classList.add("wrong");
@@ -303,7 +302,6 @@ function compareWords(base: string, cmp: string): WordAttempt {
         if (l === undefined) {
           return;
         }
-        console.log(ind);
         j.add(ind);
       });
 
