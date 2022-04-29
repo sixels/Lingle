@@ -1,5 +1,6 @@
 import events from "./events";
 import { WordAttempt } from "./game";
+import { LingleStore } from "./store";
 
 export class KeyboardManager {
   static VALID_KEYS = new Set([
@@ -25,6 +26,12 @@ export class KeyboardManager {
 
       this.keys = [...this.keys, ...keys];
     }
+
+    let store = new LingleStore();
+    if (store.load()) {
+      store.attempts.forEach(this.paintKeys);
+    }
+
     document.addEventListener("wordattempt", this.handleWordAttempt);
   }
 
@@ -71,6 +78,11 @@ export class KeyboardManager {
     }
   };
 
+  // Handle keys from the physical keyboard
+  handleKeyPress = (event: KeyboardEvent) => {
+    this.pressKey(event.key);
+  };
+
   // Handle keys from the virtual keyboard
   private handleKeyClick = (event: MouseEvent | TouchEvent) => {
     event.stopPropagation();
@@ -88,26 +100,25 @@ export class KeyboardManager {
 
   private handleWordAttempt = (event: Event) => {
     const custom_ev = event as CustomEvent;
-    const attempt_desc = custom_ev.detail["attempt_desc"] as WordAttempt | null;
+    const attempt = custom_ev.detail["attempt_desc"] as WordAttempt | null;
 
-    if (attempt_desc === null) {
+    if (attempt === null) {
       return;
     }
 
+    this.paintKeys(attempt);
+  };
+
+  private paintKeys = (attempt: WordAttempt) => {
     for (const key_elem of this.keys) {
       let key = key_elem.dataset["key"];
-      if (attempt_desc.wrong_letters.some((v) => v.normalized == key)) {
+      if (attempt.wrong_letters.some((v) => v.normalized == key)) {
         key_elem.classList.add("wrong");
-      } else if (attempt_desc.right_letters.some((v) => v.normalized == key)) {
+      } else if (attempt.right_letters.some((v) => v.normalized == key)) {
         key_elem.classList.add("right");
-      } else if (attempt_desc.occur_letters.some((v) => v.normalized == key)) {
+      } else if (attempt.occur_letters.some((v) => v.normalized == key)) {
         key_elem.classList.add("occur");
       }
     }
-  };
-
-  // Handle keys from the physical keyboard
-  handleKeyPress = (event: KeyboardEvent) => {
-    this.pressKey(event.key);
   };
 }
