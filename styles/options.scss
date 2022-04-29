@@ -1,0 +1,48 @@
+:root {
+    --default-color-fg: hsl(203, 86%, 94%);
+    --default-color-bg: hsl(219, 9%, 23%);
+  
+    --header-color-bg: var(--default-color-bg);
+    --header-color-fg: var(--default-color-fg);
+  
+    --dropdown-color-bg: hsl(207, 12%, 26%);
+  
+    --key-color-bg: var(--letter-default-color-bg);
+    --key-color-fg: var(--default-color-fg);
+    --key-highlight-color-bg: hsl(230, 6%, 26%);
+  
+    --key-right-color-bg: var(--letter-right-color-bg);
+    --key-right-color-fg: var(--letter-right-color-fg);
+    --key-wrong-color-bg: var(--letter-wrong-color-bg);
+    --key-wrong-color-fg: hsla(203, 86%, 94%, 0.4);
+    --key-occur-color-bg: var(--letter-occur-color-bg);
+    --key-occur-color-fg: var(--letter-occur-color-fg);
+  
+    --letter-default-color-bg: hsl(230, 8%, 18%);
+    --letter-default-color-fg: var(--default-color-fg);
+    --letter-default-color-bd: hsl(219, 9%, 33%);
+  
+    --letter-disabled-color-bg: hsl(230, 9%, 17%);
+    --letter-disabled-color-fg: var(--letter-default-color-fg);
+  
+    --letter-focused-color-bg: var(--letter-default-color-bg);
+    --letter-focused-color-fg: var(--letter-default-color-fg);
+    --letter-focused-color-bd: hsl(207, 36%, 53%);
+  
+    --letter-wrong-color-bg: hsl(225, 8%, 13%);
+    --letter-wrong-color-fg: var(--letter-default-color-fg);
+    --letter-right-color-bg: hsl(143, 57%, 55%);
+    --letter-right-color-fg: var(--letter-default-color-fg);
+    --letter-occur-color-bg: hsl(41, 71%, 60%);
+    --letter-occur-color-fg: var(--letter-default-color-fg);
+  
+    --message-info-color-bd: hsl(207, 41%, 35%);
+    --message-info-color-bg: hsl(207, 53%, 49%);
+    --message-info-color-fg: var(--default-color-fg);
+    --message-error-color-bd: hsl(0, 41%, 35%);
+    --message-error-color-bg: hsl(0, 53%, 49%);
+    --message-error-color-fg: var(--default-color-fg);
+  
+    --default-font-family: "Lilita One", sans-serif;
+    --default-font-size: 1rem;
+  }
