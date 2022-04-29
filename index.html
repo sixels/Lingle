@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One:wght@400&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+
+    <title>Lingle</title>
+  </head>
+  <body>
+    <main id="app">
+      <aside class="message hidden" id="message"></aside>
+      <header class="header">
+        <div class="left">
+          <div class="btn"><i class="ri-information-fill"></i></div>
+          <span class="strong">LINGLE#1</span>
+        </div>
+        <div class="right">
+          <div class="btn"><label>Modo</label><i class="ri-table-2"></i></div>
+          <div class="btn">
+            <label>Estatísticas</label><i class="ri-bar-chart-fill"></i>
+          </div>
+          <div class="btn">
+            <label>Ajustes</label><i class="ri-settings-fill"></i>
+          </div>
+          <div class="btn menu"><i class="ri-menu-fill"></i></div>
+        </div>
+      </header>
+
+      <div class="board-wrapper">
+        <div class="board" id="board"></div>
+      </div>
+
+      <div class="keyboard-wrapper">
+        <div class="keyboard" id="keyboard">
+          <div class="row">
+            <div class="key" data-key="q">q</div>
+            <div class="key" data-key="w">w</div>
+            <div class="key" data-key="e">e</div>
+            <div class="key" data-key="r">r</div>
+            <div class="key" data-key="t">t</div>
+            <div class="key" data-key="y">y</div>
+            <div class="key" data-key="u">u</div>
+            <div class="key" data-key="i">i</div>
+            <div class="key" data-key="o">o</div>
+            <div class="key" data-key="p">p</div>
+          </div>
+          <div class="row">
+            <div class="key" data-key="a">a</div>
+            <div class="key" data-key="s">s</div>
+            <div class="key" data-key="d">d</div>
+            <div class="key" data-key="f">f</div>
+            <div class="key" data-key="g">g</div>
+            <div class="key" data-key="h">h</div>
+            <div class="key" data-key="j">j</div>
+            <div class="key" data-key="k">k</div>
+            <div class="key" data-key="l">l</div>
+            <div class="key special backspace" data-key="backspace">
+              <i class="ri-delete-back-2-fill" data-key="backspace"></i>
+            </div>
+          </div>
+          <div class="row">
+            <div class="key" data-key="z">z</div>
+            <div class="key" data-key="x">x</div>
+            <div class="key" data-key="c">c</div>
+            <div class="key" data-key="v">v</div>
+            <div class="key" data-key="b">b</div>
+            <div class="key" data-key="n">n</div>
+            <div class="key" data-key="m">m</div>
+            <div class="key special enter" data-key="enter">enter</div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
