@@ -94,30 +94,14 @@ export class KeyboardManager {
       return;
     }
 
-    for (const key of this.keys) {
-      if (
-        attempt_desc.wrong_letters.some(
-          (v) => v.normalized == key.dataset["key"]
-        )
-      ) {
-        key.classList.add("wrong");
-        continue;
-      }
-      if (
-        attempt_desc.right_letters.some(
-          (v) => v.normalized == key.dataset["key"]
-        )
-      ) {
-        key.classList.add("right");
-        continue;
-      }
-      if (
-        !key.classList.contains("right") &&
-        attempt_desc.occur_letters.some(
-          (v) => v.normalized == key.dataset["key"]
-        )
-      ) {
-        key.classList.add("occur");
+    for (const key_elem of this.keys) {
+      let key = key_elem.dataset["key"];
+      if (attempt_desc.wrong_letters.some((v) => v.normalized == key)) {
+        key_elem.classList.add("wrong");
+      } else if (attempt_desc.right_letters.some((v) => v.normalized == key)) {
+        key_elem.classList.add("right");
+      } else if (attempt_desc.occur_letters.some((v) => v.normalized == key)) {
+        key_elem.classList.add("occur");
       }
     }
   };
