@@ -18,10 +18,10 @@ export class BoardPosition {
     this._col = col;
   }
 
-  get row(): typeof this._row {
+  get row(): number {
     return this._row;
   }
-  get col(): typeof this._col {
+  get col(): number {
     return this._col;
   }
 
@@ -78,10 +78,38 @@ export class BoardColumn {
   isEmpty = (): boolean => {
     return this.value.length == 0;
   };
-  setFocused = (condition: boolean) => {
-    condition
+  setFocused = (option: boolean) => {
+    option
       ? this.elem.classList.add("focused")
       : this.elem.classList.remove("focused");
+  };
+
+  setLetterRight = (option: boolean) => {
+    option
+      ? (this.elem.classList.add("right"), this.elem.classList.remove("occur"))
+      : this.elem.classList.remove("right");
+  };
+  setLetterOccur = (option: boolean) => {
+    // prevent .occur to overlap .right
+    option && !this.elem.classList.contains("right")
+      ? this.elem.classList.add("occur")
+      : this.elem.classList.remove("occur");
+  };
+  setLetterWrong = (option: boolean) => {
+    option
+      ? this.elem.classList.add("wrong")
+      : this.elem.classList.remove("wrong");
+  };
+
+  reset = () => {
+    this.elem.classList.remove(
+      "focused",
+      "bouncing",
+      "right",
+      "wrong",
+      "occur"
+    );
+    this.value = "";
   };
 
   private handleClick = () => {
@@ -98,6 +126,8 @@ export class BoardRow {
     this.elem = elem;
     this._columns = [];
     this.index = index;
+
+    this.setDisabled(true);
   }
 
   get columns(): typeof this._columns {
@@ -107,13 +137,6 @@ export class BoardRow {
   get value(): string {
     return this._columns.map((col) => col.value).join("");
   }
-
-  animateShake = () => {
-    this.elem.classList.add("shaking");
-    setTimeout(() => {
-      this.elem.classList.remove("shaking");
-    }, 300);
-  };
 
   // push a column to the row
   pushColumn = (column: BoardColumn) => {
@@ -125,5 +148,25 @@ export class BoardRow {
   nextPosition = (): BoardPosition => {
     const col = this._columns.findIndex((col) => col.isEmpty());
     return new BoardPosition(this.index, col < 0 ? N_COLS : col);
+  };
+
+  setDisabled = (option: boolean) => {
+    option
+      ? this.elem.classList.add("disabled")
+      : this.elem.classList.remove("disabled");
+  };
+
+  reset = () => {
+    for (const col of this._columns) {
+      col.reset();
+    }
+    this.setDisabled(true);
+  };
+
+  animateShake = () => {
+    this.elem.classList.add("shaking");
+    setTimeout(() => {
+      this.elem.classList.remove("shaking");
+    }, 300);
   };
 }
