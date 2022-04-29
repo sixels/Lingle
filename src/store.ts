@@ -1,5 +1,5 @@
-import { WordAttempt } from ".";
-import { BoardPosition } from "./board";
+import { WordAttempt } from "./game";
+import { BoardPosition } from "./game/board";
 
 export enum GameState {
   Won,
