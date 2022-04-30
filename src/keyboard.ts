@@ -33,6 +33,7 @@ export class KeyboardManager {
     }
 
     document.addEventListener("wordattempt", this.handleWordAttempt);
+    document.addEventListener("resetsignal", this.handleResetSignal);
   }
 
   // Check wether a key is valid or not
@@ -107,6 +108,12 @@ export class KeyboardManager {
     }
 
     this.paintKeys(attempt);
+  };
+
+  private handleResetSignal = (_: Event) => {
+    for (const key_elem of this.keys) {
+      key_elem.classList.remove("wrong", "right", "occur");
+    }
   };
 
   private paintKeys = (attempt: WordAttempt) => {

@@ -128,6 +128,7 @@ export class BoardRow {
     this.index = index;
 
     this.setDisabled(true);
+    document.addEventListener("resetsignal", (_) => this.reset());
   }
 
   get columns(): typeof this._columns {

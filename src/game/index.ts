@@ -35,7 +35,7 @@ export class GameManager {
   private store: LingleStore;
 
   static dayOne = (): Date => {
-    return new Date("2022/4/29");
+    return new Date("2022/4/30");
   };
 
   // Generates a random solution based on the current day
@@ -69,6 +69,7 @@ export class GameManager {
     this.loadState();
 
     document.addEventListener("wordattempt", this.handleWordAttempt);
+    document.addEventListener("resetsignal", (_) => this.reset());
   }
 
   get solution(): typeof this._solution {
@@ -84,7 +85,7 @@ export class GameManager {
   loadState = () => {
     if (!this.store.load()) {
       this.store = new LingleStore();
-      this.reset();
+      events.dispatchResetSignalEvent();
     }
 
     const attempts = this.store.attempts;
@@ -98,7 +99,7 @@ export class GameManager {
   saveState = () => {
     if (!this.store.save()) {
       this.store = new LingleStore();
-      this.reset();
+      events.dispatchResetSignalEvent();
     }
   };
 
@@ -107,8 +108,8 @@ export class GameManager {
       row.reset();
     }
     this.edit_mode = false;
-    this._solution = GameManager.dailyWord()
-    this.store.reset()
+    this._solution = GameManager.dailyWord();
+    this.store.reset();
     this.updatePositionAndState(this.store.current_position);
   }
 

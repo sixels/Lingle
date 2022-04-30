@@ -47,11 +47,20 @@ export default {
       detail: {
         message,
       },
-      bubbles: true,
+      bubbles: false,
       cancelable: false,
       composed: false,
     });
 
     document.dispatchEvent(send_message);
-  }
+  },
+
+  dispatchResetSignalEvent: () => {
+    let reset_event = new Event("resetsignal", {
+      bubbles: false,
+      cancelable: false,
+      composed: false,
+    });
+    document.dispatchEvent(reset_event);
+  },
 };
