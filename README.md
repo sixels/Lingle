@@ -4,7 +4,7 @@ Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/
 
 ## Metas
 
-- [ ] Persistência
+- [x] Persistência
 - [ ] Menu
 - [ ] Animações
 - [ ] Mais modos de jogo
