@@ -5,6 +5,7 @@ import "../styles/media.scss";
 import { GameManager } from "./game";
 import { KeyboardManager } from "./keyboard";
 import { Message, MessageKind } from "./message";
+import { Menu } from "./ui/menu";
 
 window.onload = (_) => {
   const app = document.getElementById("app");
@@ -21,12 +22,16 @@ window.onload = (_) => {
   main();
 };
 
-function main() {
+const main = () => {
+  //setup ui elements
+  new Menu();
+
+  // setup game and keyboard
   let board_elem = document.getElementById("board");
   let keyboard_elem = document.getElementById("keyboard");
 
   if (keyboard_elem === null || board_elem === null) {
-    console.error("ERROR: Could not find the keyboard element");
+    console.error("ERROR: Missing HTML elements");
     return;
   }
 
@@ -34,16 +39,16 @@ function main() {
   let game = new GameManager(board_elem);
 
   document.addEventListener("keyup", keyboard.handleKeyPress);
-  document.addEventListener("sendmessage", notifyOnMessage);
+  document.addEventListener("sendmessage", handleMessage);
 
-  // if game is not over:
   game.start();
 
+  // TODO: REMOVE
   console.log(game.solution);
-}
+};
 
 let ltimeout: number | undefined = undefined;
-const notifyOnMessage = (event: Event) => {
+const handleMessage = (event: Event) => {
   const custom_ev = event as CustomEvent;
   const message = custom_ev.detail["message"] as Message | undefined;
   if (message === undefined) {
