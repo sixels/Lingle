@@ -21,10 +21,22 @@ export class LingleStore {
   expires: Date;
 
   constructor() {
-    this.attempts = [];
-    this.current_position = new BoardPosition(0, 0);
-    this.state = GameState.Playing;
-    this.expires = new Date(new Date().setHours(0, 0, 0, 0) + 864e5);
+    const store = localStorage.getItem("lingle");
+    if (store !== null) {
+      const object: StoreObject = JSON.parse(store);
+      this.attempts = object.attempts;
+      this.current_position = new BoardPosition(
+        object.current_position[0],
+        object.current_position[1]
+      );
+      this.state = object.state;
+      this.expires = new Date(object.expires);
+    } else {
+      this.attempts = [];
+      this.current_position = new BoardPosition(0, 0);
+      this.state = GameState.Playing;
+      this.expires = new Date(new Date().setHours(0, 0, 0, 0) + 864e5);
+    }
   }
 
   hasExpired = (): boolean => {
@@ -46,7 +58,7 @@ export class LingleStore {
         object.current_position[1]
       );
       this.state = object.state;
-      this.expires = object.expires;
+      this.expires = new Date(object.expires);
     }
 
     return true;
