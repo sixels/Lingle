@@ -115,11 +115,11 @@ export class GameManager {
 
   private generateBoard = () => {
     for (let r = 0; r < N_ROWS; r++) {
-      let row = new BoardRow(create_row_element(), r);
+      let row = new BoardRow(createRowElement(), r);
 
       for (let c = 0; c < N_COLS; c++) {
         row.pushColumn(
-          new BoardColumn(create_letter_element(null), new BoardPosition(r, c))
+          new BoardColumn(createLetterElement(null), new BoardPosition(r, c))
         );
       }
 
@@ -409,7 +409,7 @@ function compareWords(base: string, cmp: string): WordAttempt {
 }
 
 // Create a div with class row
-function create_row_element(): HTMLElement {
+function createRowElement(): HTMLElement {
   let row = document.createElement("div");
 
   row.classList.add("row");
@@ -418,7 +418,7 @@ function create_row_element(): HTMLElement {
 }
 
 // Create a div with class letter
-function create_letter_element(value: string | null): HTMLElement {
+function createLetterElement(value: string | null): HTMLElement {
   let letter = document.createElement("div");
 
   letter.dataset["letter"] = "";
