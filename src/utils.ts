@@ -1,4 +1,4 @@
-const ONE_DAY_IN_MS = 864e5;
+const ONE_DAY_IN_MS = 864e5; // 1000 * 60 * 60 * 24
 
 export default {
   normalizedWord: (word: string): string => {
