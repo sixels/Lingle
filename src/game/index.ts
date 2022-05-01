@@ -28,6 +28,8 @@ export class GameManager {
   private board: BoardRow[];
   private edit_mode: boolean = false;
   private _solution: string;
+  private _game_number: HTMLElement;
+  private readonly title: string;
 
   // private current_position: BoardPosition;
   // private state: GameState;
@@ -55,9 +57,14 @@ export class GameManager {
     return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS);
   };
 
-  constructor(board: HTMLElement) {
+  constructor(board: HTMLElement, title: string) {
     this.elem = board;
+    this.title = title;
     this.board = [];
+
+    this._game_number = document.createElement("span");
+    this._game_number.classList.add("strong");
+    this.game_number = GameManager.gameNumber();
 
     this._solution = GameManager.dailyWord();
     this.store = new LingleStore();
@@ -66,12 +73,17 @@ export class GameManager {
     this.generateBoard();
     this.loadState();
 
+    document.getElementById("header-left")?.appendChild(this._game_number);
     document.addEventListener("wordattempt", this.handleWordAttempt);
     document.addEventListener("resetsignal", (_) => this.reset());
   }
 
   get solution(): typeof this._solution {
     return this._solution;
+  }
+
+  set game_number(value: number) {
+    this._game_number.innerText = `${this.title} #${value}`;
   }
 
   start = () => {
@@ -97,6 +109,7 @@ export class GameManager {
   saveState = () => {
     if (!this.store.save()) {
       this.store = new LingleStore();
+      this.game_number = GameManager.gameNumber();
       events.dispatchResetSignalEvent();
     }
   };
