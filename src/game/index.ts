@@ -50,11 +50,9 @@ export class GameManager {
   };
 
   static gameNumber = (): number => {
-    const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
-    const now = new Date().setHours(0, 0, 0, 0);
-    const day_in_ms = 1000 * 60 * 60 * 24;
-
-    return Math.floor((now - day_one) / day_in_ms);
+    const day_one = GameManager.dayOne().setHours(0, 0, 0, 0),
+      now = new Date().setHours(0, 0, 0, 0);
+    return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS);
   };
 
   constructor(board: HTMLElement) {
@@ -326,6 +324,7 @@ export class GameManager {
     } else if (attempt.occur_letters.indexOf(letter) >= 0) {
       col.elem.classList.add("occur");
     }
+    col.value = letter.letter;
   };
 
   private columnAtPosition = (position: BoardPosition): BoardColumn => {

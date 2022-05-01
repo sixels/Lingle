@@ -1,5 +1,6 @@
 import { WordAttempt } from "./game";
 import { BoardPosition } from "./game/board";
+import utils from "./utils";
 
 export enum GameState {
   Won,
@@ -35,7 +36,7 @@ export class LingleStore {
       this.attempts = [];
       this.current_position = new BoardPosition(0, 0);
       this.state = GameState.Playing;
-      this.expires = new Date(new Date().setHours(0, 0, 0, 0) + 864e5);
+      this.expires = utils.tomorrow();
     }
   }
 
@@ -69,8 +70,7 @@ export class LingleStore {
       this.reset();
       return false;
     }
-
-    this.expires = new Date(new Date().setHours(0, 0, 0, 0) + 864e5);
+    this.expires = utils.tomorrow();
 
     const object = {
       attempts: this.attempts,
@@ -89,6 +89,6 @@ export class LingleStore {
     this.attempts = [];
     this.current_position = new BoardPosition(0, 0);
     this.state = GameState.Playing;
-    this.expires = new Date(new Date().setHours(0, 0, 0, 0) + 864e5);
+    this.expires = utils.tomorrow();
   };
 }
