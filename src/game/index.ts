@@ -288,9 +288,9 @@ export class GameManager {
           events.dispatchSendMessageEvent(messages.gameLost(this._solution));
         }
       }
-    }, 740);
 
     this.store.save();
+    }, 740);
   };
 
   private paintAttempt = (
