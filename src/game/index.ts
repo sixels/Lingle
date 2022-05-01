@@ -91,7 +91,7 @@ export class GameManager {
     const attempts = this.store.attempts;
     attempts.forEach((attempt, i) => {
       let row = this.rowAtPosition(new BoardPosition(i, 0));
-      this.paintAttempt(attempt, row);
+      this.paintAttempt(attempt, row, false);
     });
     this.updatePositionAndState(this.store.current_position);
   };
@@ -261,41 +261,70 @@ export class GameManager {
     this.store.attempts.push(attempt);
 
     // paint letters
-    this.paintAttempt(attempt, this.currentRow());
+    this.paintAttempt(attempt, this.currentRow(), true);
 
-    // update game state
-    if (attempt.right_letters.length == N_COLS) {
-      this.store.state = GameState.Won;
-      events.dispatchSendMessageEvent(messages.gameWin);
-    } else {
-      let next_word = this.store.current_position.next_word();
-      if (next_word !== null) {
-        this.updatePositionAndState(next_word);
+    setTimeout(() => {
+      // update game state
+      if (attempt.right_letters.length == N_COLS) {
+        this.store.state = GameState.Won;
+        events.dispatchSendMessageEvent(messages.gameWin);
       } else {
-        this.store.state = GameState.Lost;
-        events.dispatchSendMessageEvent(messages.gameLost(this._solution));
+        let next_word = this.store.current_position.next_word();
+        if (next_word !== null) {
+          this.updatePositionAndState(next_word);
+        } else {
+          this.store.state = GameState.Lost;
+          events.dispatchSendMessageEvent(messages.gameLost(this._solution));
+        }
       }
-    }
+    }, 740);
+
     this.store.save();
   };
 
-  private paintAttempt = (attempt: WordAttempt, row: BoardRow) => {
-    for (const letter of attempt.wrong_letters) {
+  private paintAttempt = (
+    attempt: WordAttempt,
+    row: BoardRow,
+    animate: boolean
+  ) => {
+    const letters = [
+      ...attempt.wrong_letters,
+      ...attempt.right_letters,
+      ...attempt.occur_letters,
+    ].sort((a, b) => a.index - b.index);
+
+    letters.forEach((letter, i) => {
       const col = row.columns[letter.index];
-      col.elem.classList.add("wrong");
-      col.value = letter.letter;
-    }
-    for (const letter of attempt.right_letters) {
-      const col = row.columns[letter.index];
-      col.elem.classList.add("right");
-      col.value = letter.letter;
-    }
-    for (const letter of attempt.occur_letters) {
-      const col = row.columns[letter.index];
-      if (!col.elem.classList.contains("right")) {
-        col.elem.classList.add("occur");
-        col.value = letter.letter;
+
+      if (!animate) {
+        this.paintLetter(attempt, letter, row);
+        return;
       }
+
+      setTimeout(() => {
+        col.elem.classList.add("reveal");
+
+        this.paintLetter(attempt, letter, row);
+
+        setTimeout(() => {
+          col.value = letter.letter;
+        }, 130);
+      }, i * 100);
+    });
+  };
+
+  private paintLetter = (
+    attempt: WordAttempt,
+    letter: LetterAttempt,
+    row: BoardRow
+  ) => {
+    const col = row.columns[letter.index];
+    if (attempt.wrong_letters.indexOf(letter) >= 0) {
+      col.elem.classList.add("wrong");
+    } else if (attempt.right_letters.indexOf(letter) >= 0) {
+      col.elem.classList.add("right");
+    } else if (attempt.occur_letters.indexOf(letter) >= 0) {
+      col.elem.classList.add("occur");
     }
   };
 
@@ -392,6 +421,7 @@ function create_row_element(): HTMLElement {
 function create_letter_element(value: string | null): HTMLElement {
   let letter = document.createElement("div");
 
+  letter.dataset["letter"] = "";
   letter.classList.add("letter");
   if (value !== null) {
     letter.innerText = value;

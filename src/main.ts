@@ -1,6 +1,7 @@
 import "../styles/options.scss";
-import "../styles/style.scss";
+import "../styles/keyframes.scss";
 import "../styles/media.scss";
+import "../styles/style.scss";
 
 import { GameManager } from "./game";
 import { KeyboardManager } from "./keyboard";

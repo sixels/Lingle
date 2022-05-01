@@ -62,7 +62,7 @@ export class BoardColumn {
     return this.elem.innerText.toLowerCase();
   }
   set value(new_value: string) {
-    this.elem.innerText = new_value;
+    this.elem.innerText = `${new_value}`;
     if (new_value.length > 0) {
       this.animateBounce();
     }
@@ -105,6 +105,7 @@ export class BoardColumn {
     this.elem.classList.remove(
       "focused",
       "bouncing",
+      "reveal",
       "right",
       "wrong",
       "occur"

@@ -196,43 +196,12 @@ body {
   }
 }
 
-@keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-  15% {
-    transform: translateX(-20px);
-  }
-  30% {
-    transform: translateX(20px);
-  }
-  45% {
-    transform: translateX(-10px);
-  }
-  60% {
-    transform: translateX(10px);
-  }
-  75% {
-    transform: translate(-5px);
-  }
-  90% {
-    transform: translate(5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
 .board {
-  // background-color: red;
-
   display: flex;
   flex-direction: column;
 
   .row {
     height: 3.3rem;
-    // background-color: white;
-
     display: flex;
     flex-direction: row;
 
@@ -252,29 +221,25 @@ body {
 
     .letter {
       @extend .btn;
-
-      width: 3.9rem;
-      height: 100%;
-
-      border-radius: 7px;
-
-      background-color: var(--letter-default-color-bg);
-
       --self-box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-      box-shadow: var(--self-box-shadow),
-        0 0 0 2px var(--letter-default-color-bd);
 
       display: grid;
       place-items: center;
 
-      font-size: 2.05rem;
+      width: 3.9rem;
+      height: 100%;
+
+      box-shadow: var(--self-box-shadow),
+        0 0 0 2px var(--letter-default-color-bd);
+
+      background-color: var(--self-color-bg);
+      color: var(--self-color-fg);
+
+      font-size: 2.45rem;
       font-weight: 700;
       text-transform: uppercase;
 
-      transition: transform 60ms ease;
-      &.bouncing {
-        transform: scale(1.1);
-      }
+      border-radius: 7px;
 
       &:not(:first-of-type) {
         margin-left: 2.8%;
@@ -286,19 +251,31 @@ body {
       }
 
       &.right {
-        background-color: var(--letter-right-color-bg);
-        color: var(--letter-right-color-fg);
-        box-shadow: var(--self-box-shadow);
+        --self-color-bg: var(--letter-right-color-bg);
+        --self-color-fg: var(--letter-right-color-fg);
       }
       &.occur {
-        background-color: var(--letter-occur-color-bg);
-        color: var(--letter-occur-color-fg);
-        box-shadow: var(--self-box-shadow);
+        --self-color-bg: var(--letter-occur-color-bg);
+        --self-color-fg: var(--letter-occur-color-fg);
       }
       &.wrong {
-        background-color: var(--letter-wrong-color-bg);
-        color: var(--letter-wrong-color-fg);
+        --self-color-bg: var(--letter-wrong-color-bg);
+        --self-color-fg: var(--letter-wrong-color-fg);
+      }
+      &.right,
+      &.occur,
+      &.wrong {
         box-shadow: var(--self-box-shadow);
+      }
+
+      &.bouncing {
+        > span {
+          transform: scale(1.2);
+        }
+      }
+
+      &.reveal {
+        transition: background-color 1s ease color 1s ease;
       }
     }
   }
