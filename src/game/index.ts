@@ -73,6 +73,20 @@ export class GameManager {
     this.generateBoard();
     this.loadState();
 
+    if (this.store.state !== GameState.Playing) {
+      const last_attempt = [...this.store.attempts].pop();
+      if (last_attempt !== undefined) {
+        const attempt = last_attempt.right_letters
+          .sort((a, b) => a.index - b.index)
+          .map((a) => a.letter)
+          .join("");
+        if (attempt !== this._solution) {
+          this.store.reset();
+          events.dispatchResetSignalEvent();
+        }
+      }
+    }
+
     document.getElementById("header-left")?.appendChild(this._game_number);
     document.addEventListener("wordattempt", this.handleWordAttempt);
     document.addEventListener("resetsignal", (_) => this.reset());
@@ -289,7 +303,7 @@ export class GameManager {
         }
       }
 
-    this.store.save();
+      this.store.save();
     }, 740);
   };
 
