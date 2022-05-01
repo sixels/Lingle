@@ -214,8 +214,8 @@ body {
     }
 
     &.disabled .letter {
-      background-color: var(--letter-disabled-color-bg);
-      color: var(--letter-wrong-color-fg);
+      --self-color-bg: var(--letter-disabled-color-bg);
+      --self-color-fg: var(--letter-wrong-color-fg);
       box-shadow: var(--self-box-shadow);
     }
 

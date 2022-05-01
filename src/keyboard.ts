@@ -123,6 +123,7 @@ export class KeyboardManager {
         key_elem.classList.add("wrong");
       } else if (attempt.right_letters.some((v) => v.normalized == key)) {
         key_elem.classList.add("right");
+        key_elem.classList.remove("occur");
       } else if (attempt.occur_letters.some((v) => v.normalized == key)) {
         key_elem.classList.add("occur");
       }
