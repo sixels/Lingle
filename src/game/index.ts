@@ -288,23 +288,25 @@ export class GameManager {
     // paint letters
     this.paintAttempt(attempt, this.currentRow(), true);
 
-    setTimeout(() => {
-      // update game state
-      if (attempt.right_letters.length == N_COLS) {
-        this.store.state = GameState.Won;
-        events.dispatchSendMessageEvent(messages.gameWin);
+    // update game state
+    if (attempt.right_letters.length == N_COLS) {
+      this.store.state = GameState.Won;
+      setTimeout(() => events.dispatchSendMessageEvent(messages.gameWin), 740);
+    } else {
+      const next_word = this.store.current_position.next_word();
+      if (next_word !== null) {
+        setTimeout(() => this.updatePositionAndState(next_word), 740);
       } else {
-        let next_word = this.store.current_position.next_word();
-        if (next_word !== null) {
-          this.updatePositionAndState(next_word);
-        } else {
-          this.store.state = GameState.Lost;
-          events.dispatchSendMessageEvent(messages.gameLost(this._solution));
-        }
+        this.store.state = GameState.Lost;
+        setTimeout(
+          () =>
+            events.dispatchSendMessageEvent(messages.gameLost(this._solution)),
+          740
+        );
       }
+    }
 
-      this.store.save();
-    }, 740);
+    this.store.save();
   };
 
   private paintAttempt = (
