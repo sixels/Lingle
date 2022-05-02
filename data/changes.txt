@@ -1,0 +1,8 @@
+- ^....[áêíôî]$
+- abner
+- fujis
+
++ areio
++ surfe
++ tietê
++ Piauí
