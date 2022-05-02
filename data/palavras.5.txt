@@ -1,3 +1,7 @@
+areio
+surfe
+tietê
+piauí
 ábaco
 abade
 abafa
@@ -17,7 +21,6 @@ abeto
 ablua
 ablui
 abluo
-abner
 abole
 aboli
 abono
@@ -410,7 +413,6 @@ ardor
 areal
 áreas
 areia
-areio
 areis
 areja
 areje
@@ -2169,7 +2171,6 @@ fujem
 fujes
 fujia
 fujir
-fujis
 fujiu
 fulge
 fulgi
