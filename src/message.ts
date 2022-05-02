@@ -29,4 +29,8 @@ export const messages = {
       data: `Você perdeu. A palavra certa era: ${right_word}.`,
     };
   },
+  resultCopied: {
+    kind: MessageKind.Info,
+    data: "Resultado copiado. Use Ctrl+V para colar",
+  } as Message,
 };
