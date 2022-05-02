@@ -13,6 +13,7 @@
     "vite": "^2.9.5"
   },
   "dependencies": {
+    "pnpm": "^7.0.0",
     "prando": "^6.0.1"
   }
 }
