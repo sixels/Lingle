@@ -6,6 +6,7 @@ import utils from "../utils";
 import { WordList, WordListNormalized } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
 import { GameState, LingleStore } from "../store";
+import { shareResult } from "./share";
 
 interface LetterAttempt {
   // Non-normalized letter
@@ -156,6 +157,7 @@ export class GameManager {
 
   private handleSendKey = (event: Event) => {
     if (this.store.state !== GameState.Playing) {
+      shareResult(this._game_number.innerText, [this.store.attempts]);
       return;
     }
 
