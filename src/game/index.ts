@@ -64,7 +64,6 @@ export class GameManager {
 
     this._game_number = document.createElement("span");
     this._game_number.classList.add("strong");
-    this.game_number = GameManager.gameNumber();
 
     this._solution = GameManager.dailyWord();
     this.store = store;
@@ -87,6 +86,7 @@ export class GameManager {
         }
       }
     }
+    this.game_number = GameManager.gameNumber();
 
     document.getElementById("header-left")?.appendChild(this._game_number);
     document.addEventListener("wordattempt", this.handleWordAttempt);
@@ -121,6 +121,7 @@ export class GameManager {
     }
     this.edit_mode = false;
     this._solution = GameManager.dailyWord();
+    this.game_number = GameManager.gameNumber();
     this.updatePositionAndState(this.store.current_position);
   }
 
