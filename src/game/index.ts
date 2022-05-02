@@ -318,6 +318,7 @@ export class GameManager {
 
       setTimeout(() => {
         col.elem.classList.add("reveal");
+        col.animateBounce()
 
         this.paintLetter(attempt, letter, row);
 
