@@ -28,7 +28,7 @@ export class KeyboardManager {
         key.addEventListener("click", this.handleKeyClick);
       }
 
-      this.keys = [...this.keys, ...keys];
+      this.keys = this.keys.concat(keys);
     }
 
     this.store.attempts.forEach(this.paintKeys);
