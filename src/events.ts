@@ -54,13 +54,4 @@ export default {
 
     document.dispatchEvent(send_message);
   },
-
-  dispatchResetSignalEvent: () => {
-    let reset_event = new Event("resetsignal", {
-      bubbles: false,
-      cancelable: false,
-      composed: false,
-    });
-    document.dispatchEvent(reset_event);
-  },
 };

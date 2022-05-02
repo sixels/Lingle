@@ -13,9 +13,13 @@ export class KeyboardManager {
 
   private keys: HTMLElement[] = [];
   private effectTimeouts = new Map();
+  private store: LingleStore;
 
   // Create a new keyboard manager
-  constructor(elem: HTMLElement) {
+  constructor(elem: HTMLElement, store: LingleStore) {
+    this.store = store;
+    this.store.onInvalidateStore(this.handleInvalidateStore);
+
     // handle clicks from the virtual keyboard
     const rows: HTMLElement[] = [].slice.call(elem.children);
     for (const row of rows) {
@@ -27,13 +31,9 @@ export class KeyboardManager {
       this.keys = [...this.keys, ...keys];
     }
 
-    let store = new LingleStore();
-    if (store.load()) {
-      store.attempts.forEach(this.paintKeys);
-    }
-
+    this.store.attempts.forEach(this.paintKeys);
+    
     document.addEventListener("wordattempt", this.handleWordAttempt);
-    document.addEventListener("resetsignal", this.handleResetSignal);
   }
 
   // Check wether a key is valid or not
@@ -110,7 +110,7 @@ export class KeyboardManager {
     this.paintKeys(attempt);
   };
 
-  private handleResetSignal = (_: Event) => {
+  private handleInvalidateStore = () => {
     for (const key_elem of this.keys) {
       key_elem.classList.remove("wrong", "right", "occur");
     }
@@ -122,8 +122,8 @@ export class KeyboardManager {
       if (attempt.wrong_letters.some((v) => v.normalized == key)) {
         key_elem.classList.add("wrong");
       } else if (attempt.right_letters.some((v) => v.normalized == key)) {
-        key_elem.classList.add("right");
         key_elem.classList.remove("occur");
+        key_elem.classList.add("right");
       } else if (attempt.occur_letters.some((v) => v.normalized == key)) {
         key_elem.classList.add("occur");
       }

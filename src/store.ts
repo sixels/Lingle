@@ -16,58 +16,33 @@ interface StoreObject {
 }
 
 export class LingleStore {
-  attempts: WordAttempt[];
-  current_position: BoardPosition;
-  state: GameState;
-  expires: Date;
+  attempts: WordAttempt[] = [];
+  current_position: BoardPosition = new BoardPosition(0, 0);
+  state: GameState = GameState.Playing;
+  expires: Date = new Date();
+  invalidateCallbacks: (() => void)[] = [];
 
   constructor() {
-    const store = localStorage.getItem("lingle");
-    if (store !== null) {
-      const object: StoreObject = JSON.parse(store);
-      this.attempts = object.attempts;
-      this.current_position = new BoardPosition(
-        object.current_position[0],
-        object.current_position[1]
-      );
-      this.state = object.state;
-      this.expires = new Date(object.expires);
-    } else {
-      this.attempts = [];
-      this.current_position = new BoardPosition(0, 0);
-      this.state = GameState.Playing;
-      this.expires = utils.tomorrow();
-    }
+    this.expires = utils.tomorrow();
+    this.load();
   }
 
   hasExpired = (): boolean => {
     return new Date() >= this.expires;
   };
 
-  load = (): boolean => {
-    if (this.hasExpired()) {
-      this.reset();
-      return false;
-    }
+  onInvalidateStore(callback: () => void) {
+    this.invalidateCallbacks.push(callback);
+  }
 
-    const store = localStorage.getItem("lingle");
-    if (store !== null) {
-      const object: StoreObject = JSON.parse(store);
-      this.attempts = object.attempts;
-      this.current_position = new BoardPosition(
-        object.current_position[0],
-        object.current_position[1]
-      );
-      this.state = object.state;
-      this.expires = new Date(object.expires);
-    }
-
-    return true;
-  };
+  invalidateStore() {
+    this.reset();
+    this.invalidateCallbacks.forEach((cb) => cb());
+  }
 
   save = (): boolean => {
     if (this.hasExpired()) {
-      this.reset();
+      this.invalidateStore();
       return false;
     }
     this.expires = utils.tomorrow();
@@ -84,7 +59,28 @@ export class LingleStore {
     return true;
   };
 
-  reset = () => {
+  private load = (): LingleStore => {
+    if (this.hasExpired()) {
+      this.invalidateStore()
+      return this;
+    }
+
+    const store = localStorage.getItem("lingle");
+    if (store !== null) {
+      const object: StoreObject = JSON.parse(store);
+      this.attempts = object.attempts;
+      this.current_position = new BoardPosition(
+        object.current_position[0],
+        object.current_position[1]
+      );
+      this.state = object.state;
+      this.expires = new Date(object.expires);
+    }
+
+    return this;
+  };
+
+  private reset = () => {
     localStorage.removeItem("lingle");
     this.attempts = [];
     this.current_position = new BoardPosition(0, 0);

@@ -57,7 +57,7 @@ export class GameManager {
     return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS);
   };
 
-  constructor(board: HTMLElement, title: string) {
+  constructor(board: HTMLElement, title: string, store: LingleStore) {
     this.elem = board;
     this.title = title;
     this.board = [];
@@ -67,7 +67,9 @@ export class GameManager {
     this.game_number = GameManager.gameNumber();
 
     this._solution = GameManager.dailyWord();
-    this.store = new LingleStore();
+    this.store = store;
+
+    this.store.onInvalidateStore(this.handleInvalidateStore);
 
     // initialize the game board
     this.generateBoard();
@@ -81,15 +83,13 @@ export class GameManager {
           .map((a) => a.letter)
           .join("");
         if (attempt !== this._solution) {
-          this.store.reset();
-          events.dispatchResetSignalEvent();
+          this.store.invalidateStore();
         }
       }
     }
 
     document.getElementById("header-left")?.appendChild(this._game_number);
     document.addEventListener("wordattempt", this.handleWordAttempt);
-    document.addEventListener("resetsignal", (_) => this.reset());
   }
 
   get solution(): typeof this._solution {
@@ -106,12 +106,7 @@ export class GameManager {
     document.addEventListener("setposition", this.handleSetPosition);
   };
 
-  loadState = () => {
-    if (!this.store.load()) {
-      this.store = new LingleStore();
-      events.dispatchResetSignalEvent();
-    }
-
+  private loadState = () => {
     const attempts = this.store.attempts;
     attempts.forEach((attempt, i) => {
       let row = this.rowAtPosition(new BoardPosition(i, 0));
@@ -120,21 +115,12 @@ export class GameManager {
     this.updatePositionAndState(this.store.current_position);
   };
 
-  saveState = () => {
-    if (!this.store.save()) {
-      this.store = new LingleStore();
-      this.game_number = GameManager.gameNumber();
-      events.dispatchResetSignalEvent();
-    }
-  };
-
-  reset() {
+  private handleInvalidateStore() {
     for (const row of this.board) {
       row.reset();
     }
     this.edit_mode = false;
     this._solution = GameManager.dailyWord();
-    this.store.reset();
     this.updatePositionAndState(this.store.current_position);
   }
 
@@ -295,6 +281,7 @@ export class GameManager {
     } else {
       const next_word = this.store.current_position.next_word();
       if (next_word !== null) {
+        this.store.current_position = next_word;
         setTimeout(() => this.updatePositionAndState(next_word), 740);
       } else {
         this.store.state = GameState.Lost;

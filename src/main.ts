@@ -7,6 +7,7 @@ import { GameManager } from "./game";
 import { KeyboardManager } from "./keyboard";
 import { Message, MessageKind } from "./message";
 import { Menu } from "./ui/menu";
+import { LingleStore } from "./store";
 
 window.onload = (_) => {
   const app = document.getElementById("app");
@@ -28,6 +29,8 @@ const main = () => {
   new Menu();
 
   // setup game and keyboard
+  let store = new LingleStore();
+
   let board_elem = document.getElementById("board");
   let keyboard_elem = document.getElementById("keyboard");
 
@@ -36,8 +39,8 @@ const main = () => {
     return;
   }
 
-  let keyboard = new KeyboardManager(keyboard_elem);
-  let game = new GameManager(board_elem, "lingle");
+  let keyboard = new KeyboardManager(keyboard_elem, store);
+  let game = new GameManager(board_elem, "lingle", store);
 
   document.addEventListener("keyup", keyboard.handleKeyPress);
   document.addEventListener("sendmessage", handleMessage);
