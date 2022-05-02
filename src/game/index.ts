@@ -37,7 +37,7 @@ export class GameManager {
   private store: LingleStore;
 
   static dayOne = (): Date => {
-    return new Date("2022/4/30");
+    return new Date("2022/5/01");
   };
 
   // Generates a random solution based on the current day
