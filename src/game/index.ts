@@ -76,7 +76,10 @@ export class GameManager {
 
     if (this.store.state !== GameState.Playing) {
       const last_attempt = [...this.store.attempts].pop();
-      if (last_attempt !== undefined) {
+      if (
+        last_attempt !== undefined &&
+        last_attempt.right_letters.length === N_COLS
+      ) {
         const attempt = last_attempt.right_letters
           .sort((a, b) => a.index - b.index)
           .map((a) => a.letter)
@@ -318,7 +321,7 @@ export class GameManager {
 
       setTimeout(() => {
         col.elem.classList.add("reveal");
-        col.animateBounce()
+        col.animateBounce();
 
         this.paintLetter(attempt, letter, row);
 
