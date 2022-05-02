@@ -62,10 +62,13 @@ export class BoardColumn {
     return this.elem.innerText.toLowerCase();
   }
   set value(new_value: string) {
-    this.elem.innerText = `${new_value}`;
+    this._value = new_value;
     if (new_value.length > 0) {
       this.animateBounce();
     }
+  }
+  set _value(new_value: string) {
+    this.elem.innerText = `${new_value}`;
   }
 
   animateBounce = () => {
@@ -110,7 +113,7 @@ export class BoardColumn {
       "wrong",
       "occur"
     );
-    this.value = "";
+    this._value = "";
   };
 
   private handleClick = () => {

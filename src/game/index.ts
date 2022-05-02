@@ -345,7 +345,7 @@ export class GameManager {
     } else if (attempt.occur_letters.indexOf(letter) >= 0) {
       col.elem.classList.add("occur");
     }
-    col.value = letter.letter;
+    col._value = letter.letter;
   };
 
   private columnAtPosition = (position: BoardPosition): BoardColumn => {
