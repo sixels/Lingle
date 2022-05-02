@@ -243,6 +243,8 @@ body {
 
       border-radius: 7px;
 
+      transition: transform 40ms ease;
+
       &:not(:first-of-type) {
         margin-left: 2.8%;
       }
@@ -271,13 +273,14 @@ body {
       }
 
       &.bouncing {
-        > span {
+        // > span {
           transform: scale(1.2);
-        }
+        // }
       }
 
       &.reveal {
-        transition: background-color 1s ease color 1s ease;
+        // background-color: red !important;
+        transition: background-color 740ms ease-out, transform 68ms ease;
       }
     }
   }
