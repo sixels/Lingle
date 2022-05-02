@@ -87,16 +87,6 @@ export const shareResult = (
     });
   });
 
-  canvas.toBlob((blob) => {
-    if (blob !== null) {
-      let data = window.URL.createObjectURL(blob);
-      let link = document.createElement("a");
-      link.href = data;
-      link.target = "_blank";
-      link.click();
-    }
-  }, "image/png");
-
   return canvas;
 };
 
