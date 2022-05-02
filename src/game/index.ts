@@ -155,9 +155,19 @@ export class GameManager {
     this.currentRow().setDisabled(false);
   }
 
+  private copyResult() {
+    utils
+      .copyCanvas(
+        shareResult(this._game_number.innerText, [this.store.attempts])
+      )
+      .then(() => {
+        events.dispatchSendMessageEvent(messages.resultCopied);
+      });
+  }
+
   private handleSendKey = (event: Event) => {
     if (this.store.state !== GameState.Playing) {
-      shareResult(this._game_number.innerText, [this.store.attempts]);
+      this.copyResult();
       return;
     }
 
