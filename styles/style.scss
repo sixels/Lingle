@@ -278,9 +278,11 @@ body {
           transform: scale(1.2);
         // }
       }
+      &.jumping {
+        transform: translateY(-30px);
+      }
 
       &.reveal {
-        // background-color: red !important;
         transition: background-color 740ms ease-out, transform 68ms ease;
       }
     }

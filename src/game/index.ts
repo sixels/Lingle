@@ -158,8 +158,8 @@ export class GameManager {
   private copyResult() {
     const title = `${this.title} ${GameManager.gameNumber()}`;
     utils.copyText(renderAsText(title, [this.store.attempts])).then(() => {
-        events.dispatchSendMessageEvent(messages.resultCopied);
-      });
+      events.dispatchSendMessageEvent(messages.resultCopied);
+    });
 
     // utils
     //   .openCanvas(
@@ -302,7 +302,10 @@ export class GameManager {
     // update game state
     if (attempt.right_letters.length == N_COLS) {
       this.store.state = GameState.Won;
-      setTimeout(() => events.dispatchSendMessageEvent(messages.gameWin), 740);
+      setTimeout(() => {
+        this.currentRow().animateJump()
+        events.dispatchSendMessageEvent(messages.gameWin);
+      }, 740);
     } else {
       const next_word = this.store.current_position.next_word();
       if (next_word !== null) {
