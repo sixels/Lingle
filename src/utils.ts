@@ -26,12 +26,16 @@ export default {
   },
 
   copyText: (text: string): Promise<void> => {
-    return navigator.clipboard.writeText(text);
+    try {
+      return navigator.share({ title: "Resultado do Lingle", text: text });
+    } catch (e) {
+      return navigator.clipboard.writeText(text);
+    }
   },
 
   openCanvas: (canvas: HTMLCanvasElement | undefined) => {
     if (canvas === undefined) {
-      return
+      return;
     }
 
     canvas.toBlob(function (blob) {
