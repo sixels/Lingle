@@ -20,6 +20,8 @@ Algumas palavras foram adicionadas ou removidas, conforme julguei necessário. A
 
 Criei uma mini coleção de scripts para facilitar o processamento das palavras (disponíveis no diretório `scripts/`).
 
+### Estrutura dos scripts
+
 `filter.py`: Espera receber o **caminho** para a lista de palavras como argumento. Usado para filtrar palavras com 5 letras e organizá-las em ordem alfabética.
 
 `normalize.py`: Espera receber uma lista de palavras pelo stdin. Usado para remover diacríticos das palvras, utilizado para geração da lista de frequência (`normalize.py <path/to/wordlist | uniq -c | column -t`).
