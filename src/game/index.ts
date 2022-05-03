@@ -163,7 +163,6 @@ export class GameManager {
     //   .then(() => {
     //     events.dispatchSendMessageEvent(messages.resultCopied);
     //   });
-
     utils
       .copyText(
         renderAsText(this._game_number.innerText, [this.store.attempts])
