@@ -31,6 +31,6 @@ export const messages = {
   },
   resultCopied: {
     kind: MessageKind.Info,
-    data: "Resultado copiado. Use Ctrl+V para colar",
+    data: "Resultado copiado para área de transferência. Use Ctrl+V para colar.",
   } as Message,
 };
