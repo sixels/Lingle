@@ -150,12 +150,12 @@ export class BoardRow {
 
   // get the first empty column
   nextPosition = (priority: number): BoardPosition => {
-    const priority_column = this._columns.at(priority)
+    const priority_column = this.columns.at(priority);
     if (priority_column !== undefined && priority_column.isEmpty()) {
       return new BoardPosition(this.index, priority);
     }
 
-    const col = this._columns.findIndex((col) => col.isEmpty());
+    const col = this.columns.findIndex((col) => col.isEmpty());
     return new BoardPosition(this.index, col < 0 ? N_COLS : col);
   };
 
