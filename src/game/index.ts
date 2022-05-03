@@ -157,15 +157,7 @@ export class GameManager {
 
   private copyResult() {
     const title = `${this.title} ${GameManager.gameNumber()}`;
-    utils
-      .copyText(
-        renderAsText(title, [
-          this.store.attempts,
-          this.store.attempts,
-          this.store.attempts,
-        ])
-      )
-      .then(() => {
+    utils.copyText(renderAsText(title, [this.store.attempts])).then(() => {
         events.dispatchSendMessageEvent(messages.resultCopied);
       });
 
