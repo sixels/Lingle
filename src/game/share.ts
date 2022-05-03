@@ -27,9 +27,12 @@ export const renderAsImage = (
 
   let canvas = document.createElement("canvas") as HTMLCanvasElement;
 
-  const width = (cell_width * 5 + margin + padding * 4) * attempts.length,
+  const word_len = 5;
+  const width =
+      ((cell_width + padding) * word_len + margin + padding * (word_len - 1)) *
+      attempts.length,
     height =
-      (cell_height + padding) * (5 + attempts.length) +
+      (cell_height + padding) * (word_len + attempts.length) +
       (title_height + margin * 2);
 
   canvas.width = width;
