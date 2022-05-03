@@ -255,7 +255,11 @@ export class GameManager {
         let cur_column = this.tryCurrentColumn();
         if (cur_column !== undefined) {
           cur_column.value = key;
-          this.updatePositionAndState(this.currentRow().nextPosition());
+          this.updatePositionAndState(
+            this.currentRow().nextPosition(
+              this.store.current_position.step_forward().col
+            )
+          );
         }
     }
 
