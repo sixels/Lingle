@@ -46,7 +46,7 @@ export class GameManager {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
 
     let rng = new Prando(day_one);
-    rng.skip(GameManager.gameNumber());
+    rng.skip(GameManager.gameNumber()-1);
 
     const index = rng.nextInt(0, WordList.size - 1);
     return [...WordList][index];
@@ -55,7 +55,7 @@ export class GameManager {
   static gameNumber = (): number => {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0),
       now = new Date().setHours(0, 0, 0, 0);
-    return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS);
+    return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS) + 1;
   };
 
   constructor(board: HTMLElement, title: string, store: LingleStore) {
