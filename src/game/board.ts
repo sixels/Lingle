@@ -123,23 +123,19 @@ export class BoardColumn {
 
 export class BoardRow {
   private readonly index;
-  private _columns: BoardColumn[];
+  columns: BoardColumn[];
   elem: HTMLElement;
 
   constructor(elem: HTMLElement, index: number) {
     this.elem = elem;
-    this._columns = [];
+    this.columns = [];
     this.index = index;
 
     this.setDisabled(true);
   }
 
-  get columns(): typeof this._columns {
-    return this._columns;
-  }
-
   get value(): string {
-    return this._columns.map((col) => col.value).join("");
+    return this.columns.map((col) => col.value).join("");
   }
 
   // push a column to the row
@@ -166,7 +162,7 @@ export class BoardRow {
   };
 
   reset = () => {
-    for (const col of this._columns) {
+    for (const col of this.columns) {
       col.reset();
     }
     this.setDisabled(true);
@@ -177,5 +173,18 @@ export class BoardRow {
     setTimeout(() => {
       this.elem.classList.remove("shaking");
     }, 300);
+  };
+
+  animateJump = () => {
+    for (let j = 0; j < 4; j++) {
+      this.columns.forEach((col, i) => {
+        setTimeout(() => {
+          col.elem.classList.add("jumping");
+          setTimeout(() => {
+            col.elem.classList.remove("jumping");
+          }, 100);
+        }, 80 * i + (j*5)*80 );
+      });
+    }
   };
 }
