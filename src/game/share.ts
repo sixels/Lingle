@@ -103,7 +103,7 @@ ${board.join("\n").replaceAll(",", "")}
 lingle.vercel.app`;
 };
 
-export const renderBoard = (
+const renderBoard = (
   cell_width: number,
   cell_height: number,
   padding: number,
