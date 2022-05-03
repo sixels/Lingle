@@ -25,6 +25,27 @@ export default {
     });
   },
 
+  copyText: (text: string): Promise<void> => {
+    return navigator.clipboard.writeText(text);
+  },
+
+  openCanvas: (canvas: HTMLCanvasElement | undefined) => {
+    if (canvas === undefined) {
+      return
+    }
+
+    canvas.toBlob(function (blob) {
+      if (blob !== null) {
+        let data = window.URL.createObjectURL(blob);
+        let link = document.createElement("a");
+        link.href = data;
+        link.target = "_blank";
+        link.click();
+        link.remove();
+      }
+    });
+  },
+
   ONE_DAY_IN_MS,
   // Returns a date to tomorrow
   tomorrow: (): Date => {
