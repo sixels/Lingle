@@ -8,6 +8,7 @@ Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/
 - [x] Menu
 - [x] Animações
 - [x] Compartilhar resultado
+- [ ] Sequência de vitórias
 - [ ] Estatísticas pessoais
 - [ ] Mais modos de jogo
 - [ ] Tela de ajustes
