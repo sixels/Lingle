@@ -41,17 +41,6 @@ export class GameManager {
     return new Date("2022/5/03");
   };
 
-  // Generates a random solution based on the current day
-  static dailyWord = (): string => {
-    const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
-
-    let rng = new Prando(day_one);
-    rng.skip(GameManager.gameNumber()-1);
-
-    const index = rng.nextInt(0, WordList.size - 1);
-    return [...WordList][index];
-  };
-
   static gameNumber = (): number => {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0),
       now = new Date().setHours(0, 0, 0, 0);
@@ -66,10 +55,8 @@ export class GameManager {
     this.title_elem = document.createElement("span");
     this.title_elem.classList.add("strong");
 
-    this._solution = GameManager.dailyWord();
+    this._solution = this.dailyWord();
     this.store = store;
-
-    this.store.onInvalidateStore(this.handleInvalidateStore);
 
     // initialize the game board
     this.generateBoard();
@@ -110,6 +97,17 @@ export class GameManager {
     document.addEventListener("setposition", this.handleSetPosition);
   };
 
+  // Generates a random solution based on the current day
+  dailyWord = (): string => {
+    const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
+
+    let rng = new Prando(`${this.title}@${day_one}`);
+    rng.skip(GameManager.gameNumber() - 1);
+
+    const index = rng.nextInt(0, WordList.size - 1);
+    return [...WordList][index];
+  };
+
   private loadState = () => {
     const attempts = this.store.attempts;
     attempts.forEach((attempt, i) => {
@@ -124,7 +122,7 @@ export class GameManager {
       row.reset();
     }
     this.edit_mode = false;
-    this._solution = GameManager.dailyWord();
+    this._solution = this.dailyWord();
     this.game_title = GameManager.gameNumber();
     this.updatePositionAndState(this.store.current_position);
   }
