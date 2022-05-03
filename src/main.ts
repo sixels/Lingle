@@ -40,7 +40,7 @@ const main = () => {
   }
 
   let keyboard = new KeyboardManager(keyboard_elem, store);
-  let game = new GameManager(board_elem, "lingle", store);
+  let game = new GameManager(board_elem, "Lingle", store);
 
   document.addEventListener("keyup", keyboard.handleKeyPress);
   document.addEventListener("sendmessage", handleMessage);
