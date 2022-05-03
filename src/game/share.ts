@@ -1,17 +1,22 @@
 import { WordAttempt } from ".";
 
-// TODO: Adjust these values manually
-const CELL_WIDTH = 55;
-const CELL_HEIGHT = 56;
-const PADDING = 10;
-const MARGIN = 40;
-const TITLE_HEIGHT = 40;
-const FONT_FAMILY = `${TITLE_HEIGHT}px Lilita One`;
+enum LetterStyle {
+  Wrong = "wrong",
+  Right = "right",
+  Occur = "occur",
+}
 
-export const shareResult = (
+export const renderAsImage = (
   game_name: string,
   attempts: WordAttempt[][]
 ): HTMLCanvasElement | undefined => {
+  const cell_width = 55;
+  const cell_height = 56;
+  const padding = 10;
+  const margin = 40;
+  const title_height = 40;
+  const font_family = `${title_height}px Lilita One`;
+
   const colors = {
     right: getCSSBackground("letter-right"),
     occur: getCSSBackground("letter-occur"),
@@ -22,10 +27,10 @@ export const shareResult = (
 
   let canvas = document.createElement("canvas") as HTMLCanvasElement;
 
-  const width = (CELL_WIDTH * 5 + MARGIN + PADDING * 4) * attempts.length,
+  const width = (cell_width * 5 + margin + padding * 4) * attempts.length,
     height =
-      (CELL_HEIGHT + PADDING) * (5 + attempts.length) +
-      (TITLE_HEIGHT + MARGIN * 2);
+      (cell_height + padding) * (5 + attempts.length) +
+      (title_height + margin * 2);
 
   canvas.width = width;
   canvas.height = height;
@@ -45,11 +50,68 @@ export const shareResult = (
   // render the title
   context.textAlign = "center";
   context.textBaseline = "top";
-  context.font = FONT_FAMILY;
+  context.font = font_family;
   context.fillStyle = colors["foreground"];
-  context.fillText(game_name.toUpperCase(), width / 2, MARGIN, width);
+  context.fillText(game_name.toUpperCase(), width / 2, margin, width);
 
   // render the attempts
+  renderBoard(
+    cell_width,
+    cell_height,
+    padding,
+    margin,
+    attempts,
+    (ls, x, y) => {
+      y += (3 * margin) / 2 + title_height;
+
+      renderRoundedRect(context, x, y, cell_width, cell_height, 7);
+      context.fillStyle = ls !== undefined ? colors[ls] || "blue" : "blue";
+      context.fill();
+    }
+  );
+
+  return canvas;
+};
+
+export const renderAsText = (
+  game_name: string,
+  attempts: WordAttempt[][]
+): string => {
+  const chars = {
+    right: "🟩",
+    occur: "🟨",
+    wrong: "⬛",
+  };
+
+  let board: string[][] = [
+    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
+    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
+    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
+    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
+    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
+    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
+  ];
+
+  renderBoard(1, 1, 0, 2, attempts, (ls, x, y) => {
+    board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
+  });
+
+  return `${game_name}
+
+${board.join("\n").replaceAll(",", "")}
+
+lingle.vercel.app`;
+};
+
+export const renderBoard = (
+  cell_width: number,
+  cell_height: number,
+  padding: number,
+  margin: number,
+  attempts: WordAttempt[][],
+  render_function: (ls: LetterStyle | undefined, x: number, y: number) => void
+) => {
+  const width = (cell_width * 5 + margin + padding * 4) * attempts.length;
   attempts.forEach((attempt, i) => {
     attempt.forEach((letters, j) => {
       const sorted = [
@@ -59,35 +121,24 @@ export const shareResult = (
       ].sort((a, b) => a.index - b.index);
 
       sorted.forEach((letter, k) => {
-        let color: string | undefined;
-
-        if (letters.wrong_letters.indexOf(letter) >= 0) {
-          color = colors["wrong"];
-        } else if (letters.right_letters.indexOf(letter) >= 0) {
-          color = colors["right"];
-        } else if (letters.occur_letters.indexOf(letter) >= 0) {
-          color = colors["occur"];
-        }
-
         const x =
-          i * (width / attempts.length - MARGIN / (attempt.length * 10)) +
-          k * (CELL_WIDTH + PADDING) +
-          MARGIN / 2;
-        const y =
-          (3 * MARGIN) / 2 +
-          TITLE_HEIGHT +
-          j * (CELL_HEIGHT + PADDING) +
-          MARGIN / 2;
+          i * (width / attempts.length - margin / (attempt.length * 10)) +
+          k * (cell_width + padding) +
+          margin / 2;
+        const y = j * (cell_height + padding) + margin / 2;
 
-        renderRoundedRect(context, x, y, CELL_WIDTH, CELL_HEIGHT, 7);
-
-        context.fillStyle = color || "blue";
-        context.fill();
+        let letter_style: LetterStyle | undefined;
+        if (letters.wrong_letters.indexOf(letter) >= 0) {
+          letter_style = LetterStyle.Wrong;
+        } else if (letters.right_letters.indexOf(letter) >= 0) {
+          letter_style = LetterStyle.Right;
+        } else if (letters.occur_letters.indexOf(letter) >= 0) {
+          letter_style = LetterStyle.Occur;
+        }
+        render_function(letter_style, x, y);
       });
     });
   });
-
-  return canvas;
 };
 
 const renderRoundedRect = (

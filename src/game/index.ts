@@ -6,7 +6,7 @@ import utils from "../utils";
 import { WordList, WordListNormalized } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
 import { GameState, LingleStore } from "../store";
-import { shareResult } from "./share";
+import { renderAsImage, renderAsText } from "./share";
 
 interface LetterAttempt {
   // Non-normalized letter
@@ -156,9 +156,17 @@ export class GameManager {
   }
 
   private copyResult() {
+    // utils
+    //   .openCanvas(
+    //     renderImage(this._game_number.innerText, [this.store.attempts])
+    //   )
+    //   .then(() => {
+    //     events.dispatchSendMessageEvent(messages.resultCopied);
+    //   });
+
     utils
-      .copyCanvas(
-        shareResult(this._game_number.innerText, [this.store.attempts])
+      .copyText(
+        renderAsText(this._game_number.innerText, [this.store.attempts])
       )
       .then(() => {
         events.dispatchSendMessageEvent(messages.resultCopied);
