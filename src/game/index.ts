@@ -302,7 +302,7 @@ export class GameManager {
     if (attempt.right_letters.length == N_COLS) {
       this.store.state = GameState.Won;
       setTimeout(() => {
-        this.currentRow().animateJump()
+        this.currentRow().animateJump();
         events.dispatchSendMessageEvent(messages.gameWin);
       }, 740);
     } else {
@@ -348,8 +348,9 @@ export class GameManager {
         this.paintLetter(attempt, letter, row);
 
         setTimeout(() => {
+          col.elem.classList.remove("reveal");
           col.value = letter.letter;
-        }, 130);
+      }, 130);
       }, i * 100);
     });
   };
