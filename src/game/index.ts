@@ -92,6 +92,7 @@ export class GameManager {
   }
 
   start = () => {
+    this.store.onInvalidateStore(this.handleInvalidateStore);
     this.updatePositionAndState(this.store.current_position);
     document.addEventListener("sendkey", this.handleSendKey);
     document.addEventListener("setposition", this.handleSetPosition);
