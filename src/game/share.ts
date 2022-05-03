@@ -85,25 +85,47 @@ export const renderAsText = (
     occur: "🟨",
     wrong: "⬛",
   };
+  const word_len = 5;
+  const n_words = word_len + attempts.length;
 
-  let board: string[][] = [
-    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
-    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
-    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
-    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
-    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
-    [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
-  ];
+  let board: string[][] = [...new Array(n_words)].map(() =>
+    [...new Array(word_len * attempts.length)].map(() => " ")
+  );
 
   renderBoard(1, 1, 0, 0, attempts, (ls, x, y) => {
+    x +=
+      Math.floor(x / (attempts[0].length + 1)) *
+      Math.floor(attempts[0].length / 2);
     board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
   });
 
-  return `${game_name}
+  const attempt_numbers = attempts.map((attempt) => {
+    if (
+      attempt.length === n_words &&
+      attempt[attempt.length - 1].right_letters.length < word_len
+    ) {
+      return `X/${word_len + 1}`;
+    }
+    return `${attempt.length}/${word_len + 1}`;
+  });
 
-${board.join("\n").replaceAll(",", "")}
+  const centralize = (text: string): string => {
+    const spaces = " ".repeat(30);
+    const offset = Math.max(
+      0,
+      Math.floor(2 * (board[0].length - 1) - text.length)
+    );
+    return `${spaces.substring(0, offset / 4)}${text}`;
+  };
 
-lingle.vercel.app`;
+  const attempts_string = attempt_numbers.join(" ");
+  const board_string = board.join("\n").replaceAll(",", "").trimEnd();
+
+  return `${centralize(`${game_name} ${attempts_string}`)}
+
+${board_string}
+
+${centralize("lingle.vercel.app")}`;
 };
 
 const renderBoard = (
