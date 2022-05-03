@@ -310,11 +310,10 @@ export class GameManager {
         setTimeout(() => this.updatePositionAndState(next_word), 740);
       } else {
         this.store.state = GameState.Lost;
-        setTimeout(
-          () =>
-            events.dispatchSendMessageEvent(messages.gameLost(this._solution)),
-          740
-        );
+        setTimeout(() => {
+          this.currentRow().animateShake();
+          events.dispatchSendMessageEvent(messages.gameLost(this._solution));
+        }, 740);
       }
     }
 
