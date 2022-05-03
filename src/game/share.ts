@@ -92,7 +92,7 @@ export const renderAsText = (
     [chars.wrong, chars.wrong, chars.wrong, chars.wrong, chars.wrong],
   ];
 
-  renderBoard(1, 1, 0, 2, attempts, (ls, x, y) => {
+  renderBoard(1, 1, 0, 0, attempts, (ls, x, y) => {
     board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
   });
 
