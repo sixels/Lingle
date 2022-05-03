@@ -6,7 +6,7 @@ import utils from "../utils";
 import { WordList, WordListNormalized } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
 import { GameState, LingleStore } from "../store";
-import { renderAsImage, renderAsText } from "./share";
+import { renderAsText } from "./share";
 
 interface LetterAttempt {
   // Non-normalized letter
