@@ -29,7 +29,7 @@ export class GameManager {
   private board: BoardRow[];
   private edit_mode: boolean = false;
   private _solution: string;
-  private _game_number: HTMLElement;
+  private title_elem: HTMLElement;
   private readonly title: string;
 
   // private current_position: BoardPosition;
@@ -63,8 +63,8 @@ export class GameManager {
     this.title = title;
     this.board = [];
 
-    this._game_number = document.createElement("span");
-    this._game_number.classList.add("strong");
+    this.title_elem = document.createElement("span");
+    this.title_elem.classList.add("strong");
 
     this._solution = GameManager.dailyWord();
     this.store = store;
@@ -90,9 +90,9 @@ export class GameManager {
         }
       }
     }
-    this.game_number = GameManager.gameNumber();
+    this.game_title = GameManager.gameNumber();
 
-    document.getElementById("header-left")?.appendChild(this._game_number);
+    document.getElementById("header-left")?.appendChild(this.title_elem);
     document.addEventListener("wordattempt", this.handleWordAttempt);
   }
 
@@ -100,8 +100,8 @@ export class GameManager {
     return this._solution;
   }
 
-  set game_number(value: number) {
-    this._game_number.innerText = `${this.title} #${value}`;
+  set game_title(value: number) {
+    this.title_elem.innerText = `${this.title} #${value}`;
   }
 
   start = () => {
@@ -125,7 +125,7 @@ export class GameManager {
     }
     this.edit_mode = false;
     this._solution = GameManager.dailyWord();
-    this.game_number = GameManager.gameNumber();
+    this.game_title = GameManager.gameNumber();
     this.updatePositionAndState(this.store.current_position);
   }
 
@@ -156,6 +156,19 @@ export class GameManager {
   }
 
   private copyResult() {
+    const title = `${this.title} ${GameManager.gameNumber()}`;
+    utils
+      .copyText(
+        renderAsText(title, [
+          this.store.attempts,
+          this.store.attempts,
+          this.store.attempts,
+        ])
+      )
+      .then(() => {
+        events.dispatchSendMessageEvent(messages.resultCopied);
+      });
+
     // utils
     //   .openCanvas(
     //     renderImage(this._game_number.innerText, [this.store.attempts])
@@ -163,13 +176,6 @@ export class GameManager {
     //   .then(() => {
     //     events.dispatchSendMessageEvent(messages.resultCopied);
     //   });
-    utils
-      .copyText(
-        renderAsText(this._game_number.innerText, [this.store.attempts])
-      )
-      .then(() => {
-        events.dispatchSendMessageEvent(messages.resultCopied);
-      });
   }
 
   private handleSendKey = (event: Event) => {
