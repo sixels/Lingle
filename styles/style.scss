@@ -278,7 +278,7 @@ body {
         transform: scale(var(--self-bounce-scale));
       }
       &.jumping {
-        animation: jump calc(4 * 900ms / 9) ease-in-out 0ms infinite;
+        animation: jump calc(4 * 900ms / 9) ease-in-out 0ms 4;
       }
 
       &.reveal {
