@@ -438,14 +438,30 @@ function compareWords(base: string, cmp: string): WordAttempt {
     // get the reference to the category
     let category: LetterAttempt[] | undefined = undefined;
     if (occurrences.size > 0) {
-      let index: number = occurrences.values().next().value;
-      if (occurrences.has(i)) {
-        index = i;
-        category = right_letters;
-      } else {
-        category = occur_letters;
+      let has_right: number = 0;
+      let c = 1;
+      while (true) {
+        const id = cmp_norm.slice(i + c).indexOf(cmp_norm_letter);
+        if (id < 0) {
+          break;
+        }
+        has_right += occurrences.has(id + (c + i)) ? 1 : 0;
+        c += id + 1;
       }
-      base_letters[index] = undefined;
+
+      if (has_right == occurrences.size) {
+        category = wrong_letters;
+      } else {
+        let index: number = occurrences.values().next().value;
+
+        if (occurrences.has(i)) {
+          index = i;
+          category = right_letters;
+        } else {
+          category = occur_letters;
+        }
+        base_letters[index] = undefined;
+      }
     } else {
       category = wrong_letters;
     }
