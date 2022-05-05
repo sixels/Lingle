@@ -61,20 +61,27 @@ export class LingleStore {
 
   private load = (): LingleStore => {
     if (this.hasExpired()) {
-      this.invalidateStore()
+      this.invalidateStore();
       return this;
     }
 
     const store = localStorage.getItem("lingle");
     if (store !== null) {
       const object: StoreObject = JSON.parse(store);
+      this.expires = new Date(object.expires);
+
+      // check if the state from local storage is valid
+      if (this.hasExpired()) {
+        this.invalidateStore();
+        return this;
+      }
+
       this.attempts = object.attempts;
       this.current_position = new BoardPosition(
         object.current_position[0],
         object.current_position[1]
       );
       this.state = object.state;
-      this.expires = new Date(object.expires);
     }
 
     return this;
