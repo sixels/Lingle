@@ -5,8 +5,14 @@ import { messages } from "../message";
 import utils from "../utils";
 import { WordList, WordListNormalized } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
-import { GameState, LingleStore } from "../store";
+import { LingleStore } from "../store";
 import { renderAsText } from "./share";
+
+export enum GameState {
+  Won,
+  Lost,
+  Playing,
+}
 
 interface LetterAttempt {
   // Non-normalized letter

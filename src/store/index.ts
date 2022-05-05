@@ -1,62 +1,7 @@
-import { WordAttempt } from "./game";
-import { BoardPosition } from "./game/board";
-import utils from "./utils";
+import utils from "../utils";
 
-export enum GameState {
-  Won,
-  Lost,
-  Playing,
-}
-
-class Stats {
-  win_streak: number = 0;
-  longest_streak: number = 0;
-  played_games: number = 0;
-
-  constructor() {}
-
-  asJSON = (): object => {
-    return {
-      win_streak: this.win_streak,
-      longest_streak: this.longest_streak,
-    };
-  };
-
-  static fromJSON(this: typeof Stats, data: any): Stats {
-    let stats = new this();
-
-    stats.win_streak = data.win_streak;
-    stats.longest_streak = data.longest_streak;
-
-    return stats;
-  }
-}
-
-class State {
-  attempts: WordAttempt[] = [];
-  state: GameState = GameState.Playing;
-  current_position: BoardPosition = new BoardPosition([0, 0]);
-
-  constructor() {}
-
-  asJSON = (): object => {
-    return {
-      attempts: this.attempts,
-      state: this.state,
-      current_position: this.current_position.asTuple(),
-    };
-  };
-
-  static fromJSON(this: typeof State, data: any): State {
-    let state = new this();
-
-    state.attempts = data.attempts;
-    state.state = data.state;
-    state.current_position = new BoardPosition(data.current_position);
-
-    return state;
-  }
-}
+import { State } from "./state";
+import { Stats } from "./stats";
 
 export class LingleStore {
   stats: Stats = new Stats();
