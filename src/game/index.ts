@@ -304,18 +304,18 @@ export class GameManager {
       setTimeout(() => {
         this.currentRow().animateJump();
         events.dispatchSendMessageEvent(messages.gameWin);
-      }, 740);
+      }, 1000);
     } else {
       const next_word = this.store.current_position.next_word();
       if (next_word !== null) {
         this.store.current_position = next_word;
-        setTimeout(() => this.updatePositionAndState(next_word), 740);
+        setTimeout(() => this.updatePositionAndState(next_word), 1000);
       } else {
         this.store.state = GameState.Lost;
         setTimeout(() => {
           this.currentRow().animateShake();
           events.dispatchSendMessageEvent(messages.gameLost(this._solution));
-        }, 740);
+        }, 1000);
       }
     }
 
@@ -350,8 +350,8 @@ export class GameManager {
         setTimeout(() => {
           col.elem.classList.remove("reveal");
           col.value = letter.letter;
-      }, 130);
-      }, i * 100);
+      }, 180);
+      }, i * 200);
     });
   };
 

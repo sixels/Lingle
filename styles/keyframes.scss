@@ -24,3 +24,18 @@
     transform: translateX(0);
   }
 }
+
+@keyframes jump {
+  0% {
+    transform: translateY(0);
+  }
+  49.261% {
+    transform: translateY(-25px);
+  }
+  98.522% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

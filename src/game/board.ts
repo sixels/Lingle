@@ -182,8 +182,8 @@ export class BoardRow {
           col.elem.classList.add("jumping");
           setTimeout(() => {
             col.elem.classList.remove("jumping");
-          }, 100);
-        }, 80 * i + (j*5)*80 );
+          }, 1000 * 10);
+        }, 4*180/9 * i);
       });
     }
   };

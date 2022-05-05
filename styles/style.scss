@@ -244,7 +244,7 @@ body {
 
       border-radius: 7px;
 
-      transition: transform 40ms ease;
+      transition: transform 60ms ease-in-out;
 
       &:not(:first-of-type) {
         margin-left: 2.8%;
@@ -273,17 +273,17 @@ body {
         box-shadow: var(--self-box-shadow);
       }
 
+      --self-bounce-scale: 1.2;
       &.bouncing {
-        // > span {
-          transform: scale(1.2);
-        // }
+        transform: scale(var(--self-bounce-scale));
       }
       &.jumping {
-        transform: translateY(-30px);
+        animation: jump calc(4 * 900ms / 9) ease-in-out 0ms infinite;
       }
 
       &.reveal {
-        transition: background-color 740ms ease-out, transform 68ms ease;
+        transition: background-color 940ms ease-out, transform 170ms ease-in-out;
+        --self-bounce-scale: 1.25;
       }
     }
   }
