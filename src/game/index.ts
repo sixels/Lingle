@@ -112,7 +112,7 @@ export class GameManager {
   private loadState = () => {
     const attempts = this.store.attempts;
     attempts.forEach((attempt, i) => {
-      let row = this.rowAtPosition(new BoardPosition(i, 0));
+      let row = this.rowAtPosition(new BoardPosition([i, 0]));
       this.paintAttempt(attempt, row, false);
     });
     this.updatePositionAndState(this.store.current_position);
@@ -134,7 +134,7 @@ export class GameManager {
 
       for (let c = 0; c < N_COLS; c++) {
         row.pushColumn(
-          new BoardColumn(createLetterElement(null), new BoardPosition(r, c))
+          new BoardColumn(createLetterElement(null), new BoardPosition([r, c]))
         );
       }
 
@@ -282,7 +282,7 @@ export class GameManager {
       this.edit_mode = true;
       this.columnAtPosition(position).animateBounce();
       this.updatePositionAndState(
-        new BoardPosition(position.row, position.col)
+        new BoardPosition([position.row, position.col])
       );
     }
   };

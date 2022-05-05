@@ -19,7 +19,7 @@ interface StoreObject {
 
 export class LingleStore {
   attempts: WordAttempt[] = [];
-  current_position: BoardPosition = new BoardPosition(0, 0);
+  current_position: BoardPosition = new BoardPosition([0, 0]);
   state: GameState = GameState.Playing;
   expires: Date = new Date();
 
@@ -92,10 +92,7 @@ export class LingleStore {
       }
 
       this.attempts = object.attempts;
-      this.current_position = new BoardPosition(
-        object.current_position[0],
-        object.current_position[1]
-      );
+      this.current_position = new BoardPosition(object.current_position);
       this.state = object.state;
       this.win_streak = object.win_streak || 0;
     }
@@ -106,7 +103,7 @@ export class LingleStore {
   private reset = () => {
     localStorage.removeItem("lingle");
     this.attempts = [];
-    this.current_position = new BoardPosition(0, 0);
+    this.current_position = new BoardPosition([0, 0]);
     this.state = GameState.Playing;
     this.expires = utils.tomorrow();
   };

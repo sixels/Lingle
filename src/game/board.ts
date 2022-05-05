@@ -9,7 +9,7 @@ export class BoardPosition {
 
   // Create a new BoardPosition. row and col should not be greater than N_ROWS
   // and N_COLS, respectively. Negative positions are also invalid.
-  constructor(row: number, col: number) {
+  constructor([row, col]: [number, number]) {
     if (row < 0 || col < 0 || row >= N_ROWS || col > N_COLS) {
       throw new Error(`Invalid board position: row ${row}, column ${col}`);
     }
@@ -27,20 +27,20 @@ export class BoardPosition {
 
   // Return a new position with column incremented by one
   step_forward = (): BoardPosition => {
-    return new BoardPosition(
+    return new BoardPosition([
       this.row,
-      this.col < N_COLS ? this.col + 1 : this.col
-    );
+      this.col < N_COLS ? this.col + 1 : this.col,
+    ]);
   };
   step_backward = (): BoardPosition => {
-    return new BoardPosition(
+    return new BoardPosition([
       this.row,
-      this.col - 1 >= 0 ? this.col - 1 : this.col
-    );
+      this.col - 1 >= 0 ? this.col - 1 : this.col,
+    ]);
   };
   next_word = (): BoardPosition | null => {
     try {
-      return new BoardPosition(this.row + 1, 0);
+      return new BoardPosition([this.row + 1, 0]);
     } catch (_) {
       return null;
     }
@@ -148,11 +148,11 @@ export class BoardRow {
   nextPosition = (priority: number): BoardPosition => {
     const priority_column = this.columns.at(priority);
     if (priority_column !== undefined && priority_column.isEmpty()) {
-      return new BoardPosition(this.index, priority);
+      return new BoardPosition([this.index, priority]);
     }
 
     const col = this.columns.findIndex((col) => col.isEmpty());
-    return new BoardPosition(this.index, col < 0 ? N_COLS : col);
+    return new BoardPosition([this.index, col < 0 ? N_COLS : col]);
   };
 
   setDisabled = (option: boolean) => {
@@ -183,7 +183,7 @@ export class BoardRow {
           setTimeout(() => {
             col.elem.classList.remove("jumping");
           }, 1000 * 10);
-        }, 4*180/9 * i);
+        }, ((4 * 180) / 9) * i);
       });
     }
   };
