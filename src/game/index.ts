@@ -62,8 +62,8 @@ export class GameManager {
     this.generateBoard();
     this.loadState();
 
-    if (this.store.state !== GameState.Playing) {
-      const last_attempt = [...this.store.attempts].pop();
+    if (this.store.stats.state !== GameState.Playing) {
+      const last_attempt = [...this.store.stats.attempts].pop();
       if (
         last_attempt !== undefined &&
         last_attempt.right_letters.length === N_COLS
@@ -93,7 +93,7 @@ export class GameManager {
 
   start = () => {
     this.store.onInvalidateStore(this.handleInvalidateStore);
-    this.updatePositionAndState(this.store.current_position);
+    this.updatePositionAndState(this.store.stats.current_position);
     document.addEventListener("sendkey", this.handleSendKey);
     document.addEventListener("setposition", this.handleSetPosition);
   };
@@ -110,12 +110,12 @@ export class GameManager {
   };
 
   private loadState = () => {
-    const attempts = this.store.attempts;
+    const attempts = this.store.stats.attempts;
     attempts.forEach((attempt, i) => {
       let row = this.rowAtPosition(new BoardPosition([i, 0]));
       this.paintAttempt(attempt, row, false);
     });
-    this.updatePositionAndState(this.store.current_position);
+    this.updatePositionAndState(this.store.stats.current_position);
   };
 
   private handleInvalidateStore() {
@@ -125,7 +125,7 @@ export class GameManager {
     this.edit_mode = false;
     this._solution = this.dailyWord();
     this.game_title = GameManager.gameNumber();
-    this.updatePositionAndState(this.store.current_position);
+    this.updatePositionAndState(this.store.stats.current_position);
   }
 
   private generateBoard = () => {
@@ -150,21 +150,21 @@ export class GameManager {
     let next_column = this.tryColumnAtPosition(new_position);
     next_column?.setFocused(true);
 
-    this.store.current_position = new_position;
+    this.store.stats.current_position = new_position;
     this.currentRow().setDisabled(false);
   }
 
   private copyResult() {
     const title = `${this.title} ${GameManager.gameNumber()} (🔥 ${
-      this.store.win_streak
+      this.store.stats.win_streak
     })`;
-    utils.copyText(renderAsText(title, [this.store.attempts])).then(() => {
+    utils.copyText(renderAsText(title, [this.store.stats.attempts])).then(() => {
       events.dispatchSendMessageEvent(messages.resultCopied);
     });
 
     // utils
     //   .openCanvas(
-    //     renderImage(this._game_number.innerText, [this.store.attempts])
+    //     renderImage(this._game_number.innerText, [this.store.stats.attempts])
     //   )
     //   .then(() => {
     //     events.dispatchSendMessageEvent(messages.resultCopied);
@@ -172,7 +172,7 @@ export class GameManager {
   }
 
   private handleSendKey = (event: Event) => {
-    if (this.store.state !== GameState.Playing) {
+    if (this.store.stats.state !== GameState.Playing) {
       this.copyResult();
       return;
     }
@@ -215,7 +215,7 @@ export class GameManager {
           // position. In this case, we first need to go back to the position
           // N_COLS-1, then we can get the actual column.
           this.updatePositionAndState(
-            this.store.current_position.step_backward()
+            this.store.stats.current_position.step_backward()
           );
           column = this.currentColumn();
           // Enter edit mode so we don't update the position.
@@ -230,7 +230,7 @@ export class GameManager {
 
         if (!this.edit_mode) {
           this.updatePositionAndState(
-            this.store.current_position.step_backward()
+            this.store.stats.current_position.step_backward()
           );
           // We already deleted a letter, just go back a position.
           if (!deleted) {
@@ -241,11 +241,11 @@ export class GameManager {
         break;
       case "arrowleft":
         events.dispatchSetPositionEvent(
-          this.store.current_position.step_backward()
+          this.store.stats.current_position.step_backward()
         );
         break;
       case "arrowright":
-        let p = this.store.current_position.step_forward();
+        let p = this.store.stats.current_position.step_forward();
         if (p.col < N_COLS) {
           events.dispatchSetPositionEvent(p);
         }
@@ -256,7 +256,7 @@ export class GameManager {
           cur_column.value = key;
           this.updatePositionAndState(
             this.currentRow().nextPosition(
-              this.store.current_position.step_forward().col
+              this.store.stats.current_position.step_forward().col
             )
           );
         }
@@ -267,7 +267,7 @@ export class GameManager {
   };
 
   private handleSetPosition = (event: Event) => {
-    if (this.store.state !== GameState.Playing) {
+    if (this.store.stats.state !== GameState.Playing) {
       return;
     }
 
@@ -278,7 +278,7 @@ export class GameManager {
       return;
     }
 
-    if (this.store.current_position.row == position.row) {
+    if (this.store.stats.current_position.row == position.row) {
       this.edit_mode = true;
       this.columnAtPosition(position).animateBounce();
       this.updatePositionAndState(
@@ -295,28 +295,28 @@ export class GameManager {
       return;
     }
 
-    this.store.attempts.push(attempt);
+    this.store.stats.attempts.push(attempt);
 
     // paint letters
     this.paintAttempt(attempt, this.currentRow(), true);
 
     // update game state
     if (attempt.right_letters.length == N_COLS) {
-      this.store.state = GameState.Won;
-      this.store.win_streak += 1;
+      this.store.stats.state = GameState.Won;
+      this.store.stats.win_streak += 1;
 
       setTimeout(() => {
         this.currentRow().animateJump();
         events.dispatchSendMessageEvent(messages.gameWin);
       }, 1000);
     } else {
-      const next_word = this.store.current_position.next_word();
+      const next_word = this.store.stats.current_position.next_word();
       if (next_word !== null) {
-        this.store.current_position = next_word;
+        this.store.stats.current_position = next_word;
         setTimeout(() => this.updatePositionAndState(next_word), 1000);
       } else {
-        this.store.state = GameState.Lost;
-        this.store.win_streak = 0;
+        this.store.stats.state = GameState.Lost;
+        this.store.stats.win_streak = 0;
 
         setTimeout(() => {
           this.currentRow().animateShake();
@@ -386,17 +386,17 @@ export class GameManager {
     return this.board[position.row].columns[position.col];
   };
   private currentColumn = (): BoardColumn => {
-    return this.columnAtPosition(this.store.current_position);
+    return this.columnAtPosition(this.store.stats.current_position);
   };
   private tryCurrentColumn = (): BoardColumn | undefined => {
-    return this.tryColumnAtPosition(this.store.current_position);
+    return this.tryColumnAtPosition(this.store.stats.current_position);
   };
 
   private rowAtPosition = (position: BoardPosition): BoardRow => {
     return this.board[position.row];
   };
   private currentRow = (): BoardRow => {
-    return this.rowAtPosition(this.store.current_position);
+    return this.rowAtPosition(this.store.stats.current_position);
   };
 }
 

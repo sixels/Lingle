@@ -8,19 +8,40 @@ export enum GameState {
   Playing,
 }
 
-interface StoreObject {
-  attempts: WordAttempt[];
-  state: GameState;
-  current_position: [number, number];
-  expires: Date;
-  win_streak: number;
-  longest_streak: number;
+class Stats {
+  attempts: WordAttempt[] = [];
+  state: GameState = GameState.Playing;
+  current_position: BoardPosition = new BoardPosition([0, 0]);
+  win_streak: number = 0;
+  longest_streak: number = 0;
+
+  constructor() {}
+
+  asJSON = (): object => {
+    return {
+      attempts: this.attempts,
+      state: this.state,
+      current_position: this.current_position.asTuple(),
+      win_streak: this.win_streak,
+      longest_streak: this.longest_streak,
+    };
+  };
+
+  static fromJSON(this: typeof Stats, data: any): Stats {
+    let stats = new this();
+
+    stats.attempts = data.attempts;
+    stats.state = data.state;
+    stats.current_position = new BoardPosition(data.current_position);
+    stats.win_streak = data.win_streak;
+    stats.longest_streak = data.longest_streak;
+
+    return stats;
+  }
 }
 
 export class LingleStore {
-  attempts: WordAttempt[] = [];
-  current_position: BoardPosition = new BoardPosition([0, 0]);
-  state: GameState = GameState.Playing;
+  stats: Stats = new Stats();
   expires: Date = new Date();
 
   invalidateCallbacks: (() => void)[] = [];
@@ -62,12 +83,9 @@ export class LingleStore {
     this.expires = utils.tomorrow();
 
     const object = {
-      attempts: this.attempts,
-      current_position: [this.current_position.row, this.current_position.col],
-      state: this.state,
+      stats: this.stats.asJSON(),
       expires: this.expires,
-      win_streak: this.win_streak,
-    } as StoreObject;
+    };
 
     localStorage.setItem("lingle", JSON.stringify(object));
 
@@ -82,19 +100,22 @@ export class LingleStore {
 
     const store = localStorage.getItem("lingle");
     if (store !== null) {
-      const object: StoreObject = JSON.parse(store);
-      this.expires = new Date(object.expires);
+      const object: any = JSON.parse(store);
 
-      // check if the state from local storage is valid
-      if (this.hasExpired()) {
+      try {
+        this.expires = new Date(object.expires);
+
+        // check if the state from local storage is valid
+        if (this.hasExpired()) {
+          this.invalidateStore();
+        } else {
+          this.stats = Stats.fromJSON(object.stats);
+        }
+
+      } catch (e) {
+        console.log(e)
         this.invalidateStore();
-        return this;
       }
-
-      this.attempts = object.attempts;
-      this.current_position = new BoardPosition(object.current_position);
-      this.state = object.state;
-      this.win_streak = object.win_streak || 0;
     }
 
     return this;
@@ -102,9 +123,13 @@ export class LingleStore {
 
   private reset = () => {
     localStorage.removeItem("lingle");
-    this.attempts = [];
-    this.current_position = new BoardPosition([0, 0]);
-    this.state = GameState.Playing;
+
+    // keep win streak
+    const stats = new Stats();
+    stats.longest_streak = this.stats.longest_streak;
+    stats.win_streak = this.stats.win_streak;
+
+    this.stats = stats;
     this.expires = utils.tomorrow();
   };
 }

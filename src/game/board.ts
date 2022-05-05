@@ -45,6 +45,10 @@ export class BoardPosition {
       return null;
     }
   };
+
+  asTuple = (): [number, number] => {
+    return [this._row, this._col];
+  };
 }
 
 export class BoardColumn {

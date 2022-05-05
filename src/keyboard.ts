@@ -31,7 +31,7 @@ export class KeyboardManager {
       this.keys = this.keys.concat(keys);
     }
 
-    this.store.attempts.forEach(this.paintKeys);
+    this.store.stats.attempts.forEach(this.paintKeys);
     
     document.addEventListener("wordattempt", this.handleWordAttempt);
   }
