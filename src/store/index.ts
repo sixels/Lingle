@@ -78,12 +78,8 @@ export class LingleStore {
   private reset = () => {
     localStorage.removeItem("lingle");
 
-    // keep win streak
-    const stats = new Stats();
-    stats.longest_streak = this.stats.longest_streak;
-    stats.win_streak = this.stats.win_streak;
-
-    this.stats = stats;
+    // keep stats
+    this.state = new State();
     this.expires = utils.tomorrow();
   };
 }

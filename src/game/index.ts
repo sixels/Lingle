@@ -330,7 +330,11 @@ export class GameManager {
         }, 1000);
       }
     }
-    this.store.stats.updateStats(this.store.state.status);
+
+    this.store.stats.update(
+      this.store.state.status,
+      this.store.state.attempts.length - 1
+    );
 
     this.store.save();
   };

@@ -25,7 +25,7 @@ export class Stats {
     };
   };
 
-  updateStats = (game_status: GameStatus) => {
+  update = (game_status: GameStatus, attempt: number) => {
     if (game_status === GameStatus.Playing) {
       return;
     }
@@ -33,6 +33,7 @@ export class Stats {
     if (game_status === GameStatus.Won) {
       this.win_streak += 1;
       this.longest_streak = Math.max(this.win_streak, this.longest_streak);
+      this.history[attempt] += 1;
     } else if (game_status === GameStatus.Lost) {
       this.win_streak = 0;
     }
