@@ -204,7 +204,7 @@ body {
   flex-direction: column;
 
   .row {
-    height: 3.3rem;
+    height: 3.6rem;
     display: flex;
     flex-direction: row;
 
@@ -213,7 +213,7 @@ body {
     }
 
     &:not(:first-of-type) {
-      margin-top: 2%;
+      margin-top: 1.5%;
     }
 
     &.disabled .letter {
@@ -229,7 +229,7 @@ body {
       display: grid;
       place-items: center;
 
-      width: 3.9rem;
+      width: 4.1rem;
       height: 100%;
 
       box-shadow: var(--self-box-shadow),
@@ -247,7 +247,7 @@ body {
       transition: transform 60ms ease-in-out;
 
       &:not(:first-of-type) {
-        margin-left: 2.8%;
+        margin-left: 2.2%;
       }
 
       &.focused {
