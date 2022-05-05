@@ -8,7 +8,7 @@ import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
 import { LingleStore } from "../store";
 import { renderAsText } from "./share";
 
-export enum GameState {
+export enum GameStatus {
   Won,
   Lost,
   Playing,
@@ -68,7 +68,7 @@ export class GameManager {
     this.generateBoard();
     this.loadState();
 
-    if (this.store.state.state !== GameState.Playing) {
+    if (this.store.state.status !== GameStatus.Playing) {
       const last_attempt = [...this.store.state.attempts].pop();
       if (
         last_attempt !== undefined &&
@@ -180,7 +180,7 @@ export class GameManager {
   }
 
   private handleSendKey = (event: Event) => {
-    if (this.store.state.state !== GameState.Playing) {
+    if (this.store.state.status !== GameStatus.Playing) {
       this.copyResult();
       return;
     }
@@ -275,7 +275,7 @@ export class GameManager {
   };
 
   private handleSetPosition = (event: Event) => {
-    if (this.store.state.state !== GameState.Playing) {
+    if (this.store.state.status !== GameStatus.Playing) {
       return;
     }
 
@@ -310,8 +310,7 @@ export class GameManager {
 
     // update game state
     if (attempt.right_letters.length == N_COLS) {
-      this.store.state.state = GameState.Won;
-      this.store.stats.win_streak += 1;
+      this.store.state.status = GameStatus.Won;
 
       setTimeout(() => {
         this.currentRow().animateJump();
@@ -323,8 +322,7 @@ export class GameManager {
         this.store.state.current_position = next_word;
         setTimeout(() => this.updatePositionAndState(next_word), 1000);
       } else {
-        this.store.state.state = GameState.Lost;
-        this.store.stats.win_streak = 0;
+        this.store.state.status = GameStatus.Lost;
 
         setTimeout(() => {
           this.currentRow().animateShake();
@@ -332,6 +330,7 @@ export class GameManager {
         }, 1000);
       }
     }
+    this.store.stats.updateStats(this.store.state.status);
 
     this.store.save();
   };

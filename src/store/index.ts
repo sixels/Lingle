@@ -15,14 +15,6 @@ export class LingleStore {
     this.load();
   }
 
-  set win_streak(value: number) {
-    this.stats.longest_streak = Math.max(value, this.stats.longest_streak);
-    this.stats.win_streak = value;
-  }
-  get win_streak(): number {
-    return this.stats.win_streak;
-  }
-
   hasExpired = (): boolean => {
     return new Date() >= this.expires;
   };
