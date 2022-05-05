@@ -121,7 +121,7 @@ export const renderAsText = (
   const attempts_string = attempt_numbers.join(" ");
   const board_string = board.join("\n").replaceAll(",", "").trimEnd();
 
-  return `${centralize(`${game_name} ${attempts_string}`)}
+  return `${centralize(`${game_name} - ${attempts_string}`)}
 
 ${board_string}
 

@@ -155,7 +155,9 @@ export class GameManager {
   }
 
   private copyResult() {
-    const title = `${this.title} ${GameManager.gameNumber()}`;
+    const title = `${this.title} ${GameManager.gameNumber()} (🔥 ${
+      this.store.win_streak
+    })`;
     utils.copyText(renderAsText(title, [this.store.attempts])).then(() => {
       events.dispatchSendMessageEvent(messages.resultCopied);
     });
@@ -301,6 +303,8 @@ export class GameManager {
     // update game state
     if (attempt.right_letters.length == N_COLS) {
       this.store.state = GameState.Won;
+      this.store.win_streak += 1;
+
       setTimeout(() => {
         this.currentRow().animateJump();
         events.dispatchSendMessageEvent(messages.gameWin);
@@ -312,6 +316,8 @@ export class GameManager {
         setTimeout(() => this.updatePositionAndState(next_word), 1000);
       } else {
         this.store.state = GameState.Lost;
+        this.store.win_streak = 0;
+
         setTimeout(() => {
           this.currentRow().animateShake();
           events.dispatchSendMessageEvent(messages.gameLost(this._solution));
@@ -350,7 +356,7 @@ export class GameManager {
         setTimeout(() => {
           col.elem.classList.remove("reveal");
           col.value = letter.letter;
-      }, 180);
+        }, 180);
       }, i * 200);
     });
   };

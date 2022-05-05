@@ -13,6 +13,8 @@ interface StoreObject {
   state: GameState;
   current_position: [number, number];
   expires: Date;
+  win_streak: number;
+  longest_streak: number;
 }
 
 export class LingleStore {
@@ -20,11 +22,23 @@ export class LingleStore {
   current_position: BoardPosition = new BoardPosition(0, 0);
   state: GameState = GameState.Playing;
   expires: Date = new Date();
+
   invalidateCallbacks: (() => void)[] = [];
+
+  longest_streak: number = 0;
+  private _win_streak: number = 0;
 
   constructor() {
     this.expires = utils.tomorrow();
     this.load();
+  }
+
+  set win_streak(value: number) {
+    this.longest_streak = Math.max(value, this.longest_streak);
+    this._win_streak = value;
+  }
+  get win_streak(): number {
+    return this._win_streak;
   }
 
   hasExpired = (): boolean => {
@@ -52,6 +66,7 @@ export class LingleStore {
       current_position: [this.current_position.row, this.current_position.col],
       state: this.state,
       expires: this.expires,
+      win_streak: this.win_streak,
     } as StoreObject;
 
     localStorage.setItem("lingle", JSON.stringify(object));
@@ -82,6 +97,7 @@ export class LingleStore {
         object.current_position[1]
       );
       this.state = object.state;
+      this.win_streak = object.win_streak || 0;
     }
 
     return this;
