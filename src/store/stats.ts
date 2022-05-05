@@ -4,6 +4,7 @@ export class Stats {
   win_streak: number = 0;
   longest_streak: number = 0;
   played_games: number = 0;
+  history: number[] = [0, 0, 0, 0, 0];
 
   constructor() {}
 
@@ -12,6 +13,7 @@ export class Stats {
 
     stats.win_streak = data.win_streak;
     stats.longest_streak = data.longest_streak;
+    stats.history = data.history;
 
     return stats;
   }
@@ -19,6 +21,7 @@ export class Stats {
     return {
       win_streak: this.win_streak,
       longest_streak: this.longest_streak,
+      history: this.history,
     };
   };
 
