@@ -9,19 +9,14 @@ export enum GameState {
 }
 
 class Stats {
-  attempts: WordAttempt[] = [];
-  state: GameState = GameState.Playing;
-  current_position: BoardPosition = new BoardPosition([0, 0]);
   win_streak: number = 0;
   longest_streak: number = 0;
+  played_games: number = 0;
 
   constructor() {}
 
   asJSON = (): object => {
     return {
-      attempts: this.attempts,
-      state: this.state,
-      current_position: this.current_position.asTuple(),
       win_streak: this.win_streak,
       longest_streak: this.longest_streak,
     };
@@ -30,9 +25,6 @@ class Stats {
   static fromJSON(this: typeof Stats, data: any): Stats {
     let stats = new this();
 
-    stats.attempts = data.attempts;
-    stats.state = data.state;
-    stats.current_position = new BoardPosition(data.current_position);
     stats.win_streak = data.win_streak;
     stats.longest_streak = data.longest_streak;
 
@@ -40,8 +32,35 @@ class Stats {
   }
 }
 
+class State {
+  attempts: WordAttempt[] = [];
+  state: GameState = GameState.Playing;
+  current_position: BoardPosition = new BoardPosition([0, 0]);
+
+  constructor() {}
+
+  asJSON = (): object => {
+    return {
+      attempts: this.attempts,
+      state: this.state,
+      current_position: this.current_position.asTuple(),
+    };
+  };
+
+  static fromJSON(this: typeof State, data: any): State {
+    let state = new this();
+
+    state.attempts = data.attempts;
+    state.state = data.state;
+    state.current_position = new BoardPosition(data.current_position);
+
+    return state;
+  }
+}
+
 export class LingleStore {
   stats: Stats = new Stats();
+  state: State = new State();
   expires: Date = new Date();
 
   invalidateCallbacks: (() => void)[] = [];
@@ -84,6 +103,7 @@ export class LingleStore {
 
     const object = {
       stats: this.stats.asJSON(),
+      state: this.state.asJSON(),
       expires: this.expires,
     };
 
@@ -110,10 +130,10 @@ export class LingleStore {
           this.invalidateStore();
         } else {
           this.stats = Stats.fromJSON(object.stats);
+          this.state = State.fromJSON(object.state);
         }
-
       } catch (e) {
-        console.log(e)
+        console.error(e);
         this.invalidateStore();
       }
     }
