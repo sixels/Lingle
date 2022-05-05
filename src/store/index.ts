@@ -10,20 +10,17 @@ export class LingleStore {
 
   invalidateCallbacks: (() => void)[] = [];
 
-  longest_streak: number = 0;
-  private _win_streak: number = 0;
-
   constructor() {
     this.expires = utils.tomorrow();
     this.load();
   }
 
   set win_streak(value: number) {
-    this.longest_streak = Math.max(value, this.longest_streak);
-    this._win_streak = value;
+    this.stats.longest_streak = Math.max(value, this.stats.longest_streak);
+    this.stats.win_streak = value;
   }
   get win_streak(): number {
-    return this._win_streak;
+    return this.stats.win_streak;
   }
 
   hasExpired = (): boolean => {
