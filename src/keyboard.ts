@@ -13,13 +13,9 @@ export class KeyboardManager {
 
   private keys: HTMLElement[] = [];
   private effectTimeouts = new Map();
-  private store: LingleStore;
 
   // Create a new keyboard manager
   constructor(elem: HTMLElement, store: LingleStore) {
-    this.store = store;
-    this.store.onInvalidateStore(this.handleInvalidateStore);
-
     // handle clicks from the virtual keyboard
     const rows: HTMLElement[] = [].slice.call(elem.children);
     for (const row of rows) {
@@ -31,8 +27,9 @@ export class KeyboardManager {
       this.keys = this.keys.concat(keys);
     }
 
-    this.store.state.attempts.forEach(this.paintKeys);
-    
+    store.onInvalidate(this.handleInvalidateStore);
+    store.state.attempts.forEach(this.paintKeys);
+
     document.addEventListener("wordattempt", this.handleWordAttempt);
   }
 

@@ -3,35 +3,36 @@ import utils from "../utils";
 import { State } from "./state";
 import { Stats } from "./stats";
 
+export type StoreCallback = (store: LingleStore) => void;
+
 export class LingleStore {
   stats: Stats = new Stats();
   state: State = new State();
   expires: Date = new Date();
 
-  invalidateCallbacks: (() => void)[] = [];
+  onInvalidateCallbacks: StoreCallback[] = [];
+  onSaveCallbacks: StoreCallback[] = [];
 
   constructor() {
     this.expires = utils.tomorrow();
     this.load();
   }
 
-  hasExpired = (): boolean => {
-    return new Date() >= this.expires;
-  };
-
-  onInvalidateStore(callback: () => void) {
-    this.invalidateCallbacks.push(callback);
+  onInvalidate(callback: StoreCallback) {
+    callback(this);
+  }
+  onSave(callback: StoreCallback) {
+    callback(this);
   }
 
   invalidateStore() {
     this.reset();
-    this.invalidateCallbacks.forEach((cb) => cb());
+    this.onInvalidateCallbacks.forEach((cb) => cb(this));
   }
 
-  save = (): boolean => {
+  save = () => {
     if (this.hasExpired()) {
       this.invalidateStore();
-      return false;
     }
     this.expires = utils.tomorrow();
 
@@ -42,8 +43,11 @@ export class LingleStore {
     };
 
     localStorage.setItem("lingle", JSON.stringify(object));
+    this.onSaveCallbacks.forEach((cb) => cb(this));
+  };
 
-    return true;
+  private hasExpired = (): boolean => {
+    return new Date() >= this.expires;
   };
 
   private load = (): LingleStore => {

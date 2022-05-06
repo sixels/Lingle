@@ -98,7 +98,7 @@ export class GameManager {
   }
 
   start = () => {
-    this.store.onInvalidateStore(this.handleInvalidateStore);
+    this.store.onInvalidate(this.handleInvalidateStore);
     this.updatePositionAndState(this.store.state.current_position);
     document.addEventListener("sendkey", this.handleSendKey);
     document.addEventListener("setposition", this.handleSetPosition);
@@ -124,7 +124,7 @@ export class GameManager {
     this.updatePositionAndState(this.store.state.current_position);
   };
 
-  private handleInvalidateStore() {
+  private handleInvalidateStore = () => {
     for (const row of this.board) {
       row.reset();
     }
