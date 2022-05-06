@@ -59,10 +59,10 @@ const handleMessage = (event: Event) => {
     return;
   }
 
-  function setMessage(message: Message) {
+  function setMessage(message: Message): Promise<void> {
     const elem = document.getElementById("message");
     if (elem === null) {
-      return;
+      return Promise.reject();
     }
 
     elem.classList.remove("error", "info");
@@ -73,20 +73,22 @@ const handleMessage = (event: Event) => {
     elem.classList.remove("hidden");
     elem.innerText = message.data;
 
-    return elem;
+    return Promise.resolve();
   }
 
-  setMessage(message);
-  if (ltimeout !== undefined) {
-    clearTimeout(ltimeout);
-  }
-  ltimeout = setTimeout(
-    () => {
-      document.getElementById("message")?.classList.add("hidden");
-      if (message.callback) {
-        message.callback();
-      }
-    },
-    message.kind === MessageKind.Error ? 3000 : 6000
-  );
+  setMessage(message).then(() => {
+    if (message.callback !== undefined) {
+      message.callback();
+    }
+
+    if (ltimeout !== undefined) {
+      clearTimeout(ltimeout);
+    }
+    ltimeout = setTimeout(
+      () => {
+        document.getElementById("message")?.classList.add("hidden");
+      },
+      message.kind === MessageKind.Error ? 3000 : 6000
+    );
+  });
 };
