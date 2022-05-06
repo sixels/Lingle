@@ -7,6 +7,24 @@ export default {
     return word.normalize("NFD").replace(/\p{Diacritic}/gu, "");
   },
 
+  enumerate<T>(list: Iterable<T>): Iterable<[number, T]> {
+    type TRet = [number, T];
+
+    return {
+      [Symbol.iterator]() {
+        let i = 0;
+        let it = list[Symbol.iterator]();
+        const iterator = {
+          next() {
+            const item = it.next();
+            return { value: [i++, item.value], done: item.done };
+          },
+        } as Iterator<TRet>;
+        return iterator;
+      },
+    };
+  },
+
   copyCanvas: (canvas: HTMLCanvasElement | undefined): Promise<void> => {
     if (canvas === undefined) {
       return Promise.resolve();
