@@ -33,9 +33,7 @@ if __name__ == "__main__":
                 if normalize(word) in frequencies[k]:
                     words.setdefault(k, list()).append(word)
 
-
-    #print(*words[2][::2], sep='\n')
-    # print all unique words ignoring similars.
+    # print all unique words ignoring simmilars.
     for freq,ws in words.items():
         print(*(w for w in ws[::freq]) , sep='\n')
 

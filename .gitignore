@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 __pycache__
+
+./data/*.txt

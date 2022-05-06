@@ -16,8 +16,7 @@ Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/
 
 ## Recursos
 
-A lista de palavras vem de um [site da USP](https://www.ime.usp.br/~pf/dicios/index.html), e foram salvas em `data/palavras.txt`.
-Algumas palavras foram adicionadas ou removidas, conforme julguei necessário. As alterações foram salvas em `data/palavras.5.txt`.
+A base de palavras vem do [VERO](https://pt-br.libreoffice.org/projetos/vero), o verificador ortogr\'afico do LibreOffice, e foram salvas em `data/palavras.txt`.
 
 Criei uma mini coleção de scripts para facilitar o processamento das palavras (disponíveis no diretório `scripts/`).
 
@@ -34,5 +33,5 @@ Criei uma mini coleção de scripts para facilitar o processamento das palavras 
 O commando usado para gerar wordlist presente em `src/wordlist.ts` foi:
 
 ```sh
-./scripts/generate_wordlist.sh ./data/palavras.5.txt | sed 's/\(.*\)/"\1",/'
+./scripts/generate_wordlist.sh ./data/palavras.txt | sed 's/\(.*\)/"\1",/'
 ```

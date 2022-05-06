@@ -4,6 +4,7 @@
 
 set -eu
 
-cat "$1" | rg '^.....$'           \
+cat "$1" | rg '^[^\.\-]{5}$'      \
   | gawk '{print tolower($0);}'   \
+  | rg -v '^[aáâ][aáâ]'                   \
   | uniq | sort
