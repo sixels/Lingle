@@ -83,6 +83,9 @@ const handleMessage = (event: Event) => {
   ltimeout = setTimeout(
     () => {
       document.getElementById("message")?.classList.add("hidden");
+      if (message.callback) {
+        message.callback();
+      }
     },
     message.kind === MessageKind.Error ? 3000 : 6000
   );

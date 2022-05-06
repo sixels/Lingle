@@ -44,7 +44,7 @@ export class GameManager {
   private store: LingleStore;
 
   static dayOne = (): Date => {
-    return new Date("2022/5/03");
+    return new Date("2022/04/05");
   };
 
   static gameNumber = (): number => {
@@ -167,7 +167,7 @@ export class GameManager {
     utils
       .copyText(renderAsText(title, [this.store.state.attempts]))
       .then(() => {
-        events.dispatchSendMessageEvent(messages.resultCopied);
+        events.dispatchSendMessageEvent(messages.resultCopied());
       });
 
     // utils
@@ -211,7 +211,7 @@ export class GameManager {
             compareWords(this.solution, wordlist_word)
           );
         } else {
-          events.dispatchSendMessageEvent(messages.invalidWord);
+          events.dispatchSendMessageEvent(messages.invalidWord());
           this.currentRow().animateShake();
         }
 
@@ -314,7 +314,7 @@ export class GameManager {
 
       setTimeout(() => {
         this.currentRow().animateJump();
-        events.dispatchSendMessageEvent(messages.gameWin);
+        events.dispatchSendMessageEvent(messages.gameWin());
       }, 1000);
     } else {
       const next_word = this.store.state.current_position.next_word();
