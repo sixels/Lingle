@@ -19,10 +19,10 @@ export class LingleStore {
   }
 
   onInvalidate(callback: StoreCallback) {
-    callback(this);
+    this.onInvalidateCallbacks.push(callback);
   }
   onSave(callback: StoreCallback) {
-    callback(this);
+    this.onSaveCallbacks.push(callback);
   }
 
   invalidateStore() {

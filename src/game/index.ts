@@ -68,6 +68,8 @@ export class GameManager {
     this.generateBoard();
     this.loadState();
 
+    this.store.onInvalidate(this.handleInvalidateStore);
+
     if (this.store.state.status !== GameStatus.Playing) {
       const last_attempt = [...this.store.state.attempts].pop();
       if (
@@ -98,7 +100,6 @@ export class GameManager {
   }
 
   start = () => {
-    this.store.onInvalidate(this.handleInvalidateStore);
     this.updatePositionAndState(this.store.state.current_position);
     document.addEventListener("sendkey", this.handleSendKey);
     document.addEventListener("setposition", this.handleSetPosition);
@@ -132,7 +133,7 @@ export class GameManager {
     this._solution = this.dailyWord();
     this.game_title = GameManager.gameNumber();
     this.updatePositionAndState(this.store.state.current_position);
-  }
+  };
 
   private generateBoard = () => {
     for (let r = 0; r < N_ROWS; r++) {
@@ -378,6 +379,7 @@ export class GameManager {
     row: BoardRow
   ) => {
     const col = row.columns[letter.index];
+
     if (attempt.wrong_letters.indexOf(letter) >= 0) {
       col.elem.classList.add("wrong");
     } else if (attempt.right_letters.indexOf(letter) >= 0) {
@@ -385,6 +387,7 @@ export class GameManager {
     } else if (attempt.occur_letters.indexOf(letter) >= 0) {
       col.elem.classList.add("occur");
     }
+
     col._value = letter.letter;
   };
 
