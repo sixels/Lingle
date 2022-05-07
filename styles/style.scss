@@ -1,5 +1,3 @@
-@use "sass:math";
-
 * {
   box-sizing: border-box;
   color: var(--default-color-fg);
@@ -542,6 +540,10 @@ body {
 
       position: relative;
 
+      display: flex;
+      place-items: center;
+      justify-content: center;
+
       background-color: #4986be;
       padding: 1.2rem 1rem;
       text-align: center;
@@ -578,6 +580,10 @@ body {
         opacity: 0;
         border-radius: inherit;
         background-color: #c5d3e0;
+      }
+
+      > i {
+        margin-right: 5px;
       }
     }
 

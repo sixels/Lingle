@@ -226,7 +226,7 @@ class Footer {
 
     const share_btn = document.createElement("button");
     share_btn.classList.add("btn", "copy-btn");
-    share_btn.innerText = "Copiar resultado";
+    share_btn.innerHTML = `<i class="ri-clipboard-fill"></i> Copiar resultado`;
 
     share_btn.addEventListener("click", () => {
       events.dispatchCopyResultEvent();
