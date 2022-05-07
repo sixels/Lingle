@@ -306,7 +306,7 @@ export class GameManager {
       const next_word = this.store.state.current_position.next_word();
       if (next_word !== null) {
         this.store.state.current_position = next_word;
-        // setTimeout(() => this.updatePositionAndState(next_word), 1000);
+        setTimeout(() => this.updatePositionAndState(this.store.state.current_position), 1000);
       } else {
         this.store.state.status = GameStatus.Lost;
 
