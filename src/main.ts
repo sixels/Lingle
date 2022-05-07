@@ -8,29 +8,31 @@ import { KeyboardManager } from "./keyboard";
 import { Message, MessageKind } from "./message";
 import { Menu } from "./ui/menu";
 import { LingleStore } from "./store";
+import { StatsModal } from "./ui/stats";
 
 window.onload = (_) => {
-  const app = document.getElementById("app");
-  if (app !== null) {
-    app.style.minHeight = `${window.innerHeight}px`;
-  }
-
   window.onresize = () => {
     if (app !== null) {
       app.style.minHeight = `${window.innerHeight}px`;
     }
   };
 
-  main();
-};
-
-const main = () => {
-  //setup ui elements
-  new Menu();
-
-  // setup game and keyboard
   let store = new LingleStore();
 
+  //setup ui elements
+  new Menu();
+  const stats = new StatsModal(store);
+
+  const app = document.getElementById("app");
+  if (app !== null) {
+    app.style.minHeight = `${window.innerHeight}px`;
+    app.prepend(stats.elem);
+  }
+
+  main(store);
+};
+
+const main = (store: LingleStore) => {
   let board_elem = document.getElementById("board");
   let keyboard_elem = document.getElementById("keyboard");
 
