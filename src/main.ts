@@ -20,8 +20,13 @@ window.onload = (_) => {
   let store = new LingleStore();
 
   //setup ui elements
-  new Menu();
+  const menu = new Menu();
   const stats = new StatsModal(store);
+
+  document.getElementById("toggle-stats")?.addEventListener("click", () => {
+    stats.show(true);
+    menu.show(false);
+  });
 
   const app = document.getElementById("app");
   if (app !== null) {
