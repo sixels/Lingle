@@ -58,8 +58,13 @@ export class StatsModal {
     });
   }
 
-  show = (option: boolean) => {
-    option
+  show = (option: boolean | "toggle") => {
+    if (option === "toggle") {
+      this.elem.classList.toggle("visible");
+      return;
+    }
+
+    option === true
       ? this.elem.classList.add("visible")
       : this.elem.classList.remove("visible");
   };
