@@ -13,10 +13,13 @@ export class Menu {
     this.menu_elem = menu_elem;
 
     this.btn_elem.addEventListener("click", this.handleClick);
-    this.menu_elem.addEventListener("click", (event) =>
-      event.stopPropagation()
-    );
-    document.addEventListener("click", (_) => this.show("toggle"));
+    this.menu_elem.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
+    document.addEventListener("click", (_) => {
+      this.show(false);
+    });
   }
 
   show = (option: boolean | "toggle") => {
