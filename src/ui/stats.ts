@@ -75,9 +75,6 @@ export class StatsModal {
   };
 
   private update(stats: Stats) {
-    console.log("------------");
-    console.log(stats.history);
-
     const n_games = stats.history.reduce((total, value) => total + value, 0);
     const wins = stats.history.reduce((total, value, i) => {
       return i < 5 ? total + value : total;
@@ -232,7 +229,6 @@ class Footer {
     share_btn.innerText = "Copiar resultado";
 
     share_btn.addEventListener("click", () => {
-      console.log("A");
       events.dispatchCopyResultEvent();
     });
 
