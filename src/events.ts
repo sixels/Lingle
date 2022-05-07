@@ -54,4 +54,14 @@ export default {
 
     document.dispatchEvent(send_message);
   },
+
+  dispatchCopyResultEvent: () => {
+    let copy_result = new Event("copyresult", {
+      bubbles: false,
+      cancelable: false,
+      composed: false,
+    });
+
+    document.dispatchEvent(copy_result);
+  },
 };

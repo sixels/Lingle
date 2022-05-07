@@ -75,6 +75,7 @@ export class GameManager {
 
     document.getElementById("header-left")?.appendChild(this.title_elem);
     document.addEventListener("wordattempt", this.handleWordAttempt);
+    document.addEventListener("copyresult", this.handleCopyResult)
   }
 
   get solution(): typeof this._solution {
@@ -148,26 +149,18 @@ export class GameManager {
     this.currentRow().setDisabled(false);
   }
 
-  private copyResult() {
+  private handleCopyResult = () => {
     const title = `${this.title} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
     utils
       .copyText(renderAsText(title, [this.store.state.attempts]))
       .then(() => {
         events.dispatchSendMessageEvent(messages.resultCopied());
       });
-
-    // utils
-    //   .openCanvas(
-    //     renderImage(this._game_number.innerText, [this.store.stats.attempts])
-    //   )
-    //   .then(() => {
-    //     events.dispatchSendMessageEvent(messages.resultCopied);
-    //   });
   }
 
   private handleSendKey = (event: Event) => {
     if (this.store.state.status !== GameStatus.Playing) {
-      this.copyResult();
+      this.handleCopyResult();
       return;
     }
 
