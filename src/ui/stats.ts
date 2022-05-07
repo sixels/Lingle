@@ -86,7 +86,7 @@ export class StatsModal {
 
     this.summary.updateData(
       n_games,
-      Math.round((wins * 100) / n_games),
+      Math.round((wins * 100) / (n_games || 1)) ,
       stats.win_streak,
       stats.longest_streak
     );
@@ -213,7 +213,7 @@ class Chart {
       const txt = (line.children[1] as HTMLElement).textContent;
       if (txt) {
         const value = Number.parseInt(txt);
-        if (value !== NaN) {
+        if (value != NaN) {
           line.style.width = `${Math.round((value * 100) / this.max)}%`;
         }
       }
@@ -244,10 +244,14 @@ class Footer {
     next_word_label.innerText = "Proxima palavra em";
     next_word_timer.innerText = "00:00:00";
 
-    const tomorrow = utils.tomorrow().getTime();
+    let tomorrow = utils.tomorrow().getTime();
     const updateTimer = () => {
       let now = new Date().getTime();
       let rem = tomorrow - now;
+
+      if (rem < 0) {
+        tomorrow = utils.tomorrow().getTime();
+      }
 
       const hours = Math.floor(
         (rem % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
