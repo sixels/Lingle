@@ -159,14 +159,14 @@ export class GameManager {
   };
 
   private handleSendKey = (event: Event) => {
-    if (this.store.state.status !== GameStatus.Playing) {
-      this.handleCopyResult();
-      return;
-    }
-
     let custom_ev = event as CustomEvent;
     let key = custom_ev.detail["key"] as string | null;
     if (key === null) {
+      return;
+    }
+
+    if (this.store.state.status !== GameStatus.Playing) {
+      events.dispatchOpenStatsEvent(key !== "escape");
       return;
     }
 
@@ -237,6 +237,16 @@ export class GameManager {
           events.dispatchSetPositionEvent(p);
         }
         break;
+      case "home":
+        let hrow = this.store.state.current_position.row;
+        events.dispatchSetPositionEvent(new BoardPosition([hrow, 0]));
+        break;
+      case "end":
+        let erow = this.store.state.current_position.row;
+        events.dispatchSetPositionEvent(new BoardPosition([erow, 4]));
+        break;
+      case "escape":
+        break;
       default:
         let cur_column = this.tryCurrentColumn();
         if (cur_column !== undefined) {
@@ -299,7 +309,10 @@ export class GameManager {
       const next_word = this.store.state.current_position.next_word();
       if (next_word !== null) {
         this.store.state.current_position = next_word;
-        setTimeout(() => this.updatePositionAndState(this.store.state.current_position), 1000);
+        setTimeout(
+          () => this.updatePositionAndState(this.store.state.current_position),
+          1000
+        );
       } else {
         this.store.state.status = GameStatus.Lost;
 

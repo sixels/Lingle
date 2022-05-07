@@ -8,6 +8,9 @@ export class KeyboardManager {
     "backspace",
     "arrowleft",
     "arrowright",
+    "escape",
+    "home",
+    "end",
     ..."qwertyuiopasdfghjklzxcvbnm".split(""),
   ]);
 
