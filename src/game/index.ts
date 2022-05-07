@@ -30,17 +30,13 @@ export interface WordAttempt {
 }
 
 export class GameManager {
-  private elem: HTMLElement;
+  elem: HTMLElement;
 
+  private readonly title: string;
   private board: BoardRow[];
   private edit_mode: boolean = false;
   private _solution: string;
   private title_elem: HTMLElement;
-  private readonly title: string;
-
-  // private current_position: BoardPosition;
-  // private state: GameState;
-
   private store: LingleStore;
 
   static dayOne = (): Date => {
@@ -70,22 +66,12 @@ export class GameManager {
 
     this.store.onInvalidate(this.handleInvalidateStore);
 
-    if (this.store.state.status !== GameStatus.Playing) {
-      const last_attempt = [...this.store.state.attempts].pop();
-      if (
-        last_attempt !== undefined &&
-        last_attempt.right_letters.length === N_COLS
-      ) {
-        const attempt = last_attempt.right_letters
-          .sort((a, b) => a.index - b.index)
-          .map((a) => a.letter)
-          .join("");
-        if (attempt !== this._solution) {
-          this.store.invalidateStore();
-        }
-      }
+    if (this.store.state.game_number !== GameManager.gameNumber()) {
+      this.store.invalidateStore();
     }
-    this.game_title = GameManager.gameNumber();
+
+    this.store.state.game_number = GameManager.gameNumber();
+    this.game_title = this.store.state.game_number;
 
     document.getElementById("header-left")?.appendChild(this.title_elem);
     document.addEventListener("wordattempt", this.handleWordAttempt);
@@ -131,7 +117,8 @@ export class GameManager {
     }
     this.edit_mode = false;
     this._solution = this.dailyWord();
-    this.game_title = GameManager.gameNumber();
+    this.store.state.game_number = GameManager.gameNumber();
+    this.game_title = this.store.state.game_number;
     this.updatePositionAndState(this.store.state.current_position);
   };
 
@@ -162,9 +149,7 @@ export class GameManager {
   }
 
   private copyResult() {
-    const title = `${this.title} ${GameManager.gameNumber()} (🔥 ${
-      this.store.stats.win_streak
-    })`;
+    const title = `${this.title} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
     utils
       .copyText(renderAsText(title, [this.store.state.attempts]))
       .then(() => {
@@ -321,7 +306,7 @@ export class GameManager {
       const next_word = this.store.state.current_position.next_word();
       if (next_word !== null) {
         this.store.state.current_position = next_word;
-        setTimeout(() => this.updatePositionAndState(next_word), 1000);
+        // setTimeout(() => this.updatePositionAndState(next_word), 1000);
       } else {
         this.store.state.status = GameStatus.Lost;
 
