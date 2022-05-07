@@ -44,7 +44,7 @@ export class GameManager {
   private store: LingleStore;
 
   static dayOne = (): Date => {
-    return new Date("2022/04/05");
+    return new Date("2022/05/07");
   };
 
   static gameNumber = (): number => {
