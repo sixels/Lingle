@@ -33,12 +33,12 @@ export class StatsModal {
       // wait a little before showing the stats
       this.show_timeout = setTimeout(() => this.show(true), 800);
     }
+
     store.onInvalidate((store) => {
       clearTimeout(this.show_timeout);
       this.show_timeout = undefined;
       this.update(store.stats);
     });
-
     store.onSave((store) => {
       this.update(store.stats);
       clearTimeout(this.show_timeout);
@@ -65,7 +65,8 @@ export class StatsModal {
   };
 
   private update(stats: Stats) {
-    this.show(false);
+    console.log("------------");
+    console.log(stats.history);
 
     const n_games = stats.history.reduce((total, value) => total + value, 0);
     const wins = stats.history.reduce((total, value, i) => {
@@ -114,7 +115,7 @@ class Summary {
     };
 
     this._n_games = createStat("jogos");
-    this._win_rate = createStat("de vitórias");
+    this._win_rate = createStat("taxa de vitórias");
     this._win_streak = createStat("vitórias consecutivas");
     this._longest_streak = createStat("maior sequência");
 
@@ -171,7 +172,7 @@ class Chart {
       wrapper.classList.add("line-wrapper");
 
       const legend = document.createElement("span");
-      legend.innerText = `${i < 5 ? i + 1 : "😵"}`;
+      legend.innerText = `${i < 5 ? i + 1 : "X"}`;
       legend.classList.add("legend");
 
       const line = document.createElement("div");
@@ -180,7 +181,7 @@ class Chart {
       wrapper.appendChild(legend);
       wrapper.appendChild(line);
 
-      this.lines.push(line);
+      this.lines.push(wrapper);
       this.elem.appendChild(wrapper);
     }
   }
@@ -193,13 +194,14 @@ class Chart {
     } else {
       line.classList.add("empty");
     }
-    line.innerText = `${value}`;
+    (this.lines[key].children[1] as HTMLElement).innerText = `${value}`;
   };
 
   updateWeights = () => {
     for (const line of this.lines) {
-      const value = Number.parseInt(line.innerText);
-      if (value > 0) {
+      const txt = (line.children[1] as HTMLElement).textContent;
+      if (txt) {
+        const value = Number.parseInt(txt);
         line.style.width = `${Math.round((value * 100) / this.max)}%`;
       }
     }
