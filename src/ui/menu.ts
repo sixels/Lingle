@@ -1,7 +1,6 @@
 export class Menu {
   btn_elem: HTMLElement;
   menu_elem: HTMLElement;
-  _is_open: boolean;
 
   constructor() {
     const btn_elem = document.getElementById("menu-btn");
@@ -12,24 +11,27 @@ export class Menu {
 
     this.btn_elem = btn_elem;
     this.menu_elem = menu_elem;
-    this._is_open = false;
 
     this.btn_elem.addEventListener("click", this.handleClick);
     this.menu_elem.addEventListener("click", (event) =>
       event.stopPropagation()
     );
-    document.addEventListener("click", (_) => (this.is_open = false));
+    document.addEventListener("click", (_) => this.show("toggle"));
   }
 
-  set is_open(value: boolean) {
-    value
+  show = (option: boolean | "toggle") => {
+    if (option === "toggle") {
+      this.menu_elem.classList.toggle("visible");
+      return;
+    }
+
+    option
       ? this.menu_elem.classList.add("visible")
       : this.menu_elem.classList.remove("visible");
-    this._is_open = value;
-  }
+  };
 
   private handleClick = (event: Event) => {
     event.stopPropagation();
-    this.is_open = !this._is_open;
+    this.menu_elem.classList.toggle("visible");
   };
 }
