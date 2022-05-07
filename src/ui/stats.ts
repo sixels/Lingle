@@ -1,6 +1,8 @@
+import events from "../events";
 import { GameStatus } from "../game";
 import { LingleStore } from "../store";
 import { Stats } from "../store/stats";
+import utils from "../utils";
 
 export class StatsModal {
   elem: HTMLElement;
@@ -8,6 +10,7 @@ export class StatsModal {
   private readonly title: string = "Estatísticas";
   private summary: Summary;
   private chart: Chart;
+  private footer: Footer;
 
   private show_timeout?: number;
 
@@ -18,9 +21,11 @@ export class StatsModal {
 
     this.chart = new Chart();
     this.summary = new Summary();
+    this.footer = new Footer();
 
     this.elem.appendChild(this.summary.elem);
     this.elem.appendChild(this.chart.elem);
+    this.elem.appendChild(this.footer.elem);
 
     const title = document.createElement("span");
     title.innerText = this.title;
@@ -160,7 +165,7 @@ class Chart {
   elem: HTMLElement;
   max: number = 0;
 
-  private readonly title: string = "Histórico";
+  private readonly title: string = "Histórico de tentativas";
   private lines: HTMLElement[] = [];
 
   constructor() {
@@ -207,8 +212,59 @@ class Chart {
       const txt = (line.children[1] as HTMLElement).textContent;
       if (txt) {
         const value = Number.parseInt(txt);
-        line.style.width = `${Math.round((value * 100) / this.max)}%`;
+        if (value !== NaN) {
+          line.style.width = `${Math.round((value * 100) / this.max)}%`;
+        }
       }
     }
   };
+}
+
+class Footer {
+  elem: HTMLElement;
+
+  constructor() {
+    this.elem = document.createElement("div");
+    this.elem.classList.add("footer");
+
+    const share_btn = document.createElement("button");
+    share_btn.classList.add("btn", "copy-btn");
+    share_btn.innerText = "Copiar resultado";
+
+    share_btn.addEventListener("click", () => {
+      console.log("A");
+      events.dispatchCopyResultEvent();
+    });
+
+    const next_word = document.createElement("div");
+    next_word.classList.add("timer");
+    const next_word_label = document.createElement("span");
+    const next_word_timer = document.createElement("span");
+
+    next_word_label.innerText = "Proxima palavra em";
+    next_word_timer.innerText = "00:00:00";
+
+    const tomorrow = utils.tomorrow().getTime();
+    const updateTimer = () => {
+      let now = new Date().getTime();
+      let rem = tomorrow - now;
+
+      const hours = Math.floor(
+        (rem % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      const minutes = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((rem % (1000 * 60)) / 1000);
+      next_word_timer.innerText = `${String(hours).padStart(2, "0")}:${String(
+        minutes
+      ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      setTimeout(updateTimer, 1000);
+    };
+    setTimeout(updateTimer, 1000);
+
+    next_word.appendChild(next_word_label);
+    next_word.appendChild(next_word_timer);
+
+    this.elem.appendChild(share_btn);
+    this.elem.appendChild(next_word);
+  }
 }
