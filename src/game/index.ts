@@ -75,7 +75,7 @@ export class GameManager {
 
     document.getElementById("header-left")?.appendChild(this.title_elem);
     document.addEventListener("wordattempt", this.handleWordAttempt);
-    document.addEventListener("copyresult", this.handleCopyResult)
+    document.addEventListener("copyresult", this.handleCopyResult);
   }
 
   get solution(): typeof this._solution {
@@ -156,7 +156,7 @@ export class GameManager {
       .then(() => {
         events.dispatchSendMessageEvent(messages.resultCopied());
       });
-  }
+  };
 
   private handleSendKey = (event: Event) => {
     if (this.store.state.status !== GameStatus.Playing) {

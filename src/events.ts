@@ -64,4 +64,17 @@ export default {
 
     document.dispatchEvent(copy_result);
   },
+
+  dispatchOpenStatsEvent: (option: boolean) => {
+    let open_stats = new CustomEvent("openstats", {
+      detail: {
+        option,
+      },
+      bubbles: false,
+      cancelable: false,
+      composed: false,
+    });
+
+    document.dispatchEvent(open_stats);
+  },
 };

@@ -61,6 +61,10 @@ export class StatsModal {
     document.addEventListener("click", (_) => {
       this.show(false);
     });
+    document.addEventListener("openstats", (ev) => {
+      let option = (ev as CustomEvent).detail["option"];
+      this.show(option);
+    });
   }
 
   show = (option: boolean | "toggle") => {
