@@ -172,12 +172,12 @@ class Chart {
     title.classList.add("title");
     this.elem.prepend(title);
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 7; i++) {
       const wrapper = document.createElement("div");
       wrapper.classList.add("line-wrapper");
 
       const legend = document.createElement("span");
-      legend.innerText = `${i < 5 ? i + 1 : "X"}`;
+      legend.innerText = `${i < 6 ? i + 1 : "X"}`;
       legend.classList.add("legend");
 
       const line = document.createElement("div");

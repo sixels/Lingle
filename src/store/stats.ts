@@ -4,7 +4,7 @@ export class Stats {
   win_streak: number = 0;
   longest_streak: number = 0;
   played_games: number = 0;
-  history: number[] = [0, 0, 0, 0, 0, 0];
+  history: number[] = [0, 0, 0, 0, 0, 0, 0];
 
   constructor() {}
 
@@ -36,7 +36,7 @@ export class Stats {
       this.history[attempt] += 1;
     } else if (game_status === GameStatus.Lost) {
       this.win_streak = 0;
-      this.history[5] += 1;
+      this.history[6] += 1;
     }
 
     this.played_games += 1;
