@@ -65,7 +65,7 @@ export default {
     document.dispatchEvent(copy_result);
   },
 
-  dispatchOpenStatsEvent: (option: boolean) => {
+  dispatchOpenStatsEvent: (option: boolean | "toggle") => {
     let open_stats = new CustomEvent("openstats", {
       detail: {
         option,

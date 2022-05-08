@@ -76,6 +76,12 @@ export class GameManager {
     document.getElementById("header-left")?.appendChild(this.title_elem);
     document.addEventListener("wordattempt", this.handleWordAttempt);
     document.addEventListener("copyresult", this.handleCopyResult);
+    document.getElementById("app")?.addEventListener("click", (ev) => {
+      if (this.store.state.status !== GameStatus.Playing) {
+        ev.stopPropagation();
+        events.dispatchOpenStatsEvent("toggle");
+      }
+    });
   }
 
   get solution(): typeof this._solution {
