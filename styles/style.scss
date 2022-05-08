@@ -29,6 +29,37 @@ body {
   cursor: pointer;
 }
 
+a {
+  text-decoration: none;
+  position: relative;
+  overflow: visible !important;
+
+  color: var(--default-color-accent) !important;
+
+  transition: color 80ms ease;
+  &:visited {
+    color: var(--default-color-fg);
+  }
+  &:hover {
+    color: var(--default-color-accent);
+    &::before {
+      width: 100%;
+    }
+  }
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 0%;
+    height: 4px;
+    background: var(--default-color-accent);
+    opacity: 0.6;
+    transition: width 60ms ease-in-out;
+  }
+}
 #app {
   max-height: 100vh;
   width: 100%;
