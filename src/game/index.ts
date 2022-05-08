@@ -490,7 +490,7 @@ function compareWords(base: string, cmp: string): WordAttempt {
 function createRowElement(): HTMLElement {
   let row = document.createElement("div");
 
-  row.classList.add("row");
+  row.classList.add("row", "letters");
 
   return row;
 }
