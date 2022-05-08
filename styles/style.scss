@@ -430,7 +430,7 @@ body {
       span:last-child {
         font-size: 1.1rem;
         line-height: 0.9rem;
-        color: var(--key-wrong-color-fg);
+        color: #2e52b8;
       }
 
       padding: 0.4rem 0;
@@ -442,16 +442,17 @@ body {
     position: relative;
 
     width: 80%;
-    height: 13rem;
+    min-height: 13rem;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 
-    margin-top: 4.6rem;
+    margin-top: 2.8rem;
 
     .title {
       position: absolute;
       left: 50%;
-      top: -2.5rem;
+      top: -1.5rem;
       font-size: 1.3rem !important;
       transform: translateX(-50%);
       width: 90%;
@@ -460,7 +461,7 @@ body {
     .line-wrapper {
       display: flex;
 
-      height: 14.2%;
+      height: 10%;
 
       padding: 0;
       margin: 0;
@@ -519,13 +520,14 @@ body {
         font-size: 1.2rem;
         padding-right: 0.5rem;
 
-        background-color: #4986be;
+        background: linear-gradient(90deg, #6249be, #2e52b8);
+        border-radius: 4px;
       }
     }
   }
 
   .footer {
-    margin-top: 2rem;
+    // margin-top: 2rem;
     width: 85%;
     // background-color: red;
     min-height: 6rem;
@@ -544,10 +546,10 @@ body {
       place-items: center;
       justify-content: center;
 
-      background-color: #4986be;
+      background: linear-gradient(30deg, #6249be, #2e52b8);
       padding: 1.2rem 1rem;
       text-align: center;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       border-radius: 7px;
       width: 50%;
       outline: none;
@@ -593,7 +595,7 @@ body {
       align-items: center;
       justify-content: center;
       text-align: center;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
     }
   }
 }
