@@ -14,7 +14,6 @@ export class Menu {
 
     this.btn_elem.addEventListener("click", this.handleClick);
     this.menu_elem.addEventListener("click", (event) => {
-      event.preventDefault();
       event.stopPropagation();
     });
     document.addEventListener("click", (_) => {

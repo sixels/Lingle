@@ -56,7 +56,6 @@ export class StatsModal {
 
     this.elem.addEventListener("click", (ev: MouseEvent) => {
       ev.stopPropagation();
-      ev.preventDefault();
     });
     document.addEventListener("click", (_) => {
       this.show(false);
