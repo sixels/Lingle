@@ -94,7 +94,7 @@ body {
     align-items: center;
     justify-content: space-between;
 
-    padding: 1rem;
+    padding: 0 1rem;
 
     * {
       color: var(--header-color-fg);
@@ -119,8 +119,6 @@ body {
         justify-content: center;
         align-items: center;
 
-        color: var(--key-color-fg);
-
         margin: 0 0.2rem;
 
         height: 2.2rem;
@@ -131,9 +129,12 @@ body {
         border-radius: 7px;
 
         transition: border-color 160ms ease, color 160ms ease;
+
         &:hover {
           border-color: var(--default-color-accent);
-          * {color: var(--default-color-accent);}
+          * {
+            color: var(--default-color-accent);
+          }
         }
 
         label {
@@ -161,6 +162,9 @@ body {
 
       &:hover {
         border-color: var(--default-color-accent);
+        * {
+          color: var(--default-color-accent);
+        }
       }
     }
 
@@ -181,7 +185,7 @@ body {
 
     background-color: var(--default-color-bg);
 
-    padding-top: 2rem;
+    margin-top: calc(max(2.7rem, 25% - 8.6rem - 3rem - 2.65rem));
 
     width: 100%;
     flex-grow: 1;
@@ -372,12 +376,12 @@ body {
 
 .modal {
   position: absolute;
-  top: 5.8rem;
+  top: 5.7rem;
   left: 50%;
 
   z-index: 15;
 
-  transform: translate(-50%, 0);
+  transform: translateX(-50%);
 
   width: min(95vw, 50rem);
   height: min(85%, 40rem);
@@ -433,6 +437,7 @@ body {
       span:first-child {
         line-height: 3.3rem;
         font-size: 2.5rem;
+        color: var(--default-color-accent);
       }
       span:last-child {
         font-size: 1.1rem;
@@ -448,7 +453,7 @@ body {
   .chart {
     position: relative;
 
-    width: 80%;
+    width: 85%;
     min-height: 16rem;
     display: flex;
     flex-direction: column;
@@ -480,7 +485,7 @@ body {
       }
 
       &:last-of-type .line {
-        background-color: #fa5340;
+        background-color: var(--letter-wrong-color-bg);
       }
 
       &.empty {
@@ -512,7 +517,7 @@ body {
           content: "";
           width: 2px;
           height: calc(100% + 5px);
-          background-color: var(--letter-default-color-bd);
+          background-color: var(--default-color-accent);
           position: absolute;
           right: 6px;
         }
@@ -554,7 +559,12 @@ body {
       place-items: center;
       justify-content: center;
 
-      background: linear-gradient(30deg, #6249be, var(--default-color-accent));
+      background: linear-gradient(
+        90deg,
+        var(--default-color-accent),
+        #4c9b64,
+        var(--default-color-accent)
+      );
       padding: 1.2rem 1rem;
       text-align: center;
       font-size: 1.2rem;
@@ -563,10 +573,11 @@ body {
       outline: none;
       border: 0;
 
-      transition: box-shadow 300ms ease;
+      transition: box-shadow 300ms ease, background-position 40ms ease;
 
       &:hover {
         box-shadow: inset 0 0 0px 100px rgba(255, 255, 255, 0.1);
+        background-position: 20rem;
       }
       &:active {
         &::before {

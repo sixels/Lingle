@@ -7,7 +7,7 @@ import utils from "../utils";
 export class StatsModal {
   elem: HTMLElement;
 
-  private readonly title: string = "Estatísticas";
+  private readonly title: string = "Estatísticas Pessoais";
   private summary: Summary;
   private chart: Chart;
   private footer: Footer;
@@ -86,7 +86,7 @@ export class StatsModal {
 
     this.summary.updateData(
       n_games,
-      Math.round((wins * 100) / (n_games || 1)) ,
+      Math.round((wins * 100) / (n_games || 1)),
       stats.win_streak,
       stats.longest_streak
     );
@@ -166,7 +166,7 @@ class Chart {
   elem: HTMLElement;
   max: number = 0;
 
-  private readonly title: string = "Histórico de tentativas";
+  private readonly title: string = "Histórico de Tentativas";
   private lines: HTMLElement[] = [];
 
   constructor() {
@@ -241,7 +241,7 @@ class Footer {
     const next_word_label = document.createElement("span");
     const next_word_timer = document.createElement("span");
 
-    next_word_label.innerText = "Proxima palavra em";
+    next_word_label.innerText = "Próxima palavra em";
     next_word_timer.innerText = "00:00:00";
 
     let tomorrow = utils.tomorrow().getTime();
