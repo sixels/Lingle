@@ -60,6 +60,7 @@ a {
     transition: width 60ms ease-in-out;
   }
 }
+
 #app {
   max-height: 100vh;
   width: 100%;
@@ -653,6 +654,67 @@ a {
       justify-content: center;
       text-align: center;
       font-size: 1.2rem;
+    }
+  }
+}
+
+.modal.htp {
+  .about {
+    font-size: 1.1rem;
+    width: 85%;
+  }
+  .instruction {
+    width: 85%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 1rem;
+    .instructions {
+      margin-top: 0;
+      margin-bottom: 0.4rem;
+      font-size: 1.1rem;
+    }
+  }
+  .examples {
+    width: 85%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 1rem;
+
+    .title {
+      font-size: 1.5rem !important;
+    }
+
+    .example {
+      section {
+        margin-top: 0.6rem;
+        margin-bottom: 1.2rem;
+
+        width: 100%;
+        font-size: 1.1rem;
+
+        display: flex;
+        align-items: center;
+
+        .letters {
+          height: min(9vh, 1.7rem) !important;
+          margin-right: 0.3rem;
+          .letter {
+            font-size: min(6vh, 1.3rem) !important;
+            margin: 0 0.3rem;
+          }
+        }
+      }
+      .letters {
+        height: min(9vh, 2.9rem) !important;
+
+        .letter {
+          aspect-ratio: 1.05;
+          width: auto;
+          font-size: min(6vh, 1.9rem);
+        }
+      }
     }
   }
 }
