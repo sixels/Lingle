@@ -37,4 +37,4 @@ O commando usado para gerar wordlist presente em `src/wordlist.ts` foi:
 ./scripts/generate_wordlist.sh ./data/palavras.txt | sed 's/\(.*\)/"\1",/'
 ```
 
-Onde `palavras.txt` é o dicion\ario descompactado.
+Onde `palavras.txt` é o dicionário descompactado.
