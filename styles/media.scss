@@ -40,8 +40,12 @@
         padding: 2px !important;
 
         &:hover {
+          label {
+            color: var(--default-color-fg) !important;
+          }
           i {
-            background-color: var(--letter-focused-color-bd);
+            color: var(--default-color-fg) !important;
+            background-color: var(--default-color-accent);
           }
         }
 
@@ -53,6 +57,7 @@
         }
 
         i {
+
           display: grid;
           place-items: center;
 

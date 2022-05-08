@@ -17,7 +17,7 @@ export class StatsModal {
   constructor(store: LingleStore) {
     this.elem = document.createElement("div");
     this.elem.id = "stats";
-    this.elem.classList.add("modal", "statistics");
+    this.elem.classList.add("modal", "stats");
 
     this.chart = new Chart();
     this.summary = new Summary();
@@ -230,7 +230,7 @@ class Footer {
 
     const share_btn = document.createElement("button");
     share_btn.classList.add("btn", "copy-btn");
-    share_btn.innerHTML = `<i class="ri-clipboard-fill"></i> Copiar resultado`;
+    share_btn.innerHTML = `<i class="ri-share-fill"></i> Compartilhar`;
 
     share_btn.addEventListener("click", () => {
       events.dispatchCopyResultEvent();

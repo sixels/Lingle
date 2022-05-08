@@ -1,11 +1,13 @@
 :root {
-    --default-color-fg: hsl(203, 86%, 94%);
-    --default-color-bg: hsl(219, 9%, 23%);
+    --default-color-fg: hsl(207, 86%, 94%);
+    --default-color-bg: hsl(215, 18%, 23%);
+    --default-color-accent: hsl(14, 58%, 58%);
   
     --header-color-bg: var(--default-color-bg);
     --header-color-fg: var(--default-color-fg);
   
-    --dropdown-color-bg: hsl(207, 12%, 26%);
+    --dropdown-color-bg: hsl(230, 10%, 26%);
+    --modal-color-bg: hsl(230, 10%, 20%);
   
     --key-color-bg: var(--letter-default-color-bg);
     --key-color-fg: var(--default-color-fg);
@@ -20,14 +22,14 @@
   
     --letter-default-color-bg: hsl(230, 8%, 18%);
     --letter-default-color-fg: var(--default-color-fg);
-    --letter-default-color-bd: hsl(219, 9%, 33%);
+    --letter-default-color-bd: hsl(195, 17%, 43%);
   
     --letter-disabled-color-bg: hsl(230, 9%, 17%);
     --letter-disabled-color-fg: var(--letter-default-color-fg);
   
     --letter-focused-color-bg: var(--letter-default-color-bg);
     --letter-focused-color-fg: var(--letter-default-color-fg);
-    --letter-focused-color-bd: hsl(207, 36%, 53%);
+    --letter-focused-color-bd: var(--letter-default-color-bd);
   
     --letter-wrong-color-bg: hsl(225, 8%, 13%);
     --letter-wrong-color-fg: var(--letter-default-color-fg);

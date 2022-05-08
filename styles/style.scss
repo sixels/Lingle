@@ -96,6 +96,9 @@ body {
 
     padding: 1rem;
 
+    * {
+      color: var(--header-color-fg);
+    }
     .left,
     .right {
       display: flex;
@@ -127,8 +130,10 @@ body {
         border: 2px solid var(--letter-default-color-bd);
         border-radius: 7px;
 
+        transition: border-color 160ms ease, color 160ms ease;
         &:hover {
-          border-color: var(--letter-focused-color-bd);
+          border-color: var(--default-color-accent);
+          * {color: var(--default-color-accent);}
         }
 
         label {
@@ -155,7 +160,7 @@ body {
       border-radius: 7px;
 
       &:hover {
-        border-color: var(--letter-focused-color-bd);
+        border-color: var(--default-color-accent);
       }
     }
 
@@ -204,7 +209,7 @@ body {
   flex-direction: column;
 
   .row {
-    height: 3.6rem;
+    height: 3.7rem;
     display: flex;
     flex-direction: row;
 
@@ -213,7 +218,7 @@ body {
     }
 
     &:not(:first-of-type) {
-      margin-top: 1.5%;
+      margin-top: 1.1%;
     }
 
     &.disabled .letter {
@@ -223,20 +228,20 @@ body {
     }
     &:not(.disabled) .letter {
       --self-color-bg: var(--letter-default-color-bg);
+      --self-box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
     .letter {
       @extend .btn;
-      --self-box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 
       display: grid;
       place-items: center;
 
-      width: 4.1rem;
+      width: 4.2rem;
       height: 100%;
 
       box-shadow: var(--self-box-shadow),
-        0 0 0 2px var(--letter-default-color-bd);
+        inset 0 0 0 2px var(--letter-default-color-bd);
 
       background-color: var(--self-color-bg);
       color: var(--self-color-fg);
@@ -247,15 +252,16 @@ body {
 
       border-radius: 7px;
 
-      transition: transform 60ms ease-in-out;
+      transition: transform 60ms ease-in-out, box-shadow 20ms ease-in-out;
 
       &:not(:first-of-type) {
-        margin-left: 2.2%;
+        margin-left: 1.5%;
       }
 
       &.focused {
         box-shadow: var(--self-box-shadow),
-          0 0 0 2px var(--letter-focused-color-bd);
+          inset 0 0 0 2px var(--letter-focused-color-bd),
+          inset 0px -8px 0px 0px var(--letter-focused-color-bd);
       }
 
       &.right {
@@ -281,7 +287,7 @@ body {
         transform: scale(var(--self-bounce-scale));
       }
       &.jumping {
-        animation: jump calc(4 * 900ms / 9) ease-in-out 0ms 4;
+        animation: jump calc(4 * 900ms / 9) ease-in-out 0ms 1;
       }
 
       &.reveal {
@@ -380,7 +386,7 @@ body {
   padding: 1rem 0rem;
 
   // TODO: move to options.scss
-  background-color: hsl(230, 12%, 10%);
+  background-color: var(--modal-color-bg);
   color: var(--default-color-fg);
   border-radius: 1rem;
   box-shadow: 0px 10px 30px -6px rgba(0, 0, 0, 0.4);
@@ -407,7 +413,8 @@ body {
     text-align: center;
     margin-bottom: 1.2rem;
   }
-
+}
+.modal.stats {
   .summary {
     width: min(100%, 35rem);
     position: relative;
@@ -430,7 +437,7 @@ body {
       span:last-child {
         font-size: 1.1rem;
         line-height: 0.9rem;
-        color: #2e52b8;
+        color: var(--letter-default-color-bd);
       }
 
       padding: 0.4rem 0;
@@ -442,7 +449,7 @@ body {
     position: relative;
 
     width: 80%;
-    min-height: 13rem;
+    min-height: 16rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -461,7 +468,7 @@ body {
     .line-wrapper {
       display: flex;
 
-      height: 10%;
+      height: 11%;
 
       padding: 0;
       margin: 0;
@@ -491,6 +498,7 @@ body {
         text-align: center;
         font-size: 1.2rem;
         padding-right: 0.6rem;
+        color: var(--letter-default-color-bd);
 
         display: flex;
         justify-content: center;
@@ -504,7 +512,7 @@ body {
           content: "";
           width: 2px;
           height: calc(100% + 5px);
-          background-color: var(--key-wrong-color-fg);
+          background-color: var(--letter-default-color-bd);
           position: absolute;
           right: 6px;
         }
@@ -520,8 +528,8 @@ body {
         font-size: 1.2rem;
         padding-right: 0.5rem;
 
-        background: linear-gradient(90deg, #6249be, #2e52b8);
-        border-radius: 4px;
+        background: var(--default-color-accent);
+        border-radius: 7px;
       }
     }
   }
@@ -546,7 +554,7 @@ body {
       place-items: center;
       justify-content: center;
 
-      background: linear-gradient(30deg, #6249be, #2e52b8);
+      background: linear-gradient(30deg, #6249be, var(--default-color-accent));
       padding: 1.2rem 1rem;
       text-align: center;
       font-size: 1.2rem;
