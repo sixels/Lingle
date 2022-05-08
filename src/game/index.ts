@@ -159,8 +159,10 @@ export class GameManager {
     const title = `${this.title} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
     utils
       .copyText(renderAsText(title, [this.store.state.attempts]))
-      .then(() => {
-        events.dispatchSendMessageEvent(messages.resultCopied());
+      .then((method) => {
+        if (method == "clipboard") {
+          events.dispatchSendMessageEvent(messages.resultCopied());
+        }
       });
   };
 
