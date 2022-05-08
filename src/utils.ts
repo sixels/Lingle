@@ -43,11 +43,13 @@ export default {
     });
   },
 
-  copyText: (text: string): Promise<void> => {
+  copyText: async (text: string): Promise<"clipboard" | "share"> => {
     try {
-      return navigator.share({ title: "Resultado do Lingle", text: text });
+      await navigator.share({ title: "Resultado do Lingle", text: text });
+      return "share"
     } catch (e) {
-      return navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(text);
+      return "clipboard"
     }
   },
 
