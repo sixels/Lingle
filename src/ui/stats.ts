@@ -212,10 +212,8 @@ class Chart {
     for (const line of this.lines) {
       const txt = (line.children[1] as HTMLElement).textContent;
       if (txt) {
-        const value = Number.parseInt(txt);
-        if (value != NaN) {
-          line.style.width = `${Math.round((value * 100) / this.max)}%`;
-        }
+        const value = Number.parseInt(txt) || 0;
+        line.style.width = `${Math.round((value * 100) / this.max)}%`;
       }
     }
   };
