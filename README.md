@@ -10,6 +10,7 @@ Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/
 - [x] Compartilhar resultado
 - [x] Sequência de vitórias
 - [x] Estatísticas pessoais
+- [ ] Como jogar
 - [ ] Mais modos de jogo
 - [ ] Tela de ajustes
 - [ ] PWA
