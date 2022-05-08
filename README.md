@@ -9,7 +9,7 @@ Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/
 - [x] Animações
 - [x] Compartilhar resultado
 - [x] Sequência de vitórias
-- [ ] Estatísticas pessoais
+- [x] Estatísticas pessoais
 - [ ] Mais modos de jogo
 - [ ] Tela de ajustes
 - [ ] PWA
