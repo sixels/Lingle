@@ -20,6 +20,10 @@ export class Menu {
     document.addEventListener("click", (_) => {
       this.show(false);
     });
+    document.addEventListener("openstats", (_) => {
+      // let option = (ev as CustomEvent).detail["option"];
+      this.show(false);
+    });
   }
 
   show = (option: boolean | "toggle") => {
