@@ -9,6 +9,7 @@ import { Message, MessageKind } from "./message";
 import { Menu } from "./ui/menu";
 import { LingleStore } from "./store";
 import { StatsModal } from "./ui/stats";
+import { HTPModal } from "./ui/htp";
 
 window.onload = (_) => {
   window.onresize = () => {
@@ -22,16 +23,26 @@ window.onload = (_) => {
   //setup ui elements
   const menu = new Menu();
   const stats = new StatsModal(store);
+  const htp = new HTPModal(store);
 
-  document.getElementById("toggle-stats")?.addEventListener("click", () => {
-    stats.show(true);
+  document.getElementById("toggle-stats")?.addEventListener("click", (ev) => {
+    ev.stopPropagation();
     menu.show(false);
+    htp.show(false);
+    stats.show(true);
+  });
+  document.getElementById("toggle-htp")?.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    menu.show(false);
+    stats.show(false);
+    htp.show(true);
   });
 
   const app = document.getElementById("app");
   if (app !== null) {
     app.style.minHeight = `${window.innerHeight}px`;
     app.prepend(stats.elem);
+    app.prepend(htp.elem);
   }
 
   main(store);
