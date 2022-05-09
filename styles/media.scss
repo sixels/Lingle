@@ -57,7 +57,6 @@
         }
 
         i {
-
           display: grid;
           place-items: center;
 
@@ -82,16 +81,56 @@
     }
   }
 
-
   .board .row.letters {
     height: clamp(3.5rem, 8vh, 5.5rem) !important;
 
     .letter {
-      width: clamp(3.7rem, 8.1vh, 5.7rem) !important;
-      font-size: clamp(1.7rem, 6vh, 2.5rem) !important;
+      width: clamp(3.7rem, 8.05vh, 5.7rem) !important;
+      font-size: clamp(2.7rem, 6vh, 2.5rem) !important;
     }
   }
+  .header .btn-mode.open {
+    flex-direction: column !important;
+    height: auto !important;
+    min-width: 100% !important;
 
+    margin: 0 !important;
+    padding: 2px 2px !important;
+
+    .icon {
+      min-width: 100% !important;
+      height: 2rem !important;
+
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: 1.1rem;
+
+      i {
+        font-size: 1.2rem;
+        padding: 0;
+        max-width: min-content;
+      }
+
+      &:before {
+        content: attr(data-legend);
+        font-family: var(--default-font-family);
+        margin-right: 3px;
+      }
+    }
+    .modes {
+      flex-direction: column !important;
+
+      padding-left: 0.5rem;
+
+      .mode {
+        padding: 0.5rem 0;
+        width: 90%;
+
+        font-size: 1.1rem;
+      }
+    }
+  }
 
   .modal {
     .copy-btn {
@@ -99,7 +138,7 @@
       margin-right: 7px;
       padding: initial 0px;
       font-size: 1.1rem !important;
-      i {
+      .icon {
         margin-right: 3px !important;
       }
     }

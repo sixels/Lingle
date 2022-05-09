@@ -40,13 +40,14 @@ a {
   &:visited {
     color: var(--default-color-fg);
   }
-  &:hover {
-    color: var(--default-color-accent);
-    &::before {
+  &:hover,
+  &:focus {
+    color: var(--default-color-accent) !important;
+    &:after {
       width: 100%;
     }
   }
-  &::before {
+  &:after {
     content: "";
     position: absolute;
     bottom: 2px;
@@ -168,8 +169,8 @@ a {
             color: var(--default-color-accent);
           }
         }
-
         label {
+          cursor: pointer;
           display: none;
         }
       }
@@ -240,6 +241,65 @@ a {
   }
 }
 
+.header .btn-mode {
+  .modes {
+    display: none !important;
+  }
+
+  &.open {
+    width: auto !important;
+    padding: 2px 2px 2px 2px !important;
+
+    label {
+      display: none !important;
+    }
+    .icon {
+      display: flex !important;
+      justify-content: center;
+      place-items: center;
+      padding: 0 !important;
+
+      height: 100%;
+      width: 3rem !important;
+      background-color: var(--letter-default-color-bd);
+      border-radius: 4px !important;
+      padding: 0.2rem 0.8rem;
+      margin-left: 0 !important;
+    }
+
+    .modes {
+      display: flex !important;
+      justify-content: space-between;
+      width: 100%;
+      // background-color: red;
+      margin-left: 0.4rem;
+      margin-right: 4px;
+      height: 100%;
+
+      .mode {
+        @extend a;
+        position: relative;
+        color: var(--default-color-fg) !important;
+
+        display: flex;
+        align-items: center;
+
+        min-height: 100%;
+      }
+    }
+
+    &:hover {
+      border-color: var(--default-color-accent);
+      .icon {
+        background-color: var(--default-color-accent);
+        &, i {
+          color: var(--default-color-fg) !important;
+        }
+      }
+    }
+  }
+}
+
 .board {
   display: flex;
   flex-direction: column;
@@ -295,7 +355,7 @@ a {
 
     border-radius: 7px;
 
-    transition: transform 60ms ease-in-out, box-shadow 20ms ease-in-out;
+    transition: transform 60ms ease-in-out, box-shadow 80ms ease-in-out;
 
     &:not(:first-of-type) {
       margin-left: 1.5%;
@@ -551,7 +611,7 @@ a {
 
         display: flex;
 
-        &::before {
+        &:before {
           content: "";
           width: 2px;
           height: calc(100% + 5px);
@@ -618,14 +678,14 @@ a {
         background-position: 20rem;
       }
       &:active {
-        &::before {
+        &:before {
           opacity: 0.3;
           width: 103%;
           height: 109%;
         }
       }
 
-      &::before {
+      &:before {
         content: "";
         transition: opacity 100ms ease, width 100ms linear, height 100ms linear;
         z-index: -1;
