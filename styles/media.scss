@@ -82,6 +82,17 @@
     }
   }
 
+
+  .board .row.letters {
+    height: clamp(3.5rem, 8vh, 5.5rem) !important;
+
+    .letter {
+      width: clamp(3.7rem, 8.1vh, 5.7rem) !important;
+      font-size: clamp(1.7rem, 6vh, 2.5rem) !important;
+    }
+  }
+
+
   .modal {
     .copy-btn {
       min-width: 60%;
