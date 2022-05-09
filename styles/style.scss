@@ -244,13 +244,12 @@ a {
   display: flex;
   flex-direction: column;
 
-  .row {
-    height: min(9vh, 3.9rem);
+  .row.letters {
+    height: clamp(3.5rem, 9vh, 5.5rem);
 
     .letter {
-      aspect-ratio: 1.05;
-      width: auto;
-      font-size: min(6vh, 2.7rem);
+      width: clamp(3.8rem, 9.2vh, 5.8rem);
+      font-size: clamp(2.7rem, 6vh, 4.2rem);
     }
   }
 }
