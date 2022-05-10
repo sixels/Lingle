@@ -58,7 +58,7 @@ export class GameManager {
     document.getElementById("header-left")?.appendChild(this.title_elem);
 
     boards.forEach((board_elem, i) => {
-      const board = new GameBoard(board_elem, this.store, this.mode, i);
+      const board = new GameBoard(board_elem, this.mode, i);
 
       const attempts = this.store.state.attempts;
       attempts.forEach((attempt, i) => {
@@ -272,7 +272,6 @@ export class GameBoard {
 
   constructor(
     board: HTMLElement,
-    store: LingleStore,
     title: string,
     id: number
   ) {
@@ -285,8 +284,6 @@ export class GameBoard {
 
     // initialize the game board
     this.generateBoard();
-
-    store.onInvalidate(this.handleInvalidateStore);
   }
 
   // Generates a random solution based on the current day
