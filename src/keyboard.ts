@@ -31,7 +31,9 @@ export class KeyboardManager {
     }
 
     store.onInvalidate(this.handleInvalidateStore);
-    store.state.attempts.forEach(this.paintKeys);
+    store.state.attempts.forEach((board_attempt) =>
+      board_attempt.forEach(this.paintKeys)
+    );
 
     document.addEventListener("wordattempt", this.handleWordAttempt);
   }
