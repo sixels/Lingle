@@ -43,16 +43,17 @@ const handle_enter = (game: GameManager) => {
     boards.forEach((board) => board.rowAtPosition(position).animateShake());
   }
 };
-const handle_backspace = (game: GameManager) => {
-  const boards = game.boards.filter(
-    (board) => board.status == GameStatus.Playing
-  );
+
+const handleBackspace = (game: GameManager) => {
+  const boards = game.playingBoards();
+
   // all boards already completed
   if (boards.length === 0) {
     return;
   }
 
   let position = game.current_position;
+  let next_position = position.step_backward();
   if (position.col === N_COLS) {
     // When we finish a word, the column goes to N_COLS (an invalid)
     // position. In this case, we first need to go back to the position
@@ -63,23 +64,24 @@ const handle_backspace = (game: GameManager) => {
     game.edit_mode = true;
   }
 
+  if (game.edit_mode) {
+    // edit mode prevent position update
+    next_position = position;
+  }
+
   boards.forEach((board) => {
     const letter = board.columnAtPosition(position);
 
-    let deleted = letter.value !== "";
-    if (deleted) {
+    let empty = letter.value === "";
+    if (!empty) {
       letter.value = "";
     }
 
-    if (!game.edit_mode) {
-      position = position.step_backward();
-      game.updatePositionAndState(position);
-      // We already deleted a letter, just go back a position.
-      if (!deleted) {
-        board.columnAtPosition(position).value = "";
-      }
+    if (empty && !game.edit_mode && position.col !== 0) {
+      board.columnAtPosition(next_position).value = "";
     }
   });
+  game.updatePositionAndState(next_position);
 };
 const handle_left = (game: GameManager) => {
   events.dispatchSetPositionEvent(game.current_position.step_backward());
