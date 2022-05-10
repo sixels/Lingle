@@ -298,9 +298,10 @@ export class GameManager {
     this.edit_mode = false;
   };
 
-  // private handleInvalidateStore = (store: LingleStore) => {
-  //   // todo
-  // };
+  private handleInvalidateStore = (store: LingleStore) => {
+    // todo
+    console.log(store)
+  };
 
   // private handleCopyResult = (event: Event) => {
   //   //todo
