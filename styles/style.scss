@@ -16,6 +16,7 @@ body {
 
 body {
   background-color: var(--default-color-bg);
+  overflow-y: hidden;
 }
 
 .no-select {
@@ -226,12 +227,12 @@ a {
 
     // margin-top: 2.1rem;
     padding: 0 !important;
-    width: 100vw;
 
     display: grid;
     overflow-y: auto;
+    place-items: center;
 
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr;
   }
 
@@ -309,28 +310,25 @@ a {
 .board.lingle {
   grid-column: 1 / span 4;
   grid-row: 1 / span 2;
+  grid-template-rows: repeat(6, 1em);
 }
 .board.duolingle {
   grid-column: auto / span 2;
   grid-row: 1 / span 2;
+  grid-template-rows: repeat(7, 1em);
 }
 .board {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 0.4em;
 
-  justify-content: center;
-  align-items: center;
-
-  width: 100%;
-  height: 100%;
+  font-size: clamp(1.4rem, 5.5vh, 3.8rem);
 
   .row.letters {
-    height: clamp(3rem, 14%, 4.3rem);
-
-    width: calc(clamp(3.9rem, 7.2%, 4.3rem) * 5);
+    display: grid;
+    gap: 0.12em;
+    grid-template-columns: repeat(5, 1.3em);
     .letter {
-      width: clamp(3.9rem, 7.2%, 4.3rem);
-      font-size: clamp(2.7rem, 6%, 4.2rem);
+      aspect-ratio: 1;
     }
   }
 }
@@ -353,10 +351,6 @@ a {
     --self-box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
 
-  &:not(:first-of-type) {
-    margin-top: 4px;
-  }
-
   .letter {
     @extend .btn;
 
@@ -377,10 +371,6 @@ a {
     border-radius: 7px;
 
     transition: transform 60ms ease-in-out, box-shadow 80ms ease-in-out;
-
-    &:not(:first-of-type) {
-      margin-left: 1.5%;
-    }
 
     &.focused {
       box-shadow: var(--self-box-shadow),
@@ -508,7 +498,6 @@ a {
 
   padding: 1rem 0rem;
 
-  // TODO: move to options.scss
   background-color: var(--modal-color-bg);
   color: var(--default-color-fg);
   border-radius: 1rem;
@@ -522,7 +511,7 @@ a {
   flex-direction: column;
   align-items: center;
 
-  overflow-y: auto;
+  // overflow-y: auto;
 
   &.visible {
     transition: visibility 0ms linear 0ms, opacity 300ms ease;
