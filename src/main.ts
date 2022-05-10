@@ -34,7 +34,7 @@ const main = (store: LingleStore) => {
 
   let keyboard = new KeyboardManager(keyboard_elem, store);
 
-  let gm = new GameManager(store, mm.mode);
+  new GameManager(store, "lingle");
 
   document.addEventListener("keyup", keyboard.handleKeyPress);
   document.addEventListener("sendmessage", handleMessage);
