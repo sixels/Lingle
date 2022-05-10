@@ -92,11 +92,13 @@ const handleRight = (game: GameManager) => {
 };
 const handleHome = (game: GameManager) => {
   let row = game.current_position.row;
-  game.updatePositionAndState(new BoardPosition([row, 0]));
+  game.updatePositionAndState(
+    new BoardPosition([row, 0], game.current_position.rows)
+  );
 };
 const handleEnd = (game: GameManager) => {
   let row = game.current_position.row;
-  game.updatePositionAndState(new BoardPosition([row, N_COLS - 1]));
+  game.updatePositionAndState(new BoardPosition([row, N_COLS - 1], game.current_position.rows));
 };
 
 export default Object.freeze({
