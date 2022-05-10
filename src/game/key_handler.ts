@@ -1,4 +1,4 @@
-import { GameManager, GameStatus } from ".";
+import { GameManager } from ".";
 import { messages } from "../message";
 import { BoardPosition, N_COLS } from "./board";
 import { WordListNormalized } from "../wordlist";
@@ -98,7 +98,9 @@ const handleHome = (game: GameManager) => {
 };
 const handleEnd = (game: GameManager) => {
   let row = game.current_position.row;
-  game.updatePositionAndState(new BoardPosition([row, N_COLS - 1], game.current_position.rows));
+  game.updatePositionAndState(
+    new BoardPosition([row, N_COLS - 1], game.current_position.rows)
+  );
 };
 
 export default Object.freeze({

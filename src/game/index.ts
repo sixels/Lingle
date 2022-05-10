@@ -298,13 +298,13 @@ export class GameManager {
     this.edit_mode = false;
   };
 
-  private handleInvalidateStore = (store: LingleStore) => {
-    // todo
-  };
+  // private handleInvalidateStore = (store: LingleStore) => {
+  //   // todo
+  // };
 
-  private handleCopyResult = (event: Event) => {
-    //todo
-  };
+  // private handleCopyResult = (event: Event) => {
+  //   //todo
+  // };
 
   private handleSetPosition = (event: Event) => {
     const boards = this.playingBoards();
@@ -379,16 +379,16 @@ export class GameBoard {
     }
   };
 
-  private handleCopyResult = () => {
-    // const title = `${this.title} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
-    // utils
-    //   .copyText(renderAsText(title, [this.store.state.attempts]))
-    //   .then((method) => {
-    //     if (method == "clipboard") {
-    //       events.dispatchSendMessageEvent(messages.resultCopied());
-    //     }
-    //   });
-  };
+  // private handleCopyResult = () => {
+  //   // const title = `${this.title} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
+  //   // utils
+  //   //   .copyText(renderAsText(title, [this.store.state.attempts]))
+  //   //   .then((method) => {
+  //   //     if (method == "clipboard") {
+  //   //       events.dispatchSendMessageEvent(messages.resultCopied());
+  //   //     }
+  //   //   });
+  // };
 
   paintAttempt = (attempt: WordAttempt, row: BoardRow, animate: boolean) => {
     const letters = [
