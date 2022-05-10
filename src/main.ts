@@ -10,7 +10,6 @@ import { Menu } from "./ui/menu";
 import { LingleStore } from "./store";
 import { StatsModal } from "./ui/stats";
 import { HTPModal } from "./ui/htp";
-import { ModeManager } from "./mode";
 
 window.onload = (_) => {
   const app = document.getElementById("app");
@@ -35,8 +34,7 @@ const main = (store: LingleStore) => {
 
   let keyboard = new KeyboardManager(keyboard_elem, store);
 
-  let mm = new ModeManager("duolingle");
-  let gm = new GameManager(store, mm.boards, mm.mode);
+  let gm = new GameManager(store, mm.mode);
 
   document.addEventListener("keyup", keyboard.handleKeyPress);
   document.addEventListener("sendmessage", handleMessage);
