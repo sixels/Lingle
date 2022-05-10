@@ -10,8 +10,10 @@ import { Menu } from "./ui/menu";
 import { LingleStore } from "./store";
 import { StatsModal } from "./ui/stats";
 import { HTPModal } from "./ui/htp";
+import { ModeManager } from "./mode";
 
 window.onload = (_) => {
+  const app = document.getElementById("app");
   window.onresize = () => {
     if (app !== null) {
       app.style.minHeight = `${window.innerHeight}px`;
@@ -20,6 +22,27 @@ window.onload = (_) => {
 
   let store = new LingleStore();
 
+  main(store);
+};
+
+const main = (store: LingleStore) => {
+  let keyboard_elem = document.getElementById("keyboard");
+
+  if (keyboard_elem === null) {
+    console.error("ERROR: Missing HTML elements");
+    return;
+  }
+
+  let keyboard = new KeyboardManager(keyboard_elem, store);
+
+  let mm = new ModeManager("duolingle");
+  let gm = new GameManager(store, mm.boards, mm.mode);
+
+  document.addEventListener("keyup", keyboard.handleKeyPress);
+  document.addEventListener("sendmessage", handleMessage);
+};
+
+function setupUIEelements(store: LingleStore) {
   //setup ui elements
   const menu = new Menu();
   const stats = new StatsModal(store);
@@ -44,30 +67,7 @@ window.onload = (_) => {
     app.prepend(stats.elem);
     app.prepend(htp.elem);
   }
-
-  main(store);
-};
-
-const main = (store: LingleStore) => {
-  let board_elem = document.getElementById("board");
-  let keyboard_elem = document.getElementById("keyboard");
-
-  if (keyboard_elem === null || board_elem === null) {
-    console.error("ERROR: Missing HTML elements");
-    return;
-  }
-
-  let keyboard = new KeyboardManager(keyboard_elem, store);
-  let game = new GameManager(board_elem, "Lingle", store);
-
-  document.addEventListener("keyup", keyboard.handleKeyPress);
-  document.addEventListener("sendmessage", handleMessage);
-
-  game.start();
-
-  // TODO: REMOVE
-  console.log(game.solution);
-};
+}
 
 let ltimeout: number | undefined = undefined;
 const handleMessage = (event: Event) => {

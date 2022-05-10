@@ -225,6 +225,8 @@ a {
 
     display: grid;
     place-items: center;
+
+    grid-template-columns: 1fr 1fr;
   }
 
   .keyboard-wrapper {
@@ -303,6 +305,9 @@ a {
 .board {
   display: flex;
   flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
 
   .row.letters {
     height: clamp(3.5rem, 9vh, 5.5rem);
