@@ -146,13 +146,11 @@ export class GameManager {
     if (key in handlers) {
       handlers[key](this);
     } else {
-      const boards = this.boards.filter(
-        (board) => board.status === GameStatus.Playing
-      );
+      const position = this.current_position;
+      const boards = this.playingBoards();
 
-      if (boards.length > 0) {
-        const position = this.current_position;
-
+      if (position.col < N_COLS && boards.length > 0) {
+        let next_position: BoardPosition | undefined = undefined;
         boards.forEach((board) => {
           if (position.col < N_COLS) {
             const row = board.rowAtPosition(position);
@@ -161,12 +159,15 @@ export class GameManager {
             if (col !== undefined && key) {
               col.value = key;
               // update the current position giving preference to the next letter
-              this.updatePositionAndState(
-                row.nextPosition(position.step_forward().col)
-              );
+              if (next_position === undefined) {
+                next_position = row.nextPosition(position.step_forward().col);
+              }
             }
           }
         });
+
+        // we already set next_position
+        if (next_position) this.updatePositionAndState(next_position);
       }
     }
 
