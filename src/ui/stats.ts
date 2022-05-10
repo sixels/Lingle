@@ -34,7 +34,7 @@ export class StatsModal {
 
     this.update(store.stats);
 
-    if (store.state.status !== GameStatus.Playing) {
+    if (store.state.status.every((status) => status !== GameStatus.Playing)) {
       // wait a little before showing the stats
       this.show_timeout = setTimeout(() => this.show(true), 800);
     }
@@ -48,7 +48,7 @@ export class StatsModal {
       this.update(store.stats);
       clearTimeout(this.show_timeout);
       this.show_timeout = undefined;
-      if (store.state.status !== GameStatus.Playing) {
+      if (store.state.status.every((status) => status !== GameStatus.Playing)) {
         // wait a little before showing the stats
         this.show_timeout = setTimeout(() => this.show(true), 2800);
       }

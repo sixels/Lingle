@@ -7,7 +7,7 @@ export class HTPModal {
 
   constructor(store: LingleStore) {
     this.elem = document.createElement("div");
-    this.elem.id = "stats";
+    this.elem.id = "htp";
     this.elem.classList.add("modal", "htp");
 
     const about = document.createElement("section");
