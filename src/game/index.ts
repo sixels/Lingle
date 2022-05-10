@@ -1,13 +1,13 @@
 import Prando from "prando";
 
 import events from "../events";
-import { messages } from "../message";
+// import { messages } from "../message";
 import utils from "../utils";
 import { WordList } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
 import { LingleStore } from "../store";
 // import { renderAsText } from "./share";
-import { Mode } from "../mode";
+import { Mode } from "./mode";
 import key_handler from "./key_handler";
 
 export enum GameStatus {
@@ -43,9 +43,11 @@ export class GameManager {
 
   private title_elem: HTMLElement;
 
-  constructor(store: LingleStore, boards: HTMLElement[], mode: Mode) {
+  constructor(store: LingleStore, mode: Mode) {
     this.store = store;
     this.mode = mode;
+
+    let boards = GameManager.createBoards(mode);
 
     this.store.onInvalidate(this.handleInvalidateStore);
 
@@ -60,9 +62,9 @@ export class GameManager {
     boards.forEach((board_elem, i) => {
       const board = new GameBoard(board_elem, this.mode, i);
 
-      const attempts = this.store.state.attempts;
-      attempts.forEach((attempt, i) => {
-        let row = board.rowAtPosition(new BoardPosition([i, 0]));
+      const attempts = this.store.state.attempts[i];
+      attempts.forEach((attempt, j) => {
+        let row = board.rowAtPosition(new BoardPosition([j, 0]));
         board.paintAttempt(attempt, row, false);
       });
 
@@ -73,7 +75,6 @@ export class GameManager {
     this.store.state.game_number = GameManager.gameNumber();
     this.updateTitle(this.store.state.game_number);
 
-    document.addEventListener("wordattempt", this.handleWordAttempt);
     document.addEventListener("copyresult", this.handleCopyResult);
     document.addEventListener("setposition", this.handleSetPosition);
     document.addEventListener("sendkey", this.handleSendKey);
@@ -203,7 +204,9 @@ export class GameManager {
       return;
     }
 
-    if (this.store.state.status !== GameStatus.Playing) {
+    const boards = this.playingBoards();
+
+    if (boards.length === 0) {
       events.dispatchOpenStatsEvent(key !== "escape");
       return;
     }
@@ -222,7 +225,6 @@ export class GameManager {
       handlers[key](this);
     } else {
       const position = this.current_position;
-      const boards = this.playingBoards();
 
       if (position.col < N_COLS && boards.length > 0) {
         let next_position: BoardPosition | undefined = undefined;
@@ -253,11 +255,14 @@ export class GameManager {
   private handleInvalidateStore = (store: LingleStore) => {
     // todo
   };
+
   private handleCopyResult = (event: Event) => {
     //todo
   };
+
   private handleSetPosition = (event: Event) => {
-    if (this.store.state.status !== GameStatus.Playing) {
+    const boards = this.playingBoards();
+    if (boards.length === 0) {
       return;
     }
 
@@ -268,11 +273,9 @@ export class GameManager {
     }
     if (this.store.state.current_position.row == position.row) {
       this.edit_mode = true;
-      this.boards
-        .filter((board) => board.status === GameStatus.Playing)
-        .forEach((board) => {
-          board.columnAtPosition(position as BoardPosition).animateBounce();
-        });
+      boards.forEach((board) => {
+        board.columnAtPosition(position as BoardPosition).animateBounce();
+      });
       this.updatePositionAndState(
         new BoardPosition([position.row, position.col])
       );
@@ -289,11 +292,7 @@ export class GameBoard {
   private readonly title: string;
   private board: BoardRow[];
 
-  constructor(
-    board: HTMLElement,
-    title: string,
-    id: number
-  ) {
+  constructor(board: HTMLElement, title: string, id: number) {
     this.elem = board;
     this.title = title;
     this.board = [];
