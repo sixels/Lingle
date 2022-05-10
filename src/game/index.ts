@@ -4,10 +4,10 @@ import events from "../events";
 // import { messages } from "../message";
 import utils from "../utils";
 import { WordList } from "../wordlist";
-import { BoardPosition, BoardRow, N_COLS, N_ROWS, BoardColumn } from "./board";
+import { BoardPosition, BoardRow, N_COLS, BoardColumn } from "./board";
 import { LingleStore } from "../store";
 // import { renderAsText } from "./share";
-import { Mode } from "./mode";
+import { Mode, modeRows } from "./mode";
 import key_handler from "./key_handler";
 
 export enum GameStatus {
@@ -64,7 +64,9 @@ export class GameManager {
 
       const attempts = this.store.state.attempts[i];
       attempts.forEach((attempt, j) => {
-        let row = board.rowAtPosition(new BoardPosition([j, 0]));
+        let row = board.rowAtPosition(
+          new BoardPosition([j, 0], modeRows(this.mode))
+        );
         board.paintAttempt(attempt, row, false);
       });
 
@@ -88,7 +90,10 @@ export class GameManager {
 
   get current_position(): BoardPosition {
     // copy the position to prevent mutability
-    return new BoardPosition(this.store.state.current_position.asTuple());
+    return new BoardPosition(
+      this.store.state.current_position.asTuple(),
+      this.store.state.current_position.rows
+    );
   }
 
   static dayOne = (): Date => {
@@ -117,6 +122,47 @@ export class GameManager {
     }
 
     return boards;
+  };
+
+  setMode = (mode: Mode) => {
+    if (this.mode == mode) {
+      return;
+    }
+
+    this.store.invalidateStore();
+    this.store = new LingleStore();
+    this.mode = mode;
+
+    for (const board of this.boards) {
+      board.elem.remove();
+    }
+    this.boards = [];
+
+    let boards = GameManager.createBoards(mode);
+
+    // this.store.onInvalidate(this.handleInvalidateStore);
+
+    // if (this.store.state.game_number !== GameManager.gameNumber()) {
+    //   this.store.invalidateStore();
+    // }
+
+    boards.forEach((board_elem, i) => {
+      const board = new GameBoard(board_elem, this.mode, i);
+
+      const attempts = this.store.state.attempts[i];
+      attempts.forEach((attempt, j) => {
+        let row = board.rowAtPosition(
+          new BoardPosition([j, 0], modeRows(this.mode))
+        );
+        board.paintAttempt(attempt, row, false);
+      });
+
+      this.boards.push(board);
+    });
+    this.updatePositionAndState(this.store.state.current_position);
+
+    this.store.state.game_number = GameManager.gameNumber();
+    this.updateTitle(this.store.state.game_number);
   };
 
   playingBoards = (): GameBoard[] => {
@@ -237,7 +283,7 @@ export class GameManager {
               col.value = key;
               // update the current position giving preference to the next letter
               if (next_position === undefined) {
-                next_position = row.nextPosition(position.step_forward().col);
+                next_position = row.nextPosition(position.step_forward());
               }
             }
           }
@@ -277,7 +323,7 @@ export class GameManager {
         board.columnAtPosition(position as BoardPosition).animateBounce();
       });
       this.updatePositionAndState(
-        new BoardPosition([position.row, position.col])
+        new BoardPosition([position.row, position.col], position.rows)
       );
     }
   };
@@ -287,41 +333,44 @@ export class GameBoard {
   readonly elem: HTMLElement;
   readonly id: number;
   readonly solution: string;
+  readonly mode: Mode;
   status: GameStatus = GameStatus.Playing;
 
-  private readonly title: string;
   private board: BoardRow[];
 
-  constructor(board: HTMLElement, title: string, id: number) {
+  constructor(board: HTMLElement, mode: Mode, id: number) {
     this.elem = board;
-    this.title = title;
+    this.mode = mode;
     this.board = [];
     this.id = id;
 
     this.solution = this.dailyWord();
 
     // initialize the game board
-    this.generateBoard();
+    this.generateBoard(mode);
   }
 
   // Generates a random solution based on the current day
   dailyWord = (): string => {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
 
-    let rng = new Prando(`${this.title}.${this.id}@${day_one}`);
+    let rng = new Prando(`${this.mode}.${this.id}@${day_one}`);
     rng.skip(GameManager.gameNumber() - 1);
 
     const index = rng.nextInt(0, WordList.size - 1);
     return [...WordList][index];
   };
 
-  private generateBoard = () => {
-    for (let r = 0; r < N_ROWS; r++) {
+  private generateBoard = (mode: Mode) => {
+    for (let r = 0; r < modeRows(mode); r++) {
       let row = new BoardRow(createRowElement(), r);
 
       for (let c = 0; c < N_COLS; c++) {
         row.pushColumn(
-          new BoardColumn(createLetterElement(null), new BoardPosition([r, c]))
+          new BoardColumn(
+            createLetterElement(null),
+            new BoardPosition([r, c], modeRows(this.mode))
+          )
         );
       }
 
