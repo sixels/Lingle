@@ -117,6 +117,63 @@ export class GameManager {
     this.store.state.current_position = new_position;
   };
 
+  attemptAll = (attempts: WordAttempt[]) => {
+    const boards = this.playingBoards();
+
+    let next_word: BoardPosition | null = null;
+    for (const attempt of attempts) {
+      if (attempt.board >= boards.length) {
+        continue;
+      }
+      this.store.state.attempts[attempt.board].push(attempt);
+      const board = boards[attempt.board];
+
+      const position = this.current_position;
+      const attempt_row = board.rowAtPosition(position);
+
+      // paint letters
+      board.paintAttempt(attempt, attempt_row, true);
+
+      // update game state
+      if (attempt.right_letters.length == N_COLS) {
+        board.status = GameStatus.Won;
+        setTimeout(() => {
+          attempt_row.animateJump();
+        }, 1000);
+      } else {
+        next_word = this.current_position.next_word();
+        if (!next_word) {
+          board.status = GameStatus.Lost;
+
+          setTimeout(() => {
+            attempt_row.animateShake();
+            // events.dispatchSendMessageEvent(
+            //   messages.gameLost(
+            //     this.boards.map((board) => board.solution).join(",")
+            //   )
+            // );
+          }, 1000);
+        }
+      }
+    }
+
+    if (next_word !== null) {
+      this.store.state.current_position = next_word;
+      setTimeout(() => {
+        attempts.forEach(events.dispatchWordAttemptEvent);
+        this.updatePositionAndState(this.current_position);
+      }, 1000);
+    }
+
+    // TODO: update stats
+    // this.store.stats.update(
+    //   this.store.state.status,
+    //   this.store.state.attempts.length - 1
+    // );
+
+    this.store.save();
+  };
+
   private updateTitle = (value: number) => {
     this.title_elem.innerText = `${this.mode} #${value}`;
   };
@@ -175,62 +232,6 @@ export class GameManager {
     this.edit_mode = false;
   };
 
-  private handleWordAttempt = (event: Event) => {
-    const custom_ev = event as CustomEvent;
-    const attempt = custom_ev.detail["attempt_desc"] as WordAttempt | null;
-
-    if (
-      attempt === null ||
-      this.boards[attempt.board].status !== GameStatus.Playing
-    ) {
-      return;
-    }
-    const board = this.boards[attempt.board];
-
-    this.store.state.attempts.push(attempt);
-    const position = this.current_position;
-
-    const row = board.rowAtPosition(position);
-    // paint letters
-    board.paintAttempt(attempt, row, true);
-
-    // update game state
-    if (attempt.right_letters.length == N_COLS) {
-      this.store.state.status = GameStatus.Won;
-
-      setTimeout(() => {
-        board.rowAtPosition(position).animateJump();
-        events.dispatchSendMessageEvent(messages.gameWin());
-      }, 1000);
-    } else {
-      const next_word = this.store.state.current_position.next_word();
-      if (next_word !== null) {
-        this.store.state.current_position = next_word;
-        setTimeout(
-          () => this.updatePositionAndState(this.store.state.current_position),
-          1000
-        );
-      } else {
-        this.store.state.status = GameStatus.Lost;
-
-        setTimeout(() => {
-          board.rowAtPosition(position).animateShake();
-          events.dispatchSendMessageEvent(
-            messages.gameLost(
-              this.boards.map((board) => board.solution).join(",")
-            )
-          );
-        }, 1000);
-      }
-    }
-
-    this.store.stats.update(
-      this.store.state.status,
-      this.store.state.attempts.length - 1
-    );
-
-    this.store.save();
-  };
   private handleInvalidateStore = (store: LingleStore) => {
     // todo
   };

@@ -30,12 +30,14 @@ const handleEnter = (game: GameManager) => {
 
   // check if the word does exists
   if (wordlist_word) {
-    boards.forEach((board) => {
-      events.dispatchWordAttemptEvent({
-        ...compareWords(board.solution, wordlist_word),
-        board: board.id,
-      });
-    });
+    game.attemptAll(
+      boards.map((board) => {
+        return {
+          ...compareWords(board.solution, wordlist_word),
+          board: board.id,
+        };
+      })
+    );
   } else {
     events.dispatchSendMessageEvent(messages.invalidWord());
     boards.forEach((board) => board.rowAtPosition(position).animateShake());
