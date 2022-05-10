@@ -100,6 +100,24 @@ export class GameManager {
     return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS) + 1;
   };
 
+  static createBoards = (mode: Mode): HTMLElement[] => {
+    let board_wrapper = document.getElementById("board-wrapper");
+    if (board_wrapper === null) {
+      throw Error("Missing #board-wrapper element");
+    }
+
+    let boards = [];
+    for (let i = 0; i < mode_boards[mode]; i++) {
+      const board = document.createElement("div");
+      board.classList.add("board", mode);
+
+      board_wrapper.appendChild(board);
+      boards.push(board);
+    }
+
+    return boards;
+  };
+
   playingBoards = (): GameBoard[] => {
     return this.boards.filter((board) => board.status === GameStatus.Playing);
   };
