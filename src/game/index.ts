@@ -100,8 +100,8 @@ export class GameManager {
     return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS) + 1;
   };
 
-  private updateTitle = (value: number) => {
-    this.title_elem.innerText = `${this.mode} #${value}`;
+  playingBoards = (): GameBoard[] => {
+    return this.boards.filter((board) => board.status === GameStatus.Playing);
   };
 
   updatePositionAndState = (new_position: BoardPosition) => {
