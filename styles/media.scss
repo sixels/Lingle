@@ -82,11 +82,11 @@
   }
 
   .board .row.letters {
-    height: clamp(3.5rem, 8vh, 5.5rem) !important;
+    height: clamp(2.3rem, 8vw, 4rem) !important;
 
     .letter {
-      width: clamp(3.7rem, 8.05vh, 5.7rem) !important;
-      font-size: clamp(2.7rem, 6vh, 2.5rem) !important;
+      width: clamp(2.2rem, 8vw, 4rem) !important;
+      font-size: clamp(2.7rem, 6vh, 4.2rem);
     }
   }
   .header .btn-mode.open {
