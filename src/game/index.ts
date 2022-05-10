@@ -263,11 +263,11 @@ export class GameManager {
 export class GameBoard {
   readonly elem: HTMLElement;
   readonly id: number;
+  readonly solution: string;
   status: GameStatus = GameStatus.Playing;
 
   private readonly title: string;
   private board: BoardRow[];
-  private _solution: string;
 
   constructor(
     board: HTMLElement,
@@ -280,21 +280,13 @@ export class GameBoard {
     this.board = [];
     this.id = id;
 
-    this._solution = this.dailyWord();
+    this.solution = this.dailyWord();
 
     // initialize the game board
     this.generateBoard();
 
     store.onInvalidate(this.handleInvalidateStore);
   }
-
-  get solution(): typeof this._solution {
-    return this._solution;
-  }
-
-  setPosition = (pos: BoardPosition) => {
-    this.updatePositionAndState(pos);
-  };
 
   // Generates a random solution based on the current day
   dailyWord = (): string => {
@@ -314,7 +306,6 @@ export class GameBoard {
       row.reset();
     }
     // this.edit_mode = false;
-    this._solution = this.dailyWord();
     // this.store.state.game_number = GameManager.gameNumber();
     // this.game_title = this.store.state.game_number;
     // this.updatePositionAndState(this.store.state.current_position);
