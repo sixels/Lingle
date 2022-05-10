@@ -297,18 +297,6 @@ export class GameBoard {
     return [...WordList][index];
   };
 
-  private loadState = () => {};
-
-  private handleInvalidateStore = () => {
-    for (const row of this.board) {
-      row.reset();
-    }
-    // this.edit_mode = false;
-    // this.store.state.game_number = GameManager.gameNumber();
-    // this.game_title = this.store.state.game_number;
-    // this.updatePositionAndState(this.store.state.current_position);
-  };
-
   private generateBoard = () => {
     for (let r = 0; r < N_ROWS; r++) {
       let row = new BoardRow(createRowElement(), r);
@@ -324,15 +312,6 @@ export class GameBoard {
     }
   };
 
-  private updatePositionAndState(new_position: BoardPosition) {
-    // let cur_column = this.tryCurrentColumn();
-    // cur_column?.setFocused(false);
-    // let next_column = this.tryColumnAtPosition(new_position);
-    // next_column?.setFocused(true);
-    // this.store.state.current_position = new_position;
-    // this.currentRow().setDisabled(false);
-  }
-
   private handleCopyResult = () => {
     // const title = `${this.title} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
     // utils
@@ -342,24 +321,6 @@ export class GameBoard {
     //       events.dispatchSendMessageEvent(messages.resultCopied());
     //     }
     //   });
-  };
-
-  private handleSetPosition = (event: Event) => {
-    // if (this.store.state.status !== GameStatus.Playing) {
-    //   return;
-    // }
-    // let custom_ev = event as CustomEvent;
-    // let position = custom_ev.detail["position"] as BoardPosition | null;
-    // if (position === null) {
-    //   return;
-    // }
-    // if (this.store.state.current_position.row == position.row) {
-    //   this.edit_mode = true;
-    //   this.columnAtPosition(position).animateBounce();
-    //   this.updatePositionAndState(
-    //     new BoardPosition([position.row, position.col])
-    //   );
-    // }
   };
 
   paintAttempt = (attempt: WordAttempt, row: BoardRow, animate: boolean) => {
@@ -410,11 +371,6 @@ export class GameBoard {
   };
 
   columnAtPosition = (position: BoardPosition): BoardColumn => {
-    return this.board[position.row].columns[position.col];
-  };
-  private tryColumnAtPosition = (
-    position: BoardPosition
-  ): BoardColumn | undefined => {
     return this.board[position.row].columns[position.col];
   };
   rowAtPosition = (position: BoardPosition): BoardRow => {
