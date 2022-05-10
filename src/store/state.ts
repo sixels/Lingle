@@ -4,7 +4,7 @@ import { BoardPosition } from "../game/board";
 export class State {
   attempts: WordAttempt[][] = [[], []];
   status: GameStatus[] = [GameStatus.Playing];
-  current_position: BoardPosition = new BoardPosition([0, 0]);
+  current_position: BoardPosition = new BoardPosition([0, 0], 6);
   game_number: number = 0;
 
   constructor() {}
@@ -14,7 +14,7 @@ export class State {
 
     state.attempts = data.attempts;
     state.status = data.state;
-    state.current_position = new BoardPosition(data.current_position);
+    state.current_position = new BoardPosition(data.current_position, 6);
     state.game_number = data.game_number;
 
     return state;
