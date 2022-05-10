@@ -34,13 +34,22 @@ const main = (store: LingleStore) => {
 
   let keyboard = new KeyboardManager(keyboard_elem, store);
 
-  new GameManager(store, "lingle");
+  const game = new GameManager(store, "lingle");
 
   document.addEventListener("keyup", keyboard.handleKeyPress);
   document.addEventListener("sendmessage", handleMessage);
+
+  document.getElementById("set-mode-duo")?.addEventListener("click", () => {
+    game.setMode("duolingle");
+  });
+  document.getElementById("set-mode-lingle")?.addEventListener("click", () => {
+    game.setMode("lingle");
+  });
+
+  setupUIElements(store);
 };
 
-function setupUIEelements(store: LingleStore) {
+function setupUIElements(store: LingleStore) {
   //setup ui elements
   const menu = new Menu();
   const stats = new StatsModal(store);
