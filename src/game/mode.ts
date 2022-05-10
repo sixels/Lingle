@@ -8,3 +8,7 @@ const mode_boards: { [key: string]: number } = {
 export const modeBoards = (mode: Mode): number => {
   return mode_boards[mode];
 };
+
+export const modeRows = (mode: Mode): number => {
+  return modeBoards(mode) + 5;
+};
