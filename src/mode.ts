@@ -17,7 +17,7 @@ export class ModeManager {
 
     for (let i = 0; i < mode_boards[mode]; i++) {
       const board = document.createElement("div");
-      board.classList.add("board");
+      board.classList.add("board", this._mode);
 
       board_wrapper.appendChild(board);
       this.boards.push(board);
