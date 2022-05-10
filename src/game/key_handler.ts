@@ -7,7 +7,7 @@ import compareWords from "./compare";
 import events from "../events";
 import utils from "../utils";
 
-const handle_enter = (game: GameManager) => {
+const handleEnter = (game: GameManager) => {
   const boards = game.boards.filter(
     (board) => board.status == GameStatus.Playing
   );
@@ -83,26 +83,27 @@ const handleBackspace = (game: GameManager) => {
   });
   game.updatePositionAndState(next_position);
 };
-const handle_left = (game: GameManager) => {
+
+const handleLeft = (game: GameManager) => {
   events.dispatchSetPositionEvent(game.current_position.step_backward());
 };
-const handle_right = (game: GameManager) => {
+const handleRight = (game: GameManager) => {
   events.dispatchSetPositionEvent(game.current_position.step_forward());
 };
-const handle_home = (game: GameManager) => {
+const handleHome = (game: GameManager) => {
   let row = game.current_position.row;
   game.updatePositionAndState(new BoardPosition([row, 0]));
 };
-const handle_end = (game: GameManager) => {
+const handleEnd = (game: GameManager) => {
   let row = game.current_position.row;
   game.updatePositionAndState(new BoardPosition([row, N_COLS - 1]));
 };
 
 export default Object.freeze({
-  handleEnter: handle_enter,
-  handleBackspace: handle_backspace,
-  handleLeft: handle_left,
-  handleRight: handle_right,
-  handleHome: handle_home,
-  handleEnd: handle_end,
+  handleEnter,
+  handleBackspace,
+  handleLeft,
+  handleRight,
+  handleHome,
+  handleEnd,
 });
