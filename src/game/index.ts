@@ -117,6 +117,10 @@ export class GameManager {
     this.store.state.current_position = new_position;
   };
 
+  private updateTitle = (value: number) => {
+    this.title_elem.innerText = `${this.mode} #${value}`;
+  };
+
   private handleSendKey = (event: Event) => {
     let custom_ev = event as CustomEvent;
     let key = custom_ev.detail["key"] as string | null;
