@@ -8,9 +8,7 @@ import events from "../events";
 import utils from "../utils";
 
 const handleEnter = (game: GameManager) => {
-  const boards = game.boards.filter(
-    (board) => board.status == GameStatus.Playing
-  );
+  const boards = game.playingBoards();
   // all boards already completed
   if (boards.length === 0) {
     return;
