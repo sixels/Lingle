@@ -2,8 +2,8 @@ import { GameStatus, WordAttempt } from "../game";
 import { BoardPosition } from "../game/board";
 
 export class State {
-  attempts: WordAttempt[] = [];
-  status: GameStatus = GameStatus.Playing;
+  attempts: WordAttempt[][] = [[], []];
+  status: GameStatus[] = [GameStatus.Playing];
   current_position: BoardPosition = new BoardPosition([0, 0]);
   game_number: number = 0;
 
