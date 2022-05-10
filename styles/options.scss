@@ -49,6 +49,6 @@
   --default-font-size: 1rem;
 
   --header-height: 3rem;
-  --keyboard-height: clamp(7rem, 25%, 14rem);
+  --keyboard-height: clamp(7rem, 30%, 12.4rem);
   --boards-height: calc(100% - var(--keyboard-height) - var(--header-height));
 }
