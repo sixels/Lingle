@@ -77,7 +77,7 @@ export class GameManager {
     this.store.state.game_number = GameManager.gameNumber();
     this.updateTitle(this.store.state.game_number);
 
-    document.addEventListener("copyresult", this.handleCopyResult);
+    // document.addEventListener("copyresult", this.handleCopyResult);
     document.addEventListener("setposition", this.handleSetPosition);
     document.addEventListener("sendkey", this.handleSendKey);
     // document.getElementById("app")?.addEventListener("click", (ev) => {
