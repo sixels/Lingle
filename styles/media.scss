@@ -82,8 +82,11 @@
   }
 
   .board {
+    &.lingle {
+      font-size: clamp(1.2rem, 10.3vw, 3rem) !important;
+    }
     &:not(.lingle) {
-      font-size: clamp(1.2rem, 6.2vw, 3.8rem);
+      font-size: clamp(1.2rem, 6.2vw, 3.8rem) !important;
 
       .row.letters {
         display: grid;
