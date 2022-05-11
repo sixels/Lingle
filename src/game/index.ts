@@ -355,8 +355,10 @@ export class GameBoard {
   dailyWord = (): string => {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
 
-    let rng = new Prando(`${this.mode}.${this.id}@${day_one}`);
-    rng.skip(GameManager.gameNumber() - 1);
+    let rng = new Prando(`${this.mode}@${day_one}`);
+    rng.skip(
+      (GameManager.gameNumber() - 1) * modeBoards(this.mode) + this.id
+    );
 
     const index = rng.nextInt(0, WordList.size - 1);
     return [...WordList][index];
