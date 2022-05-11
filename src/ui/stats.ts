@@ -43,6 +43,7 @@ export class StatsModal {
       clearTimeout(this.show_timeout);
       this.show_timeout = undefined;
       this.update(store.stats);
+      this.show(false);
     });
     store.onSave((store) => {
       this.update(store.stats);
