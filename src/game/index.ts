@@ -180,15 +180,14 @@ export class GameManager {
 
   attemptAll = (attempts: WordAttempt[]) => {
     const reveal_time = 1000;
-    const boards = this.playingBoards();
 
     let next_word: BoardPosition | null = null;
     for (const attempt of attempts) {
-      if (attempt.board >= boards.length) {
+      if (attempt.board >= this.boards.length) {
         continue;
       }
       this.store.state.attempts[attempt.board].push(attempt);
-      const board = boards[attempt.board];
+      const board = this.boards[attempt.board];
 
       const position = this.current_position;
       const attempt_row = board.rowAtPosition(position);
@@ -223,7 +222,7 @@ export class GameManager {
         this.updatePositionAndState(this.current_position);
       }, reveal_time);
     } else {
-      const win = boards.every((board) => board.status == GameStatus.Won);
+      const win = this.boards.every((board) => board.status == GameStatus.Won);
       setTimeout(() => {
         events.dispatchSendMessageEvent(
           win
