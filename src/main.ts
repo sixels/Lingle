@@ -19,8 +19,7 @@ window.onload = (_) => {
     }
   };
 
-  let store = new LingleStore();
-
+  let store = new LingleStore("lingle");
   main(store);
 };
 
@@ -34,7 +33,7 @@ const main = (store: LingleStore) => {
 
   let keyboard = new KeyboardManager(keyboard_elem, store);
 
-  const game = new GameManager(store, "lingle");
+  const game = new GameManager(store);
 
   document.addEventListener("keyup", keyboard.handleKeyPress);
   document.addEventListener("sendmessage", handleMessage);
