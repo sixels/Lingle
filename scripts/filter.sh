@@ -8,5 +8,5 @@ cat "$1"                                          \
   | rg '^[^\.\-]{5}$'                             \
   | rg -v '^(\p{Lu}){5}$'                         \
   | gawk '{print tolower($0);}'                   \
-  | rg -v '^[aáâ]{1}'                             \
+  | rg -v '^[aáâ][aáâ]'                           \
   | uniq | sort
