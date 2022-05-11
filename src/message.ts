@@ -31,10 +31,12 @@ export const messages = {
       callback,
     };
   },
-  gameLost: (right_word: string, callback?: () => void): Message => {
+  gameLost: (solutions: string[], callback?: () => void): Message => {
+    const message =
+      solutions.length > 1 ? "As palavras de hoje eram" : "A palavra certa era";
     return {
       kind: MessageKind.Info,
-      data: `Você perdeu. A palavra certa era: ${right_word}.`,
+      data: `Você perdeu. ${message}: ${solutions.join(", ")}.`,
       callback,
     };
   },
