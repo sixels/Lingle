@@ -1,3 +1,4 @@
+import { Mode } from "../game/mode";
 import utils from "../utils";
 
 import { State } from "./state";
@@ -9,13 +10,21 @@ export class LingleStore {
   stats: Stats = new Stats();
   state: State = new State();
   expires: Date = new Date();
+  mode: Mode;
 
   onInvalidateCallbacks: StoreCallback[] = [];
   onSaveCallbacks: StoreCallback[] = [];
 
-  constructor() {
+  constructor(mode: Mode) {
     this.expires = utils.tomorrow();
+    this.mode = mode;
     this.load();
+  }
+
+  setMode(mode: Mode) {
+    this.mode = mode;
+    this.load();
+    this.onInvalidateCallbacks.forEach((cb) => cb(this));
   }
 
   onInvalidate(callback: StoreCallback) {
@@ -42,7 +51,7 @@ export class LingleStore {
       expires: this.expires,
     };
 
-    localStorage.setItem("lingle", JSON.stringify(object));
+    localStorage.setItem(this.mode, JSON.stringify(object));
     this.onSaveCallbacks.forEach((cb) => cb(this));
   };
 
@@ -56,7 +65,7 @@ export class LingleStore {
       return this;
     }
 
-    const store = localStorage.getItem("lingle");
+    const store = localStorage.getItem(this.mode);
     if (store !== null) {
       const object: any = JSON.parse(store);
 
@@ -82,7 +91,7 @@ export class LingleStore {
   private reset = () => {
     // keep stats
     let stats = this.stats;
-    localStorage.removeItem("lingle");
+    localStorage.removeItem(this.mode);
 
     this.stats = stats;
     this.state = new State();
