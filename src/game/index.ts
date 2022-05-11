@@ -7,8 +7,9 @@ import { WordList } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, BoardColumn } from "./board";
 import { LingleStore } from "../store";
 // import { renderAsText } from "./share";
-import { Mode, modeRows } from "./mode";
+import { Mode, modeBoards, modeRows } from "./mode";
 import key_handler from "./key_handler";
+import { messages } from "../message";
 
 export enum GameStatus {
   Won,
@@ -39,25 +40,23 @@ export class GameManager {
   edit_mode: boolean = false;
 
   private store: LingleStore;
-  private mode: Mode;
 
   private title_elem: HTMLElement;
 
-  constructor(store: LingleStore, mode: Mode) {
+  constructor(store: LingleStore) {
     this.store = store;
-    this.mode = mode;
 
-    let boards = GameManager.createBoards(mode);
+    let boards = GameManager.createBoards(this.mode);
 
     this.store.onInvalidate(this.handleInvalidateStore);
-
-    if (this.store.state.game_number !== GameManager.gameNumber()) {
-      this.store.invalidateStore();
-    }
 
     this.title_elem = document.createElement("span");
     this.title_elem.classList.add("strong");
     document.getElementById("header-left")?.appendChild(this.title_elem);
+
+    if (this.store.state.game_number !== GameManager.gameNumber()) {
+      this.store.invalidateStore();
+    }
 
     boards.forEach((board_elem, i) => {
       const board = new GameBoard(board_elem, this.mode, i);
@@ -72,6 +71,10 @@ export class GameManager {
 
       this.boards.push(board);
     });
+
+    if (this.store.state.game_number !== GameManager.gameNumber()) {
+      this.store.invalidateStore();
+    }
     this.updatePositionAndState(this.store.state.current_position);
 
     this.store.state.game_number = GameManager.gameNumber();
@@ -94,6 +97,9 @@ export class GameManager {
       this.store.state.current_position.asTuple(),
       this.store.state.current_position.rows
     );
+  }
+  get mode(): Mode {
+    return this.store.mode;
   }
 
   static dayOne = (): Date => {
@@ -129,9 +135,8 @@ export class GameManager {
       return;
     }
 
-    this.store.invalidateStore();
-    this.store = new LingleStore();
-    this.mode = mode;
+    // will trigger StoreInvalidate
+    this.store.setMode(mode);
 
     for (const board of this.boards) {
       board.elem.remove();
@@ -139,12 +144,6 @@ export class GameManager {
     this.boards = [];
 
     let boards = GameManager.createBoards(mode);
-
-    // this.store.onInvalidate(this.handleInvalidateStore);
-
-    // if (this.store.state.game_number !== GameManager.gameNumber()) {
-    //   this.store.invalidateStore();
-    // }
 
     boards.forEach((board_elem, i) => {
       const board = new GameBoard(board_elem, this.mode, i);
@@ -160,9 +159,6 @@ export class GameManager {
       this.boards.push(board);
     });
     this.updatePositionAndState(this.store.state.current_position);
-
-    this.store.state.game_number = GameManager.gameNumber();
-    this.updateTitle(this.store.state.game_number);
   };
 
   playingBoards = (): GameBoard[] => {
@@ -183,6 +179,7 @@ export class GameManager {
   };
 
   attemptAll = (attempts: WordAttempt[]) => {
+    const reveal_time = 1000;
     const boards = this.playingBoards();
 
     let next_word: BoardPosition | null = null;
@@ -202,9 +199,10 @@ export class GameManager {
       // update game state
       if (attempt.right_letters.length == N_COLS) {
         board.status = GameStatus.Won;
+
         setTimeout(() => {
           attempt_row.animateJump();
-        }, 1000);
+        }, reveal_time);
       } else {
         next_word = this.current_position.next_word();
         if (!next_word) {
@@ -212,14 +210,10 @@ export class GameManager {
 
           setTimeout(() => {
             attempt_row.animateShake();
-            // events.dispatchSendMessageEvent(
-            //   messages.gameLost(
-            //     this.boards.map((board) => board.solution).join(",")
-            //   )
-            // );
-          }, 1000);
+          }, reveal_time);
         }
       }
+      this.store.state.status[attempt.board] = board.status;
     }
 
     if (next_word !== null) {
@@ -227,7 +221,16 @@ export class GameManager {
       setTimeout(() => {
         attempts.forEach(events.dispatchWordAttemptEvent);
         this.updatePositionAndState(this.current_position);
-      }, 1000);
+      }, reveal_time);
+    } else {
+      const win = boards.every((board) => board.status == GameStatus.Won);
+      setTimeout(() => {
+        events.dispatchSendMessageEvent(
+          win
+            ? messages.gameWin()
+            : messages.gameLost(this.boards.map((board) => board.solution))
+        );
+      }, reveal_time);
     }
 
     // TODO: update stats
@@ -299,8 +302,8 @@ export class GameManager {
   };
 
   private handleInvalidateStore = (store: LingleStore) => {
-    // todo
-    console.log(store)
+    store.state.game_number = GameManager.gameNumber();
+    this.updateTitle(store.state.game_number);
   };
 
   // private handleCopyResult = (event: Event) => {
