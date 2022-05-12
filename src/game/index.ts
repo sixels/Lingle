@@ -46,38 +46,19 @@ export class GameManager {
   constructor(store: LingleStore) {
     this.store = store;
 
-    let boards = GameManager.createBoards(this.mode);
-
-    this.store.onInvalidate(this.handleInvalidateStore);
+    this.boards = GameManager.createBoards(this.store);
 
     this.title_elem = document.createElement("span");
     this.title_elem.classList.add("strong");
     document.getElementById("header-left")?.appendChild(this.title_elem);
 
-    if (this.store.state.game_number !== GameManager.gameNumber()) {
-      this.store.invalidateStore();
-    }
-
-    boards.forEach((board_elem, i) => {
-      const board = new GameBoard(board_elem, this.mode, i);
-
-      const attempts = this.store.state.attempts[i];
-      attempts.forEach((attempt, j) => {
-        let row = board.rowAtPosition(
-          new BoardPosition([j, 0], modeRows(this.mode))
-        );
-        board.paintAttempt(attempt, row, false);
-      });
-
-      this.boards.push(board);
-    });
-
-    if (this.store.state.game_number !== GameManager.gameNumber()) {
-      this.store.invalidateStore();
-    }
-    this.updatePositionAndState(this.store.state.current_position);
+    this.store.onInvalidate(this.handleInvalidateStore);
+    this.validateStore();
 
     this.store.state.game_number = GameManager.gameNumber();
+
+    this.updatePositionAndState(this.store.state.current_position);
+
     this.updateTitle(this.store.state.game_number);
 
     // document.addEventListener("copyresult", this.handleCopyResult);
@@ -103,7 +84,7 @@ export class GameManager {
   }
 
   static dayOne = (): Date => {
-    return new Date("2022/05/07");
+    return new Date("2022/02/03");
   };
 
   static gameNumber = (): number => {
@@ -112,52 +93,71 @@ export class GameManager {
     return Math.floor((now - day_one) / utils.ONE_DAY_IN_MS) + 1;
   };
 
-  static createBoards = (mode: Mode): HTMLElement[] => {
+  // Creates and initialize game boards
+  static createBoards = (store: LingleStore): GameBoard[] => {
+    const mode = store.mode;
+
     let board_wrapper = document.getElementById("board-wrapper");
     if (board_wrapper === null) {
       throw Error("Missing #board-wrapper element");
     }
 
-    let boards = [];
+    let boards_elem = [];
     for (let i = 0; i < mode_boards[mode]; i++) {
       const board = document.createElement("div");
       board.classList.add("board", mode);
 
       board_wrapper.appendChild(board);
-      boards.push(board);
+      boards_elem.push(board);
+    }
+
+    return GameManager.initBoards(boards_elem, store);
+  };
+
+  static initBoards(
+    boards_elem: HTMLElement[],
+    store: LingleStore
+  ): GameBoard[] {
+    const mode = store.mode;
+    const attempts = store.state.attempts;
+    console.log(store);
+
+    let boards: GameBoard[] = [];
+    if (attempts) {
+      boards_elem.forEach((board_elem, i) => {
+        const board = new GameBoard(board_elem, mode, i);
+        board.status = store.state.status[i];
+
+        const attempts = store.state.attempts[i];
+        attempts.forEach((attempt, j) => {
+          let row = board.rowAtPosition(
+            new BoardPosition([j, 0], modeRows(mode))
+          );
+          board.paintAttempt(attempt, row, false);
+        });
+
+        boards.push(board);
+      });
     }
 
     return boards;
-  };
+  }
 
   setMode = (mode: Mode) => {
-    if (this.mode == mode) {
+    if (this.mode === mode) {
       return;
+    }
+
+    for (const board of this.boards) {
+      board.elem.remove();
     }
 
     // will trigger StoreInvalidate
     this.store.setMode(mode);
 
-    for (const board of this.boards) {
-      board.elem.remove();
-    }
-    this.boards = [];
+    this.validateStore();
+    this.store.state.game_number = GameManager.gameNumber();
 
-    let boards = GameManager.createBoards(mode);
-
-    boards.forEach((board_elem, i) => {
-      const board = new GameBoard(board_elem, this.mode, i);
-
-      const attempts = this.store.state.attempts[i];
-      attempts.forEach((attempt, j) => {
-        let row = board.rowAtPosition(
-          new BoardPosition([j, 0], modeRows(this.mode))
-        );
-        board.paintAttempt(attempt, row, false);
-      });
-
-      this.boards.push(board);
-    });
     this.updatePositionAndState(this.store.state.current_position);
   };
 
@@ -171,6 +171,10 @@ export class GameManager {
     const ncol = new_position.col < N_COLS ? new_position : undefined;
 
     this.boards.forEach((board) => {
+      if (board.status !== GameStatus.Playing) {
+        return;
+      }
+
       ccol && board.columnAtPosition(ccol).setFocused(false);
       ncol && board.columnAtPosition(ncol).setFocused(true);
       board.rowAtPosition(new_position).setDisabled(false);
@@ -241,6 +245,17 @@ export class GameManager {
     this.store.save();
   };
 
+  private validateStore = () => {
+    if (this.store.state.game_number === 0) {
+      this.store.state.game_number = GameManager.gameNumber();
+      return;
+    }
+
+    if (this.store.state.game_number !== GameManager.gameNumber()) {
+      this.store.invalidateStore();
+    }
+  };
+
   private updateTitle = (value: number) => {
     this.title_elem.innerText = `${this.mode} #${value}`;
   };
@@ -301,8 +316,11 @@ export class GameManager {
   };
 
   private handleInvalidateStore = (store: LingleStore) => {
-    store.state.game_number = GameManager.gameNumber();
     this.updateTitle(store.state.game_number);
+    for (const board of this.boards) {
+      board.elem.remove();
+    }
+    this.boards = GameManager.createBoards(store);
   };
 
   // private handleCopyResult = (event: Event) => {
@@ -358,9 +376,7 @@ export class GameBoard {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
 
     let rng = new Prando(`${this.mode}@${day_one}`);
-    rng.skip(
-      (GameManager.gameNumber() - 1) * modeBoards(this.mode) + this.id
-    );
+    rng.skip((GameManager.gameNumber() - 1) * modeBoards(this.mode) + this.id);
 
     const index = rng.nextInt(0, WordList.size - 1);
     return [...WordList][index];
