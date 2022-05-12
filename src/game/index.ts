@@ -9,7 +9,8 @@ import { LingleStore } from "../store";
 // import { renderAsText } from "./share";
 import { Mode, modeBoards, modeRows } from "./mode";
 import key_handler from "./key_handler";
-import { messages } from "../message";
+import { Message, MessageKind, messages } from "../message";
+import { renderAsText } from "./share";
 
 export enum GameStatus {
   Won,
@@ -61,7 +62,7 @@ export class GameManager {
 
     this.updateTitle(this.store.state.game_number);
 
-    // document.addEventListener("copyresult", this.handleCopyResult);
+    document.addEventListener("copyresult", this.handleCopyResult);
     document.addEventListener("setposition", this.handleSetPosition);
     document.addEventListener("sendkey", this.handleSendKey);
     // document.getElementById("app")?.addEventListener("click", (ev) => {
@@ -325,9 +326,23 @@ export class GameManager {
     this.boards = GameManager.createBoards(store);
   };
 
-  // private handleCopyResult = (event: Event) => {
-  //   //todo
-  // };
+  private handleCopyResult = (_: Event) => {
+    if (this.playingBoards().length == 0) {
+      const title = `${this.mode} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
+      utils
+        .copyText(renderAsText(title, this.store.state.attempts))
+        .then((method) => {
+          if (method == "clipboard") {
+            events.dispatchSendMessageEvent(messages.resultCopied());
+          }
+        });
+    } else {
+      events.dispatchSendMessageEvent({
+        data: "Você ainda não terminou o jogo.",
+        kind: MessageKind.Error,
+      } as Message);
+    }
+  };
 
   private handleSetPosition = (event: Event) => {
     const boards = this.playingBoards();
@@ -401,17 +416,6 @@ export class GameBoard {
       this.elem.appendChild(row.elem);
     }
   };
-
-  // private handleCopyResult = () => {
-  //   // const title = `${this.title} ${this.store.state.game_number} (🔥 ${this.store.stats.win_streak})`;
-  //   // utils
-  //   //   .copyText(renderAsText(title, [this.store.state.attempts]))
-  //   //   .then((method) => {
-  //   //     if (method == "clipboard") {
-  //   //       events.dispatchSendMessageEvent(messages.resultCopied());
-  //   //     }
-  //   //   });
-  // };
 
   paintAttempt = (attempt: WordAttempt, row: BoardRow, animate: boolean) => {
     const letters = [
