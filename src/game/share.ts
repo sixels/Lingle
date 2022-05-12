@@ -1,4 +1,4 @@
-import { WordAttempt } from ".";
+import { LetterAttempt, WordAttempt } from ".";
 
 enum LetterStyle {
   Wrong = "wrong",
@@ -92,10 +92,32 @@ export const renderAsText = (
     [...new Array(word_len * attempts.length)].map(() => " ")
   );
 
+  // fill the remaining letters with "wrong" blocks
+  let rows = 0;
+  attempts.forEach((attempt) => {
+    rows = Math.max(rows, attempt.length);
+  });
+  attempts.forEach((attempt, b) => {
+    while (attempt.length < rows) {
+      const lts: LetterAttempt[] = [];
+      for (let i = 0; i < 5; i++) {
+        lts.push({
+          index: i,
+          letter: " ",
+          normalized: " ",
+        } as LetterAttempt);
+      }
+      attempt.push({
+        wrong_letters: lts,
+        right_letters: [] as LetterAttempt[],
+        occur_letters: [] as LetterAttempt[],
+        board: b
+      } as WordAttempt);
+    }
+  });
+
   renderBoard(1, 1, 0, 0, attempts, (ls, x, y) => {
-    x +=
-      Math.floor(x / (attempts[0].length + 1)) *
-      Math.floor(attempts[0].length / 2);
+    x += Math.floor(x / 5) * Math.floor(5 / 2);
     board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
   });
 
@@ -121,7 +143,7 @@ export const renderAsText = (
   const attempts_string = attempt_numbers.join(" ");
   const board_string = board.join("\n").replaceAll(",", "").trimEnd();
 
-  return `${centralize(`${game_name} - ${attempts_string}`)}
+  return `${centralize(`${game_name} ${attempts_string}`)}
 
 ${board_string}
 
