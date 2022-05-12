@@ -84,7 +84,7 @@ export class GameManager {
   }
 
   static dayOne = (): Date => {
-    return new Date("2022/02/03");
+    return new Date("2022/05/22");
   };
 
   static gameNumber = (): number => {
