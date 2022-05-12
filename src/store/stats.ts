@@ -8,9 +8,10 @@ export class Stats {
   history: number[] = [];
 
   constructor(mode: Mode) {
-    for (let i = 0; i < modeRows(mode); i++) {
+    for (let i = 0; i <= modeRows(mode); i++) {
       this.history.push(0);
     }
+    console.log("History created:", this.history.length)
   }
 
   static fromJSON(this: typeof Stats, mode: Mode, data: any): Stats {
@@ -19,6 +20,8 @@ export class Stats {
     stats.win_streak = data.win_streak;
     stats.longest_streak = data.longest_streak;
     stats.history = data.history;
+
+    console.log("History fromJSON:", stats.history.length)
 
     return stats;
   }

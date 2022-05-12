@@ -26,6 +26,7 @@ export class LingleStore {
   setMode(mode: Mode) {
     this.mode = mode;
     this.state = new State(mode);
+    this.stats = new Stats(mode);
     this.load();
     this.onInvalidateCallbacks.forEach((cb) => cb(this));
   }

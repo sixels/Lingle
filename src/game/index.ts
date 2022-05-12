@@ -185,12 +185,15 @@ export class GameManager {
   attemptAll = (attempts: WordAttempt[]) => {
     const reveal_time = 1000;
 
+    let n_attempt = 0;
     let next_word: BoardPosition | null = null;
     for (const attempt of attempts) {
       if (attempt.board >= this.boards.length) {
         continue;
       }
       this.store.state.attempts[attempt.board].push(attempt);
+      n_attempt = this.store.state.attempts[attempt.board].length;
+
       const board = this.boards[attempt.board];
 
       const position = this.current_position;
@@ -227,6 +230,10 @@ export class GameManager {
       }, reveal_time);
     } else {
       const win = this.boards.every((board) => board.status == GameStatus.Won);
+      this.store.stats.update(
+        win ? GameStatus.Won : GameStatus.Lost,
+        n_attempt
+      );
       setTimeout(() => {
         events.dispatchSendMessageEvent(
           win
@@ -236,18 +243,13 @@ export class GameManager {
       }, reveal_time);
     }
 
-    // TODO: update stats
-    // this.store.stats.update(
-    //   this.store.state.status,
-    //   this.store.state.attempts.length - 1
-    // );
-
     this.store.save();
   };
 
   private validateStore = () => {
     if (this.store.state.game_number === 0) {
       this.store.state.game_number = GameManager.gameNumber();
+      this.updateTitle(this.store.state.game_number);
       return;
     }
 

@@ -1,7 +1,7 @@
 import events from "../events";
 import { GameStatus } from "../game";
+import { Mode, modeBoards, modeRows } from "../game/mode";
 import { LingleStore } from "../store";
-import { Stats } from "../store/stats";
 import utils from "../utils";
 
 export class StatsModal {
@@ -19,7 +19,7 @@ export class StatsModal {
     this.elem.id = "stats";
     this.elem.classList.add("modal", "stats");
 
-    this.chart = new Chart();
+    this.chart = new Chart(store.mode);
     this.summary = new Summary();
     this.footer = new Footer();
 
@@ -32,7 +32,7 @@ export class StatsModal {
     title.classList.add("title");
     this.elem.prepend(title);
 
-    this.update(store.stats);
+    this.update(store);
 
     if (store.state.status.every((status) => status !== GameStatus.Playing)) {
       // wait a little before showing the stats
@@ -41,12 +41,12 @@ export class StatsModal {
 
     store.onInvalidate((store) => {
       clearTimeout(this.show_timeout);
-      this.show_timeout = undefined;
-      this.update(store.stats);
       this.show(false);
+      this.show_timeout = undefined;
+      this.update(store);
     });
     store.onSave((store) => {
-      this.update(store.stats);
+      this.update(store);
       clearTimeout(this.show_timeout);
       this.show_timeout = undefined;
       if (store.state.status.every((status) => status !== GameStatus.Playing)) {
@@ -78,7 +78,12 @@ export class StatsModal {
       : this.elem.classList.remove("visible");
   };
 
-  private update(stats: Stats) {
+  private update(store: LingleStore) {
+    const stats = store.stats;
+
+    this.chart.destroyLines();
+    this.chart.createLines(modeRows(store.mode), modeBoards(store.mode));
+
     const n_games = stats.history.reduce((total, value) => total + value, 0);
     const wins = stats.history.reduce((total, value, i) => {
       return i < 5 ? total + value : total;
@@ -92,8 +97,9 @@ export class StatsModal {
     );
 
     this.chart.max = 0;
+    console.log("History from Chart.update:", stats.history.length);
     stats.history.forEach((n, i) => {
-      this.chart.setValue(i, n);
+      this.chart.setValue(i - modeBoards(store.mode), n);
     });
     this.chart.updateWeights();
   }
@@ -165,47 +171,43 @@ class Summary {
 class Chart {
   elem: HTMLElement;
   max: number = 0;
+  graph_elem: HTMLElement;
 
   private readonly title: string = "Histórico de Tentativas";
   private lines: HTMLElement[] = [];
 
-  constructor() {
+  constructor(mode: Mode) {
     this.elem = document.createElement("div");
     this.elem.classList.add("chart");
+
+    this.graph_elem = document.createElement("div");
 
     const title = document.createElement("span");
     title.innerText = this.title;
     title.classList.add("title");
     this.elem.prepend(title);
 
-    for (let i = 0; i < 7; i++) {
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("line-wrapper");
-
-      const legend = document.createElement("span");
-      legend.innerText = `${i < 6 ? i + 1 : "X"}`;
-      legend.classList.add("legend");
-
-      const line = document.createElement("div");
-      line.classList.add("line", "empty");
-
-      wrapper.appendChild(legend);
-      wrapper.appendChild(line);
-
-      this.lines.push(wrapper);
-      this.elem.appendChild(wrapper);
-    }
+    this.createLines(modeRows(mode), modeBoards(mode));
+    this.elem.appendChild(this.graph_elem);
   }
 
   setValue = (key: number, value: number) => {
-    this.max = Math.max(value, this.max);
-    const line = this.lines[key];
-    if (value > 0) {
-      line.classList.remove("empty");
-    } else {
-      line.classList.add("empty");
+    if (key < 0) {
+      return;
     }
-    (this.lines[key].children[1] as HTMLElement).innerText = `${value}`;
+
+    const line = this.lines.at(key);
+
+    if (line !== undefined) {
+      this.max = Math.max(value, this.max);
+
+      if (value > 0) {
+        line.classList.remove("empty");
+      } else {
+        line.classList.add("empty");
+      }
+      (this.lines[key].children[1] as HTMLElement).innerText = `${value}`;
+    }
   };
 
   updateWeights = () => {
@@ -215,6 +217,33 @@ class Chart {
         const value = Number.parseInt(txt) || 0;
         line.style.width = `${Math.round((value * 100) / this.max)}%`;
       }
+    }
+  };
+
+  destroyLines = () => {
+    for (const line of this.lines) {
+      line.remove();
+    }
+    this.lines = [];
+  };
+
+  createLines = (lines: number, start: number) => {
+    for (let i = start; i < start + lines; i++) {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("line-wrapper", "empty");
+
+      const legend = document.createElement("span");
+      legend.innerText = `${i + 1 < start + lines ? i : "X"}`;
+      legend.classList.add("legend");
+
+      const line = document.createElement("div");
+      line.classList.add("line");
+
+      wrapper.appendChild(legend);
+      wrapper.appendChild(line);
+
+      this.lines.push(wrapper);
+      this.graph_elem.appendChild(wrapper);
     }
   };
 }
