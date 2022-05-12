@@ -97,7 +97,6 @@ export class StatsModal {
     );
 
     this.chart.max = 0;
-    console.log("History from Chart.update:", stats.history.length);
     stats.history.forEach((n, i) => {
       this.chart.setValue(i - modeBoards(store.mode), n);
     });
