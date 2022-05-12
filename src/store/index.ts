@@ -7,8 +7,8 @@ import { Stats } from "./stats";
 export type StoreCallback = (store: LingleStore) => void;
 
 export class LingleStore {
-  stats: Stats = new Stats();
-  state: State = new State();
+  stats: Stats;
+  state: State;
   expires: Date = new Date();
   mode: Mode;
 
@@ -18,11 +18,14 @@ export class LingleStore {
   constructor(mode: Mode) {
     this.expires = utils.tomorrow();
     this.mode = mode;
+    this.stats = new Stats(mode);
+    this.state = new State(mode);
     this.load();
   }
 
   setMode(mode: Mode) {
     this.mode = mode;
+    this.state = new State(mode);
     this.load();
     this.onInvalidateCallbacks.forEach((cb) => cb(this));
   }
@@ -76,8 +79,8 @@ export class LingleStore {
         if (this.hasExpired()) {
           this.invalidateStore();
         } else {
-          this.stats = Stats.fromJSON(object.stats);
-          this.state = State.fromJSON(object.state);
+          this.stats = Stats.fromJSON(this.mode, object.stats);
+          this.state = State.fromJSON(this.mode, object.state);
         }
       } catch (e) {
         console.error(e);
@@ -94,7 +97,7 @@ export class LingleStore {
     localStorage.removeItem(this.mode);
 
     this.stats = stats;
-    this.state = new State();
+    this.state = new State(this.mode);
     this.expires = utils.tomorrow();
 
     this.save();

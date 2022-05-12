@@ -1,15 +1,20 @@
 import { GameStatus } from "../game";
+import { Mode, modeRows } from "../game/mode";
 
 export class Stats {
   win_streak: number = 0;
   longest_streak: number = 0;
   played_games: number = 0;
-  history: number[] = [0, 0, 0, 0, 0, 0, 0];
+  history: number[] = [];
 
-  constructor() {}
+  constructor(mode: Mode) {
+    for (let i = 0; i < modeRows(mode); i++) {
+      this.history.push(0);
+    }
+  }
 
-  static fromJSON(this: typeof Stats, data: any): Stats {
-    let stats = new this();
+  static fromJSON(this: typeof Stats, mode: Mode, data: any): Stats {
+    let stats = new this(mode);
 
     stats.win_streak = data.win_streak;
     stats.longest_streak = data.longest_streak;
