@@ -24,9 +24,15 @@ export class LingleStore {
   }
 
   setMode(mode: Mode) {
+    // save the current state then change the mode
+    this.save();
     this.mode = mode;
+
+    // reset state and stats
     this.state = new State(mode);
     this.stats = new Stats(mode);
+
+    // load the new state and trigger store invalidate
     this.load();
     this.onInvalidateCallbacks.forEach((cb) => cb(this));
   }
