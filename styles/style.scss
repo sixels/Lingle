@@ -323,20 +323,27 @@ a {
   display: grid;
   gap: 0.44em;
 
-
   .row.letters {
-    display: grid;
-    gap: 0.12em;
-    grid-template-columns: repeat(5, 1.3em);
     .letter {
       aspect-ratio: 1;
     }
   }
 }
 
+.example {
+  .letters {
+    gap: 2rem;
+  }
+  section .letters {
+    grid-template-columns: 1.3em;
+    margin-right: 1em !important; 
+  }
+}
+
 .letters {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  gap: 0.12em;
+  grid-template-columns: repeat(5, 1.3em);
 
   &.shaking {
     animation: shake 300ms ease;
@@ -610,7 +617,7 @@ a {
         position: relative;
         min-width: 2.1rem;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1.2em;
         padding-right: 0.6rem;
         color: var(--letter-default-color-bd);
 
@@ -639,11 +646,11 @@ a {
         width: 100%;
         height: 100%;
 
-        font-size: 1.2rem;
+        font-size: 1em;
         padding-right: 0.5rem;
 
         background: var(--default-color-accent);
-        border-radius: 7px;
+        border-radius: 4px;
       }
     }
   }
