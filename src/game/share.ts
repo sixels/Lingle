@@ -92,7 +92,7 @@ export const renderAsImage = (
 
 export const renderAsText = (
   game_name: string,
-  attempts: WordAttempt[][]
+  attempts: readonly WordAttempt[][]
 ): string => {
   const chars = {
     right: "🟩",
@@ -107,10 +107,11 @@ export const renderAsText = (
   attempts.forEach((attempt) => {
     max_attempt = Math.max(max_attempt, attempt.length);
   });
-
+  
   // fill the empty rows with "wrong" letters
+  const attempts_ = [...attempts];
   const fill_attempts = () => {
-    attempts.forEach((attempt, b) => {
+    attempts_.forEach((attempt, b) => {
       while (attempt.length < max_attempt) {
         const wrong: LetterAttempt[] = [];
         for (let i = 0; i < 5; i++) {
@@ -144,7 +145,7 @@ export const renderAsText = (
       () => " "
     )
   );
-  renderBoard(1, 1, 0, 0, attempts, (ls, x, y) => {
+  renderBoard(1, 1, 0, 0, attempts_, (ls, x, y) => {
     const board_n = Math.floor(x / 5);
     x += board_n;
     board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
