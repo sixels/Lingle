@@ -227,12 +227,13 @@ class Chart {
   };
 
   createLines = (lines: number, start: number) => {
-    for (let i = start; i < start + lines; i++) {
+    const total = lines - (start - 1);
+    for (let i = 0; i <= total; i++) {
       const wrapper = document.createElement("div");
       wrapper.classList.add("line-wrapper", "empty");
 
       const legend = document.createElement("span");
-      legend.innerText = `${i + 1 < start + lines ? i : "X"}`;
+      legend.innerText = `${i < total ? i + start : "X"}`;
       legend.classList.add("legend");
 
       const line = document.createElement("div");
