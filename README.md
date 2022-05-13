@@ -11,13 +11,13 @@ Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/
 - [x] Sequência de vitórias
 - [x] Estatísticas pessoais
 - [x] Como jogar
-- [ ] Mais modos de jogo
+- [x] Mais modos de jogo
 - [ ] Tela de ajustes
 - [ ] PWA
 
 ## Recursos
 
-A base de palavras vem do [VERO](https://pt-br.libreoffice.org/projetos/vero), o verificador ortográfico do LibreOffice.
+A base de palavras vem desse (projeto incr\'ivel)[https://github.com/fserb/pt-br] do (Fernando Serboncini)[https://fserb.com/], criador do jogo (Termo)[https://term.ooo] (que tamb\'em foi inspirado em Wordle!).
 
 Criei uma mini coleção de scripts para facilitar o processamento das palavras (disponíveis no diretório `scripts/`).
 
@@ -36,5 +36,3 @@ O commando usado para gerar wordlist presente em `src/wordlist.ts` foi:
 ```sh
 ./scripts/generate_wordlist.sh ./data/palavras.txt | sed 's/\(.*\)/"\1",/'
 ```
-
-Onde `palavras.txt` é o dicionário descompactado.
