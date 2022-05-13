@@ -112,10 +112,14 @@ export class KeyboardManager {
     this.paintKeys(attempt);
   };
 
-  private handleInvalidateStore = () => {
+  private handleInvalidateStore = (store: LingleStore) => {
     for (const key_elem of this.keys) {
       key_elem.classList.remove("wrong", "right", "occur");
     }
+
+    store.state.attempts.forEach((board_attempt) =>
+      board_attempt.forEach(this.paintKeys)
+    );
   };
 
   private paintKeys = (attempt: WordAttempt) => {
