@@ -86,7 +86,7 @@ export class StatsModal {
 
     const n_games = stats.history.reduce((total, value) => total + value, 0);
     const wins = stats.history.reduce((total, value, i) => {
-      return i < 5 ? total + value : total;
+      return i < modeRows(store.mode) ? total + value : total;
     }, 0);
 
     this.summary.updateData(
