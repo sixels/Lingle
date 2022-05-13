@@ -512,7 +512,7 @@ a {
   flex-direction: column;
   align-items: center;
 
-  // overflow-y: auto;
+  overflow-y: auto;
 
   &.visible {
     transition: visibility 0ms linear 0ms, opacity 300ms ease;
