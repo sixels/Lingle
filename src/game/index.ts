@@ -6,7 +6,6 @@ import utils from "../utils";
 import { WordList } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, BoardColumn } from "./board";
 import { LingleStore } from "../store";
-// import { renderAsText } from "./share";
 import { Mode, modeBoards, modeRows } from "./mode";
 import key_handler from "./key_handler";
 import { Message, MessageKind, messages } from "../message";
@@ -229,14 +228,16 @@ export class GameManager {
         this.updatePositionAndState(this.current_position);
       }, reveal_time);
     } else {
-      const win = this.boards.every((board) => board.status == GameStatus.Won);
-      this.store.stats.update(
-        win ? GameStatus.Won : GameStatus.Lost,
-        n_attempt
-      );
+      const status = this.boards.every(
+        (board) => board.status == GameStatus.Won
+      )
+        ? GameStatus.Won
+        : GameStatus.Lost;
+
+      this.store.stats.update(status, n_attempt);
       setTimeout(() => {
         events.dispatchSendMessageEvent(
-          win
+          status === GameStatus.Won
             ? messages.gameWin()
             : messages.gameLost(this.boards.map((board) => board.solution))
         );
