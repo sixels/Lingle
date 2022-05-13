@@ -6,6 +6,20 @@ enum LetterStyle {
   Occur = "occur",
 }
 
+const emoji_numbers: readonly string[] = Object.freeze([
+  "0️⃣",
+  "1️⃣",
+  "2️⃣",
+  "3️⃣",
+  "4️⃣",
+  "5️⃣",
+  "6️⃣",
+  "7️⃣",
+  "8️⃣",
+  "9️⃣",
+  "🔟",
+]);
+
 export const renderAsImage = (
   game_name: string,
   attempts: WordAttempt[][]
@@ -88,66 +102,64 @@ export const renderAsText = (
   const word_len = 5;
   const n_words = word_len + attempts.length;
 
-  let board: string[][] = [...new Array(n_words)].map(() =>
-    [...new Array(word_len * attempts.length)].map(() => " ")
-  );
-
-  // fill the remaining letters with "wrong" blocks
-  let rows = 0;
+  // get maximum attempt number
+  let max_attempt = 0;
   attempts.forEach((attempt) => {
-    rows = Math.max(rows, attempt.length);
-  });
-  attempts.forEach((attempt, b) => {
-    while (attempt.length < rows) {
-      const lts: LetterAttempt[] = [];
-      for (let i = 0; i < 5; i++) {
-        lts.push({
-          index: i,
-          letter: " ",
-          normalized: " ",
-        } as LetterAttempt);
-      }
-      attempt.push({
-        wrong_letters: lts,
-        right_letters: [] as LetterAttempt[],
-        occur_letters: [] as LetterAttempt[],
-        board: b
-      } as WordAttempt);
-    }
+    max_attempt = Math.max(max_attempt, attempt.length);
   });
 
-  renderBoard(1, 1, 0, 0, attempts, (ls, x, y) => {
-    x += Math.floor(x / 5) * Math.floor(5 / 2);
-    board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
-  });
+  // fill the empty rows with "wrong" letters
+  const fill_attempts = () => {
+    attempts.forEach((attempt, b) => {
+      while (attempt.length < max_attempt) {
+        const wrong: LetterAttempt[] = [];
+        for (let i = 0; i < 5; i++) {
+          wrong.push({
+            index: i,
+            letter: " ",
+            normalized: " ",
+          } as LetterAttempt);
+        }
+
+        attempt.push({
+          wrong_letters: wrong,
+          right_letters: [] as LetterAttempt[],
+          occur_letters: [] as LetterAttempt[],
+          board: b,
+        } as WordAttempt);
+      }
+    });
+  };
 
   const attempt_numbers = attempts.map((attempt) => {
-    if (
-      attempt.length === n_words &&
+    return attempt.length === n_words &&
       attempt[attempt.length - 1].right_letters.length < word_len
-    ) {
-      return `X/${word_len + 1}`;
-    }
-    return `${attempt.length}/${word_len + 1}`;
+      ? "🟥"
+      : `${emoji_numbers[attempt.length]}`;
   });
 
-  const centralize = (text: string): string => {
-    const spaces = " ".repeat(30);
-    const offset = Math.max(
-      0,
-      Math.floor(2 * (board[0].length - 1) - text.length)
-    );
-    return `${spaces.substring(0, offset / 4)}${text}`;
-  };
+  fill_attempts();
+  let board: string[][] = [...new Array(max_attempt)].map(() =>
+    [...new Array(word_len * attempts.length + attempts.length - 1)].map(
+      () => " "
+    )
+  );
+  renderBoard(1, 1, 0, 0, attempts, (ls, x, y) => {
+    const board_n = Math.floor(x / 5);
+    x += board_n;
+    board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
+  });
 
   const attempts_string = attempt_numbers.join(" ");
   const board_string = board.join("\n").replaceAll(",", "").trimEnd();
 
-  return `${centralize(`${game_name} ${attempts_string}`)}
+  return `${game_name}
+
+${attempts_string}
 
 ${board_string}
 
-${centralize("lingle.vercel.app")}`;
+lingle.vercel.app`;
 };
 
 const renderBoard = (
