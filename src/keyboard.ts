@@ -1,6 +1,5 @@
 import events from "./events";
 import { AttemptType, GameStatus, WordAttempt } from "./game";
-import { modeBoards } from "./game/mode";
 import { LingleStore } from "./store";
 
 export class KeyboardManager {
