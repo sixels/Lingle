@@ -19109,5 +19109,5 @@ function normalizedWordList(): Map<string, string> {
   return normalized;
 }
 
-export const WordList = wordlist;
-export const WordListNormalized = normalizedWordList();
+export const WordList = Object.freeze(wordlist);
+export const WordListNormalized = Object.freeze(normalizedWordList());
