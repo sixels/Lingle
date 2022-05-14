@@ -17,19 +17,28 @@ export enum GameStatus {
   Playing,
 }
 
-export interface LetterAttempt {
+export namespace AttemptType {
+  export const Occur: "occur" = "occur" as const;
+  export const Right: "right" = "right" as const;
+  export const Wrong: "wrong" = "wrong" as const;
+  export type Any =
+    | typeof AttemptType.Occur
+    | typeof AttemptType.Right
+    | typeof AttemptType.Wrong;
+}
+
+export interface LetterAttempt<T> {
   // Non-normalized letter
   letter: string;
   // Normalized letter
   normalized: string;
   // The index the letter occurs
   index: number;
+  type: T;
 }
 
 export interface WordAttempt {
-  wrong_letters: LetterAttempt[];
-  right_letters: LetterAttempt[];
-  occur_letters: LetterAttempt[];
+  letters: LetterAttempt<AttemptType.Any>[];
   board: number;
 }
 
@@ -202,7 +211,9 @@ export class GameManager {
       board.paintAttempt(attempt, attempt_row, true);
 
       // update game state
-      if (attempt.right_letters.length == N_COLS) {
+      if (
+        attempt.letters.every((letter) => letter.type === AttemptType.Right)
+      ) {
         board.status = GameStatus.Won;
 
         setTimeout(() => {
@@ -418,17 +429,13 @@ export class GameBoard {
   };
 
   paintAttempt = (attempt: WordAttempt, row: BoardRow, animate: boolean) => {
-    const letters = [
-      ...attempt.wrong_letters,
-      ...attempt.right_letters,
-      ...attempt.occur_letters,
-    ].sort((a, b) => a.index - b.index);
+    const letters = attempt.letters.sort((a, b) => a.index - b.index);
 
     letters.forEach((letter, i) => {
       const col = row.columns[letter.index];
 
       if (!animate) {
-        this.paintLetter(attempt, letter, row);
+        this.paintLetter(letter, row);
         return;
       }
 
@@ -436,7 +443,7 @@ export class GameBoard {
         col.elem.classList.add("reveal");
         col.animateBounce();
 
-        this.paintLetter(attempt, letter, row);
+        this.paintLetter(letter, row);
 
         setTimeout(() => {
           col.elem.classList.remove("reveal");
@@ -447,18 +454,23 @@ export class GameBoard {
   };
 
   private paintLetter = (
-    attempt: WordAttempt,
-    letter: LetterAttempt,
+    letter: LetterAttempt<AttemptType.Any>,
     row: BoardRow
   ) => {
     const col = row.columns[letter.index];
 
-    if (attempt.wrong_letters.indexOf(letter) >= 0) {
-      col.elem.classList.add("wrong");
-    } else if (attempt.right_letters.indexOf(letter) >= 0) {
-      col.elem.classList.add("right");
-    } else if (attempt.occur_letters.indexOf(letter) >= 0) {
-      col.elem.classList.add("occur");
+    switch (letter.type) {
+      case AttemptType.Wrong:
+        col.elem.classList.add("wrong");
+        break;
+      case AttemptType.Right:
+        col.elem.classList.add("right");
+        break;
+      case AttemptType.Occur:
+        col.elem.classList.add("occur");
+        break;
+      default:
+        break;
     }
 
     col._value = letter.letter;

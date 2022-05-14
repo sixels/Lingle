@@ -1,10 +1,8 @@
-import { LetterAttempt, WordAttempt } from ".";
+import { AttemptType, LetterAttempt, WordAttempt } from ".";
 import utils from "../utils";
 
 const compareWords = (base: string, cmp: string): WordAttempt => {
-  let right_letters: LetterAttempt[] = [];
-  let occur_letters: LetterAttempt[] = [];
-  let wrong_letters: LetterAttempt[] = [];
+  let attempt_letters: LetterAttempt<AttemptType.Any>[] = [];
 
   // create a list of base's letters
   let base_letters: (string | undefined)[] = utils
@@ -30,7 +28,7 @@ const compareWords = (base: string, cmp: string): WordAttempt => {
       });
 
     // get the reference to the category
-    let category: LetterAttempt[] | undefined = undefined;
+    let attempt_type: AttemptType.Any = AttemptType.Wrong;
     if (occurrences.size > 0) {
       let has_right: number = 0;
       let c = 1;
@@ -43,34 +41,29 @@ const compareWords = (base: string, cmp: string): WordAttempt => {
         c += id + 1;
       }
 
-      if (has_right == occurrences.size) {
-        category = wrong_letters;
-      } else {
+      if (has_right !== occurrences.size) {
         let index: number = occurrences.values().next().value;
 
         if (occurrences.has(i)) {
           index = i;
-          category = right_letters;
+          attempt_type = AttemptType.Right;
         } else {
-          category = occur_letters;
+          attempt_type = AttemptType.Occur;
         }
         base_letters[index] = undefined;
       }
-    } else {
-      category = wrong_letters;
     }
 
-    category?.push({
+    attempt_letters.push({
       letter: cmp_unorm_letter,
       normalized: cmp_norm_letter,
       index: i,
+      type: attempt_type,
     });
   }
 
   return {
-    right_letters,
-    occur_letters,
-    wrong_letters,
+    letters: attempt_letters,
     board: 0,
   };
 };

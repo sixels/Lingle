@@ -1,4 +1,4 @@
-import { LetterAttempt, WordAttempt } from ".";
+import { AttemptType, LetterAttempt, WordAttempt } from ".";
 
 enum LetterStyle {
   Wrong = "wrong",
@@ -107,25 +107,24 @@ export const renderAsText = (
   attempts.forEach((attempt) => {
     max_attempt = Math.max(max_attempt, attempt.length);
   });
-  
+
   // fill the empty rows with "wrong" letters
   const attempts_ = [...attempts];
   const fill_attempts = () => {
     attempts_.forEach((attempt, b) => {
       while (attempt.length < max_attempt) {
-        const wrong: LetterAttempt[] = [];
+        const wrong: LetterAttempt<typeof AttemptType.Wrong>[] = [];
         for (let i = 0; i < 5; i++) {
           wrong.push({
             index: i,
             letter: " ",
             normalized: " ",
-          } as LetterAttempt);
+            type: AttemptType.Wrong,
+          });
         }
 
         attempt.push({
-          wrong_letters: wrong,
-          right_letters: [] as LetterAttempt[],
-          occur_letters: [] as LetterAttempt[],
+          letters: wrong,
           board: b,
         } as WordAttempt);
       }
@@ -134,7 +133,9 @@ export const renderAsText = (
 
   const attempt_numbers = attempts.map((attempt) => {
     return attempt.length === n_words &&
-      attempt[attempt.length - 1].right_letters.length < word_len
+      attempt[attempt.length - 1].letters.map(
+        (letter) => letter.type === AttemptType.Right
+      ).length < word_len
       ? "🟥"
       : `${emoji_numbers[attempt.length]}`;
   });
@@ -174,11 +175,7 @@ const renderBoard = (
   const width = (cell_width * 5 + margin + padding * 4) * attempts.length;
   attempts.forEach((attempt, i) => {
     attempt.forEach((letters, j) => {
-      const sorted = [
-        ...letters.wrong_letters,
-        ...letters.right_letters,
-        ...letters.occur_letters,
-      ].sort((a, b) => a.index - b.index);
+      const sorted = letters.letters.sort((a, b) => a.index - b.index);
 
       sorted.forEach((letter, k) => {
         const x =
@@ -188,13 +185,21 @@ const renderBoard = (
         const y = j * (cell_height + padding) + margin / 2;
 
         let letter_style: LetterStyle | undefined;
-        if (letters.wrong_letters.indexOf(letter) >= 0) {
-          letter_style = LetterStyle.Wrong;
-        } else if (letters.right_letters.indexOf(letter) >= 0) {
-          letter_style = LetterStyle.Right;
-        } else if (letters.occur_letters.indexOf(letter) >= 0) {
-          letter_style = LetterStyle.Occur;
+
+        switch (letter.type) {
+          case AttemptType.Wrong:
+            letter_style = LetterStyle.Wrong;
+            break;
+          case AttemptType.Right:
+            letter_style = LetterStyle.Right;
+            break;
+          case AttemptType.Occur:
+            letter_style = LetterStyle.Occur;
+            break;
+          default:
+            break;
         }
+
         render_function(letter_style, x, y);
       });
     });
