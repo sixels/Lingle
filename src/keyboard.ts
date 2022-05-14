@@ -1,5 +1,6 @@
 import events from "./events";
-import { WordAttempt } from "./game";
+import { AttemptType, GameStatus, WordAttempt } from "./game";
+import { modeBoards } from "./game/mode";
 import { LingleStore } from "./store";
 
 export class KeyboardManager {
@@ -14,29 +15,58 @@ export class KeyboardManager {
     ..."qwertyuiopasdfghjklzxcvbnm".split(""),
   ]);
 
-  private keys: HTMLElement[] = [];
+  private keys: Map<string, HTMLElement>;
   private effectTimeouts = new Map();
+  private playing_boards: number[] = [];
+  private prev_playing_boards: number;
 
   // Create a new keyboard manager
   constructor(elem: HTMLElement, store: LingleStore) {
     // handle clicks from the virtual keyboard
+    let keyboard_keys = [];
     const rows: HTMLElement[] = [].slice.call(elem.children);
     for (const row of rows) {
       const keys: HTMLElement[] = [].slice.call(row.children);
       for (const key of keys) {
         key.addEventListener("click", this.handleKeyClick);
       }
-
-      this.keys = this.keys.concat(keys);
+      keyboard_keys.push(...keys);
     }
 
-    store.onInvalidate(this.handleInvalidateStore);
+    this.keys = new Map(
+      keyboard_keys.map((elem: HTMLElement) => {
+        return [elem.dataset["key"] || "@", elem];
+      })
+    );
+
+    this.prev_playing_boards = this.updatePlayingBoards(store);
+
     store.state.attempts.forEach((board_attempt) =>
       board_attempt.forEach(this.paintKeys)
     );
+    store.onInvalidate(this.handleInvalidateStore);
+    store.onSave((store) => {
+      const cur_playing_boards = this.updatePlayingBoards(store);
+      if (this.prev_playing_boards !== cur_playing_boards) {
+        this.prev_playing_boards = cur_playing_boards;
+
+        this.reset_keyboard();
+        store.state.attempts.forEach((board_attempt) =>
+          board_attempt.forEach(this.paintKeys)
+        );
+      }
+    });
 
     document.addEventListener("wordattempt", this.handleWordAttempt);
   }
+
+  updatePlayingBoards = (store: LingleStore): number => {
+    this.playing_boards = store.state.status
+      .map((s, i) => [s === GameStatus.Playing, i] as [boolean, number])
+      .filter(([s, _]) => s)
+      .map(([_, i]) => i);
+    return this.playing_boards.length;
+  };
 
   // Check wether a key is valid or not
   static isKeyValid(key: string): boolean {
@@ -52,6 +82,20 @@ export class KeyboardManager {
     }
   };
 
+  private reset_keyboard() {
+    const dirs = ["left", "right"] as const;
+    const types = ["right", "occur", "wrong"] as const;
+
+    // combine types and directions
+    const classes: string[] = types.flatMap((type) =>
+      dirs.map((dir) => type + "-" + dir)
+    );
+
+    for (const key of this.keys.values()) {
+      key.classList.remove(...classes, ...types);
+    }
+  }
+
   // Apply a highlight effect to the given key
   private highlightKey = (key: string) => {
     // avoid searching for invalid characters
@@ -59,9 +103,7 @@ export class KeyboardManager {
       return;
     }
 
-    const key_element = this.keys.find((v) => {
-      return key === v.dataset["key"];
-    });
+    const key_element = this.keys.get(key);
 
     if (key_element !== undefined) {
       key_element.classList.add("highlighted");
@@ -113,9 +155,9 @@ export class KeyboardManager {
   };
 
   private handleInvalidateStore = (store: LingleStore) => {
-    for (const key_elem of this.keys) {
-      key_elem.classList.remove("wrong", "right", "occur");
-    }
+    this.prev_playing_boards = this.updatePlayingBoards(store);
+
+    this.reset_keyboard();
 
     store.state.attempts.forEach((board_attempt) =>
       board_attempt.forEach(this.paintKeys)
@@ -123,15 +165,52 @@ export class KeyboardManager {
   };
 
   private paintKeys = (attempt: WordAttempt) => {
-    for (const key_elem of this.keys) {
-      let key = key_elem.dataset["key"];
-      if (attempt.wrong_letters.some((v) => v.normalized == key)) {
-        key_elem.classList.add("wrong");
-      } else if (attempt.right_letters.some((v) => v.normalized == key)) {
-        key_elem.classList.remove("occur");
-        key_elem.classList.add("right");
-      } else if (attempt.occur_letters.some((v) => v.normalized == key)) {
-        key_elem.classList.add("occur");
+    let side: "left" | "right" | undefined = undefined;
+    if (this.prev_playing_boards == 2) {
+      side = attempt.board === 0 ? "left" : "right";
+    }
+
+    for (const letter of attempt.letters) {
+      const key = this.keys.get(letter.normalized);
+
+      if (
+        !key ||
+        this.prev_playing_boards === 0 ||
+        this.playing_boards.indexOf(attempt.board) < 0
+      ) {
+        key?.classList.add("wrong");
+        continue;
+      }
+
+      const mkClass = (type: string): string => {
+        return type.concat(side ? "-" + side : "");
+      };
+
+      let key_class: string | undefined = undefined;
+      switch (letter.type) {
+        case AttemptType.Wrong:
+          key_class = "wrong";
+          break;
+        case AttemptType.Right:
+          // we've got the right position for that letter, remove the "occur"
+          const occur = mkClass("occur");
+          if (key.classList.contains(occur)) {
+            key.classList.remove(occur);
+          }
+          key_class = "right";
+          break;
+        case AttemptType.Occur:
+          // we already have it right, just skip
+          if (key.classList.contains(mkClass("right"))) {
+            break;
+          }
+
+          key_class = "occur";
+          break;
+      }
+
+      if (key_class) {
+        key.classList.add(mkClass(key_class));
       }
     }
   };

@@ -336,7 +336,7 @@ a {
   }
   section .letters {
     grid-template-columns: 1.3em;
-    margin-right: 1em !important; 
+    margin-right: 1em !important;
   }
 }
 
@@ -433,14 +433,14 @@ a {
     &:first-of-type .key {
       margin-bottom: 0;
     }
-
     .key {
       @extend .btn;
+      --self-left-bg: var(--key-color-bg);
+      --self-right-bg: var(--key-color-bg);
 
       height: 93%;
       width: 8%;
       margin: 0.43rem min(0.3rem, 0.6%);
-      margin-bottom: 0;
 
       display: grid;
       place-items: center;
@@ -449,15 +449,19 @@ a {
       border-radius: 7px;
       border: none;
 
-      --self-color-bg: var(--key-color-bg);
-      background-color: var(--self-color-bg);
-
+      background-image: linear-gradient(
+        90deg,
+        var(--self-left-bg) 50%,
+        var(--self-right-bg) 50%
+      );
       color: var(--key-color-fg);
       box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 
       text-transform: uppercase;
 
-      transition: background-color 75ms ease;
+      transition-duration: 496ms;
+      transition-timing-function: ease;
+      transition-property: background-image, color;
 
       &.special {
         &.backspace {
@@ -471,17 +475,42 @@ a {
         width: var(--self-width);
       }
 
-      &.wrong {
-        --self-color-bg: var(--key-wrong-color-bg);
+      &.wrong,
+      &.wrong-left.wrong-right {
+        --self-left-bg: var(--key-wrong-color-bg);
+        --self-right-bg: var(--key-wrong-color-bg);
         color: var(--key-wrong-color-fg);
       }
-      &.right {
-        --self-color-bg: var(--key-right-color-bg);
+      &.right,
+      &.right.left.right-right {
+        --self-left-bg: var(--key-right-color-bg);
+        --self-right-bg: var(--key-right-color-bg);
         color: var(--key-right-color-fg);
       }
-      &.occur {
-        --self-color-bg: var(--key-occur-color-bg);
+      &.occur,
+      &.occur-left.occur-right {
+        --self-left-bg: var(--key-occur-color-bg);
+        --self-right-bg: var(--key-occur-color-bg);
         color: var(--key-occur-color-fg);
+      }
+
+      &.wrong-left {
+        --self-left-bg: var(--key-wrong-color-bg);
+      }
+      &.wrong-right {
+        --self-right-bg: var(--key-wrong-color-bg);
+      }
+      &.right-left {
+        --self-left-bg: var(--key-right-color-bg);
+      }
+      &.right-right {
+        --self-right-bg: var(--key-right-color-bg);
+      }
+      &.occur-left {
+        --self-left-bg: var(--key-occur-color-bg);
+      }
+      &.occur-right {
+        --self-right-bg: var(--key-occur-color-bg);
       }
 
       &.highlighted {
