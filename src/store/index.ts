@@ -99,14 +99,8 @@ export class LingleStore {
   };
 
   private reset = () => {
-    // keep stats
-    let stats = this.stats;
-    localStorage.removeItem(this.mode);
-
-    this.stats = stats;
     this.state = new State(this.mode);
     this.expires = utils.tomorrow();
-
     this.save();
   };
 }
