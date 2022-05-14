@@ -28,10 +28,10 @@ export default {
   copyText: async (text: string): Promise<"clipboard" | "share"> => {
     try {
       await navigator.share({ title: "Resultado do Lingle", text: text });
-      return "share"
+      return "share";
     } catch (e) {
       await navigator.clipboard.writeText(text);
-      return "clipboard"
+      return "clipboard";
     }
   },
 
