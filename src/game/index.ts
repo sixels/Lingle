@@ -330,7 +330,7 @@ export class GameManager {
   };
 
   private handleInvalidateStore = (store: LingleStore) => {
-    this.updateTitle(store.state.game_number);
+    this.updateTitle(GameManager.gameNumber());
     for (const board of this.boards) {
       board.elem.remove();
     }
