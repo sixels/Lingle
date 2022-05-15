@@ -49,8 +49,8 @@ export class GameManager {
   edit_mode: boolean = false;
 
   private store: LingleStore;
-
   private title_elem: HTMLElement;
+  private revealing: boolean = false;
 
   constructor(store: LingleStore) {
     this.store = store;
@@ -208,7 +208,11 @@ export class GameManager {
       const attempt_row = board.rowAtPosition(position);
 
       // paint letters
+      this.revealing = true;
       board.paintAttempt(attempt, attempt_row, true);
+      setTimeout(() => {
+        this.revealing = false;
+      }, reveal_time);
 
       // update game state
       if (
@@ -277,7 +281,7 @@ export class GameManager {
   private handleSendKey = (event: Event) => {
     let custom_ev = event as CustomEvent;
     let key = custom_ev.detail["key"] as string | null;
-    if (key === null) {
+    if (key === null || this.revealing) {
       return;
     }
 
