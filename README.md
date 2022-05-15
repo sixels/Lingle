@@ -1,6 +1,8 @@
 # Lingle
 
-Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/games/wordle/index.html)
+Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/games/wordle/index.html).
+
+Disponível em [lingle.vercel.app](https://lingle.vercel.app)
 
 ## Metas
 
