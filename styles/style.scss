@@ -520,47 +520,76 @@ a {
   }
 }
 
-.modal {
+.modal-wrapper {
+  z-index: 13;
+
   position: absolute;
-  top: 5.7rem;
-  left: 50%;
+  width: 100%;
+  height: 100%;
 
-  z-index: 15;
-
-  transform: translateX(-50%);
-
-  width: min(95vw, 50rem);
-  height: min(85%, 40rem);
-  max-height: min(83%, 40rem);
-
-  padding: 1rem 0rem;
-
-  background-color: var(--modal-color-bg);
-  color: var(--default-color-fg);
-  border-radius: 1rem;
-  box-shadow: 0px 10px 30px -6px rgba(0, 0, 0, 0.4);
-
-  transition: visibility 0ms linear 300ms, opacity 300ms ease;
   visibility: hidden;
-  opacity: 0;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  overflow-y: auto;
 
   &.visible {
-    transition: visibility 0ms linear 0ms, opacity 300ms ease;
-
     visibility: visible;
-    opacity: 1;
+
+    .modal,
+    .overlay {
+      transition: visibility 0ms linear 0ms, opacity 300ms ease;
+
+      visibility: visible;
+      opacity: 1;
+    }
+    :is(.overlay) {
+      opacity: 0.5;
+    }
   }
 
-  .title {
-    font-size: 1.6rem !important;
-    text-align: center;
-    margin-bottom: 1.2rem;
+  .overlay {
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--overlay-color-bg);
+
+    transition: visibility 0ms linear 300ms, opacity 300ms ease;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .modal {
+    position: absolute;
+    top: 5.7rem;
+    left: 50%;
+
+    z-index: 15;
+
+    transform: translateX(-50%);
+
+    width: min(95vw, 50rem);
+    height: min(85%, 40rem);
+    max-height: min(83%, 40rem);
+
+    padding: 1rem 0rem;
+
+    background-color: var(--default-color-bg);
+    color: var(--default-color-fg);
+    border-radius: 1rem;
+    box-shadow: 0px 10px 30px -6px rgba(0, 0, 0, 0.4);
+
+    transition: visibility 0ms linear 300ms, opacity 300ms ease;
+    visibility: hidden;
+    opacity: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow-y: auto;
+
+    .title {
+      font-size: 1.6rem !important;
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
   }
 }
 .modal.stats {

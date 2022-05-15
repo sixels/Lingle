@@ -15,22 +15,30 @@ export class StatsModal {
   private show_timeout?: number;
 
   constructor(store: LingleStore) {
-    this.elem = document.createElement("div");
-    this.elem.id = "stats";
-    this.elem.classList.add("modal", "stats");
+    this.elem = document.createElement("aside");
+    this.elem.classList.add("modal-wrapper");
+
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    this.elem.appendChild(overlay);
+
+    const modal = document.createElement("div");
+    modal.id = "stats";
+    modal.classList.add("modal", "stats");
+    this.elem.appendChild(modal);
 
     this.chart = new Chart(store.mode);
     this.summary = new Summary();
     this.footer = new Footer(store);
 
-    this.elem.appendChild(this.summary.elem);
-    this.elem.appendChild(this.chart.elem);
-    this.elem.appendChild(this.footer.elem);
+    modal.appendChild(this.summary.elem);
+    modal.appendChild(this.chart.elem);
+    modal.appendChild(this.footer.elem);
 
     const title = document.createElement("span");
     title.innerText = this.title;
     title.classList.add("title");
-    this.elem.prepend(title);
+    modal.prepend(title);
 
     this.update(store);
 
@@ -55,10 +63,14 @@ export class StatsModal {
       }
     });
 
-    this.elem.addEventListener("click", (ev: MouseEvent) => {
+    modal.addEventListener("click", (ev: MouseEvent) => {
       ev.stopPropagation();
     });
-    document.addEventListener("click", (_) => {
+    this.elem.addEventListener("click", (ev: MouseEvent) => {
+      ev.stopPropagation();
+      this.show(false);
+    });
+    document.addEventListener("openhtp", (_) => {
       this.show(false);
     });
     document.addEventListener("openstats", (ev) => {

@@ -1,3 +1,4 @@
+import events from "../events";
 import { LingleStore } from "../store";
 
 export class HTPModal {
@@ -6,9 +7,17 @@ export class HTPModal {
   private readonly title: string = "Sobre";
 
   constructor(store: LingleStore) {
-    this.elem = document.createElement("div");
-    this.elem.id = "htp";
-    this.elem.classList.add("modal", "htp");
+    this.elem = document.createElement("aside");
+    this.elem.classList.add("modal-wrapper");
+
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    this.elem.appendChild(overlay);
+
+    const modal = document.createElement("div");
+    modal.id = "htp";
+    modal.classList.add("modal", "htp");
+    this.elem.appendChild(modal);
 
     const about = document.createElement("section");
     about.innerHTML = `
@@ -71,29 +80,44 @@ export class HTPModal {
     </div>`.trim();
     examples.classList.add("examples");
 
-    this.elem.appendChild(about);
-    this.elem.appendChild(instructions);
-    this.elem.appendChild(examples);
+    modal.appendChild(about);
+    modal.appendChild(instructions);
+    modal.appendChild(examples);
 
     const title = document.createElement("span");
     title.innerText = this.title;
     title.classList.add("title");
-    this.elem.prepend(title);
+    modal.prepend(title);
 
     if (store.stats.played_games === 0 && store.state.attempts.length === 0) {
       // wait a little before showing how to play
       setTimeout(() => this.show(true), 800);
     }
 
-    this.elem.addEventListener("click", (ev: MouseEvent) => {
+    modal.addEventListener("click", (ev: MouseEvent) => {
       ev.stopPropagation();
     });
-    document.addEventListener("click", (_) => {
+    this.elem.addEventListener("click", (ev: MouseEvent) => {
+      ev.stopPropagation();
       this.show(false);
     });
     document.addEventListener("openstats", (_) => {
       this.show(false);
     });
+    document.addEventListener("openhtp", (ev) => {
+      let option = (ev as CustomEvent).detail["option"];
+      this.show(option);
+    });
+
+    const is_board_empty = store.state.attempts.every((attempts) => {
+      return attempts.length === 0;
+    });
+    if (is_board_empty && store.stats.played_games === 0) {
+      setTimeout(() => {
+        events.dispatchOpenStatsEvent(false);
+        this.show(true);
+      }, 500);
+    }
   }
 
   show = (option: boolean | "toggle") => {
