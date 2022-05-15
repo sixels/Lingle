@@ -15,7 +15,7 @@ interface LoadError {
 export class LingleStore {
   // I don't really care about theses values, this is just to keep the
   // constructor clean
-  expires: Date = new Date();
+  expires: Date | undefined = undefined;
   mode: Mode = "lingle";
   stats: Stats = new Stats(this.mode);
   state: State = new State(this.mode);
@@ -55,7 +55,7 @@ export class LingleStore {
   }
 
   save = () => {
-    if (LingleStore.hasExpired(this.expires)) {
+    if (!this.expires || LingleStore.hasExpired(this.expires)) {
       this.invalidateStore();
     }
 
@@ -81,7 +81,7 @@ export class LingleStore {
 
       const e = error as LoadError;
 
-      console.log(e.data);
+      console.log(e.type);
       // retrieve the stats if the state was just expired, then reset
       this.stats =
         e.type === "expired"
@@ -105,7 +105,7 @@ export class LingleStore {
 
     // check if the state from local storage is valid
     const expires = new Date(object.expires);
-    if (LingleStore.hasExpired(this.expires)) {
+    if (LingleStore.hasExpired(expires)) {
       const error = {
         type: "expired",
         data: object,
