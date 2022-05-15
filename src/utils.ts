@@ -2,7 +2,7 @@ const { ClipboardItem } = window;
 
 const ONE_DAY_IN_MS = 864e5; // 1000 * 60 * 60 * 24
 
-export default {
+export default Object.freeze({
   normalizedWord: (word: string): string => {
     return word.normalize("NFD").replace(/\p{Diacritic}/gu, "");
   },
@@ -57,4 +57,4 @@ export default {
   tomorrow: (): Date => {
     return new Date(new Date().setHours(0, 0, 0, 0) + ONE_DAY_IN_MS);
   },
-};
+});
