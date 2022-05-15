@@ -1,7 +1,13 @@
 {
   "name": "lingle",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "Sixels",
+    "email": "sixels@protonmail.com"
+  },
+  "homepage": "lingle.vercel.app",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -10,10 +16,10 @@
   "devDependencies": {
     "sass": "^1.50.1",
     "typescript": "^4.5.4",
-    "vite": "^2.9.5"
+    "vite": "^2.9.5",
+    "pnpm": "^7.0.0"
   },
   "dependencies": {
-    "pnpm": "^7.0.0",
     "prando": "^6.0.1"
   }
 }
