@@ -14,7 +14,7 @@ export class KeyboardManager {
     ..."qwertyuiopasdfghjklzxcvbnm".split(""),
   ]);
 
-  private keys: Map<string, HTMLElement>;
+  private keys: Map<string, HTMLElement> = new Map();
   private effectTimeouts = new Map();
   private playing_boards: number[] = [];
   private prev_playing_boards: number;
@@ -22,21 +22,15 @@ export class KeyboardManager {
   // Create a new keyboard manager
   constructor(elem: HTMLElement, store: LingleStore) {
     // handle clicks from the virtual keyboard
-    let keyboard_keys = [];
     const rows: HTMLElement[] = [].slice.call(elem.children);
     for (const row of rows) {
       const keys: HTMLElement[] = [].slice.call(row.children);
-      for (const key of keys) {
-        key.addEventListener("click", this.handleKeyClick);
-      }
-      keyboard_keys.push(...keys);
+      keys.map((elem) => {
+        const key = elem.dataset["key"];
+        if (key) this.keys.set(key, elem);
+      });
     }
-
-    this.keys = new Map(
-      keyboard_keys.map((elem: HTMLElement) => {
-        return [elem.dataset["key"] || "@", elem];
-      })
-    );
+    elem.addEventListener("click", this.handleKeyClick);
 
     this.prev_playing_boards = this.updatePlayingBoards(store);
 
