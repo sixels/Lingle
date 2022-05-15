@@ -77,4 +77,15 @@ export default {
 
     document.dispatchEvent(open_stats);
   },
+  dispatchOpenHtpEvent: (option: boolean | "toggle") => {
+    let open_htp = new CustomEvent("openhtp", {
+      detail: {
+        option,
+      },
+      bubbles: false,
+      cancelable: false,
+      composed: false,
+    });
+    document.dispatchEvent(open_htp);
+  },
 };
