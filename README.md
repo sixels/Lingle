@@ -17,7 +17,7 @@ Um jogo de palavras em português inspirado em [Wordle](https://www.nytimes.com/
 
 ## Recursos
 
-A base de palavras vem desse (projeto incr\'ivel)[https://github.com/fserb/pt-br] do (Fernando Serboncini)[https://fserb.com/], criador do jogo (Termo)[https://term.ooo] (que tamb\'em foi inspirado em Wordle!).
+A base de palavras vem desse [projeto incrível](https://github.com/fserb/pt-br) do [Fernando Serboncini](https://fserb.com/), criador do jogo [Termo](https://term.ooo) (que também foi inspirado em Wordle!).
 
 Criei uma mini coleção de scripts para facilitar o processamento das palavras (disponíveis no diretório `scripts/`).
 
