@@ -57,13 +57,11 @@ function setupUIElements(store: LingleStore) {
   document.getElementById("toggle-stats")?.addEventListener("click", (ev) => {
     ev.stopPropagation();
     menu.show(false);
-    htp.show(false);
     stats.show(true);
   });
   document.getElementById("toggle-htp")?.addEventListener("click", (ev) => {
     ev.stopPropagation();
     menu.show(false);
-    stats.show(false);
     htp.show(true);
   });
 

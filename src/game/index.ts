@@ -287,8 +287,13 @@ export class GameManager {
 
     const boards = this.playingBoards();
 
+    events.dispatchOpenHtpEvent(false);
     if (boards.length === 0) {
-      events.dispatchOpenStatsEvent(key !== "escape");
+      if (key === "escape") {
+        events.dispatchOpenStatsEvent(false);
+      } else {
+        events.dispatchOpenStatsEvent("toggle");
+      }
       return;
     }
 
