@@ -108,7 +108,7 @@ export class GameManager {
 
     let board_wrapper = document.getElementById("board-wrapper");
     if (board_wrapper === null) {
-      throw Error("Missing #board-wrapper element");
+      throw new Error("Missing #board-wrapper element");
     }
 
     let boards_elem = [];
