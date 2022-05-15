@@ -21,7 +21,7 @@ export class StatsModal {
 
     this.chart = new Chart(store.mode);
     this.summary = new Summary();
-    this.footer = new Footer();
+    this.footer = new Footer(store);
 
     this.elem.appendChild(this.summary.elem);
     this.elem.appendChild(this.chart.elem);
@@ -250,10 +250,12 @@ class Chart {
 
 class Footer {
   elem: HTMLElement;
+  store: WeakRef<LingleStore>;
 
-  constructor() {
+  constructor(store: LingleStore) {
     this.elem = document.createElement("div");
     this.elem.classList.add("footer");
+    this.store = new WeakRef(store);
 
     const share_btn = document.createElement("button");
     share_btn.classList.add("btn", "copy-btn");
@@ -277,6 +279,7 @@ class Footer {
       let rem = tomorrow - now;
 
       if (rem < 0) {
+        store.invalidateStore();
         tomorrow = utils.tomorrow().getTime();
       }
 
