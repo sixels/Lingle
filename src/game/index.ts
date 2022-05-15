@@ -7,7 +7,7 @@ import { WordList } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, BoardColumn } from "./board";
 import { LingleStore } from "../store";
 import { Mode, modeBoards, modeRows } from "./mode";
-import key_handler from "./key_handler";
+import input from "./input";
 import { Message, MessageKind, messages } from "../message";
 import { renderAsText } from "./share";
 
@@ -289,12 +289,12 @@ export class GameManager {
     }
 
     const handlers: { [key: string]: (_: GameManager) => void } = {
-      enter: key_handler.handleEnter,
-      backspace: key_handler.handleBackspace,
-      arrowleft: key_handler.handleLeft,
-      arrowright: key_handler.handleRight,
-      home: key_handler.handleHome,
-      end: key_handler.handleEnd,
+      enter: input.handleEnter,
+      backspace: input.handleBackspace,
+      arrowleft: input.handleLeft,
+      arrowright: input.handleRight,
+      home: input.handleHome,
+      end: input.handleEnd,
       escape: (_) => {},
     };
 
