@@ -330,9 +330,10 @@ class Footer {
         (rem % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
       );
       const minutes = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
-      next_word_timer.innerText = `${String(hours).padStart(2, "0")}H ${String(
+      const seconds = Math.floor((rem % (1000 * 60)) / 1000);
+      next_word_timer.innerText = `${String(hours).padStart(2, "0")}:${String(
         minutes
-      ).padStart(2, "0")}M`;
+      ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
       setTimeout(updateTimer, 1000);
     };
     setTimeout(updateTimer, 1000);
