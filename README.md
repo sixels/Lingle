@@ -14,6 +14,7 @@ Disponível em [lingle.vercel.app](https://lingle.vercel.app)
 - [x] Estatísticas pessoais
 - [x] Como jogar
 - [x] Mais modos de jogo
+- [x] Mostrar soluções após o termino do jogo
 - [ ] Tela de ajustes
 - [ ] PWA
 
