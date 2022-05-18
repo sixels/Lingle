@@ -30,10 +30,15 @@ export class HTPModal {
     const instructions = document.createElement("section");
     instructions.innerHTML = `
     <h2 class="title"> Como Jogar </h2>
-    <p class="instructions">Adivinhe a palavra do dia em seis tentativas. </p>
-    <p class="instructions"> Cada tentativa deve ser uma palavra válida de cinco letras. Após uma
+    <p>Adivinhe a palavra do dia, mas se atente ao número de tentativas.</p>
+    <p> Cada tentativa deve ser uma palavra válida de cinco letras. Após cada
     tentativa, as peças são reveladas, mostrando o quão próximo você está da palavra.</p>
-    <p class="instructions">Não se preocupe com acentuação, eu coloco pra você!</p>`;
+    <p> Você pode usar tanto seu teclado físico, quanto o teclado do próprio jogo para inserir as palavras.
+    Voce pode também se mover clicando em alguma coluna da tentativa atual, ou usando as setas do teclado, para ir para direita ou para esquerda. 
+    As teclas "Home" e "End" também podem ser usadas para ir para o começo ou final da palavra, respectivamente.</p>
+    <p> Todo dia uma palavra é escolhida aleatoriamente. Não se esqueça de voltar amanhã para o próximo desafio.</p>
+    <p>Ah, não se preocupe com acentuação, eu coloco pra você!</p>
+    <p align="center">Boa sorte!</p>`;
     instructions.classList.add("instruction");
 
     const examples = document.createElement("div");
@@ -55,13 +60,13 @@ export class HTPModal {
     <div class="example">
         <div class="letters">
             <div class="letter"> B </div>
-            <div class="letter"> O </div>
+            <div class="letter"> A </div>
             <div class="letter"> L </div>
             <div class="letter"> D </div>
-            <div class="letter occur"> O </div>
+            <div class="letter occur"> E </div>
         </div>
         <section>
-            <div class="letters"><div class="letter occur"> O </div></div> pertence à
+            <div class="letters"><div class="letter occur"> E </div></div> pertence à
             palavra, mas sua posição não está correta.
         </section>
     </div>
