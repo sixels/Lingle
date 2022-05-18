@@ -182,7 +182,13 @@ export class KeyboardManager {
       let key_class: string | undefined = undefined;
       switch (letter.type) {
         case AttemptType.Wrong:
-          key_class = "wrong";
+          if (
+            !key.classList.contains(mkClass("occur")) &&
+            !key.classList.contains(mkClass("right"))
+          ) {
+            key_class = "wrong";
+          }
+
           break;
         case AttemptType.Right:
           // we've got the right position for that letter, remove the "occur"
