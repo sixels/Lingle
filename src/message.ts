@@ -27,13 +27,13 @@ export const messages = {
   gameWin: (callback?: () => void): Message => {
     return {
       kind: MessageKind.Info,
-      data: "Parabéns, você ganhou!",
+      data: "Parabéns, você acertou!",
       callback,
     };
   },
   gameLost: (solutions: string[], callback?: () => void): Message => {
     const message =
-      solutions.length > 1 ? "As palavras de hoje eram" : "A palavra certa era";
+      solutions.length > 1 ? "As palavras de hoje eram" : "A palavra de hoje era";
     return {
       kind: MessageKind.Info,
       data: `Você perdeu. ${message}: ${solutions.join(", ")}.`,
