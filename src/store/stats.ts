@@ -19,6 +19,7 @@ export class Stats {
     stats.win_streak = data.win_streak;
     stats.longest_streak = data.longest_streak;
     stats.history = data.history;
+    stats.played_games = data.played_games;
 
     return stats;
   }
@@ -27,6 +28,7 @@ export class Stats {
       win_streak: this.win_streak,
       longest_streak: this.longest_streak,
       history: this.history,
+      played_games: this.played_games,
     };
   };
 
