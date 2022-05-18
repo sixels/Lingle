@@ -283,7 +283,7 @@ class Footer {
     const next_word_timer = document.createElement("span");
 
     next_word_label.innerText = "Próxima palavra em";
-    next_word_timer.innerText = "00:00:00";
+    next_word_timer.innerHTML = "<span>00H</span><span>00M</span>";
 
     let tomorrow = utils.tomorrow().getTime();
     const updateTimer = () => {
@@ -300,9 +300,9 @@ class Footer {
       );
       const minutes = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((rem % (1000 * 60)) / 1000);
-      next_word_timer.innerText = `${String(hours).padStart(2, "0")}:${String(
+      next_word_timer.innerText = `${String(hours).padStart(2, "0")}H ${String(
         minutes
-      ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      ).padStart(2, "0")}M`;
       setTimeout(updateTimer, 1000);
     };
     setTimeout(updateTimer, 1000);

@@ -67,6 +67,7 @@
           border-bottom-left-radius: 0 !important;
           padding: 0.2rem 0.8rem;
           border-radius: 4px;
+
         }
       }
     }
@@ -78,6 +79,7 @@
 
       margin: 0 !important;
       padding: 0 !important;
+      
     }
   }
 
@@ -137,6 +139,7 @@
       flex-direction: column !important;
 
       padding-left: 0.5rem;
+      align-items: baseline !important;
 
       .mode {
         padding: 0.5rem 0;
