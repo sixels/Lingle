@@ -217,11 +217,12 @@ a {
 
     .strong {
       height: 2.8rem;
-      font-size: 2rem;
+      font-size: 2em;
       margin-left: 1rem;
 
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: 800;
 
       text-transform: uppercase;
@@ -353,6 +354,7 @@ a {
 }
 
 .letters {
+  @extend .no-select;
   display: grid;
   gap: 0.12em;
   grid-template-columns: repeat(5, 1.3em);
@@ -657,14 +659,16 @@ a {
     border-radius: 1rem;
     background-color: #00000020;
 
+    font-size: min(3.9vw, 1.2em);
+
     .title {
-      font-size: 1.2em !important;
+      font-size: 1em !important;
     }
 
     p {
       margin: 0;
       text-align: center;
-      font-size: 1.3em;
+      font-size: 1.12em;
       font-weight: bolder;
       color: var(--letter-right-color-bg);
     }
@@ -687,7 +691,8 @@ a {
       top: -2.5rem;
       font-size: 1.3em !important;
       transform: translateX(-50%);
-      width: 90%;
+      width: max-content;
+      max-width: 100%;
     }
 
     .line-wrapper {
@@ -857,14 +862,15 @@ a {
   .about {
     font-size: 1.1rem;
     width: 85%;
+    margin-top: -1rem;
   }
   .instruction {
     width: 85%;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    margin-top: 1rem;
-    .instructions {
+    // margin-top: 1rem;
+    p {
       margin-top: 0;
       margin-bottom: 0.4rem;
       font-size: 1.1rem;
@@ -875,7 +881,7 @@ a {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    margin-top: 1rem;
+    // margin-top: 1rem;
 
     .title {
       font-size: 1.5rem !important;
