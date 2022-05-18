@@ -19,6 +19,7 @@ export class LingleStore {
   mode: Mode = "lingle";
   stats: Stats = new Stats(this.mode);
   state: State = new State(this.mode);
+  solutions: string[] = [];
 
   onInvalidateCallbacks: StoreCallback[] = [];
   onSaveCallbacks: StoreCallback[] = [];
@@ -62,6 +63,7 @@ export class LingleStore {
     const object = {
       stats: this.stats.asJSON(),
       state: this.state.asJSON(),
+      solutions: this.solutions,
       expires: this.expires,
     };
 
@@ -74,6 +76,7 @@ export class LingleStore {
       this.tryLoad();
     } catch (error: any) {
       if ("type" in error === false) {
+        this.reset();
         throw new Error(
           "Something weird happened while loading the game state"
         );
@@ -116,11 +119,13 @@ export class LingleStore {
     this.expires = expires;
     this.stats = Stats.fromJSON(this.mode, object.stats);
     this.state = State.fromJSON(this.mode, object.state);
+    this.solutions = [...object.solutions];
   };
 
   private reset = () => {
     this.state = new State(this.mode);
     this.expires = utils.tomorrow();
+    this.solutions = [];
     this.save();
   };
 }

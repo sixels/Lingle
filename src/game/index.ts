@@ -250,6 +250,7 @@ export class GameManager {
         : GameStatus.Lost;
 
       this.store.stats.update(status, n_attempt);
+      this.store.solutions = this.boards.map((b) => b.solution);
       setTimeout(() => {
         events.dispatchSendMessageEvent(
           status === GameStatus.Won

@@ -607,7 +607,7 @@ a {
 }
 .modal.stats {
   display: grid;
-  grid-template-rows: 1.4rem 1fr 1fr 1fr;
+  grid-template-rows: 1.4rem 1fr 1fr 1fr 1fr;
   grid-template-columns: 100%;
   place-items: center;
 
@@ -645,6 +645,25 @@ a {
       // background-color: blue;
     }
   }
+  .solutions {
+    margin-top: 1.2rem;
+    padding: 1.2rem 3rem;
+    padding-top: 0.9rem;
+    border-radius: 1rem;
+    background-color: #00000020;
+
+    .title {
+      font-size: 1.2em !important;
+    }
+
+    p {
+      margin: 0;
+      text-align: center;
+      font-size: 1.3em;
+      font-weight: bolder;
+      color: var(--letter-right-color-bg);
+    }
+  }
 
   .chart {
     position: relative;
@@ -655,13 +674,13 @@ a {
     flex-direction: column;
     justify-content: center;
 
-    margin-top: 2.8rem;
+    margin-top: 3.5rem;
 
     .title {
       position: absolute;
       left: 50%;
       top: -2.5rem;
-      font-size: 1.3rem !important;
+      font-size: 1.3em !important;
       transform: translateX(-50%);
       width: 90%;
     }

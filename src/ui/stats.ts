@@ -13,6 +13,7 @@ export class StatsModal {
   private footer: Footer;
 
   private show_timeout?: number;
+  solutions?: Solutions;
 
   constructor(store: LingleStore) {
     this.elem = document.createElement("aside");
@@ -113,6 +114,16 @@ export class StatsModal {
       this.chart.setValue(i - (modeBoards(store.mode) - 1), n);
     });
     this.chart.updateWeights();
+
+    this.solutions?.elem.remove();
+    this.solutions = undefined;
+    if (store.solutions.length > 0) {
+      this.solutions = new Solutions(store.solutions);
+      this.summary.elem.parentNode?.insertBefore(
+        this.solutions.elem,
+        this.summary.elem.nextSibling
+      );
+    }
   }
 }
 
@@ -177,6 +188,26 @@ class Summary {
     this.win_streak = win_streak;
     this.longest_streak = longest_streak;
   };
+}
+
+class Solutions {
+  elem: HTMLElement;
+
+  private readonly title: string = "As palavras de hoje eram";
+
+  constructor(solutions: string[]) {
+    this.elem = document.createElement("div");
+    this.elem.classList.add("solutions");
+
+    const title = document.createElement("span");
+    title.innerText = this.title;
+    title.classList.add("title");
+    this.elem.prepend(title);
+
+    const solutions_elem = document.createElement("p");
+    solutions_elem.innerText = solutions.join(", ");
+    this.elem.appendChild(solutions_elem);
+  }
 }
 
 class Chart {
