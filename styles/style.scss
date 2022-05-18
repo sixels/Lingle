@@ -368,8 +368,8 @@ a {
     --self-color-fg: var(--letter-wrong-color-fg);
     box-shadow: var(--self-box-shadow);
   }
-  &:not(.disabled) .letter {
-    // --self-color-bg: var(--letter-default-color-bg);
+  .letter {
+    --self-color-bg: var(--letter-default-color-bg);
     --self-box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
 
@@ -459,6 +459,10 @@ a {
       height: 90%;
       width: 8%;
       margin: 0 min(0.3rem, 0.6%);
+
+      i {
+        color: var(--key-color-fg);
+      }
 
       display: grid;
       place-items: center;
@@ -670,7 +674,7 @@ a {
       text-align: center;
       font-size: 1.12em;
       font-weight: bolder;
-      color: var(--letter-right-color-bg);
+      color: var(--default-color-accent);
     }
   }
 
@@ -711,6 +715,7 @@ a {
 
       &:last-of-type .line {
         background-color: var(--letter-wrong-color-bg);
+        color: var(--letter-wrong-color-fg);
       }
 
       &.empty {
@@ -791,7 +796,7 @@ a {
       background: linear-gradient(
         90deg,
         var(--default-color-accent),
-        #4c9b64,
+        var(--default-color-second),
         var(--default-color-accent)
       );
       padding: 1.2rem 1rem;

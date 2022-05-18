@@ -6,7 +6,7 @@ import utils from "../utils";
 import { WordList } from "../wordlist";
 import { BoardPosition, BoardRow, N_COLS, BoardColumn } from "./board";
 import { LingleStore } from "../store";
-import { Mode, modeBoards, modeRows } from "./mode";
+import { Mode, Modes } from "./mode";
 import input from "./input";
 import { Message, MessageKind, messages } from "../message";
 import { renderAsText } from "./share";
@@ -41,8 +41,6 @@ export interface WordAttempt {
   letters: LetterAttempt<AttemptType.Any>[];
   board: number;
 }
-
-const mode_boards = { lingle: 1, duolingle: 2 };
 
 export class GameManager {
   boards: GameBoard[] = [];
@@ -112,9 +110,9 @@ export class GameManager {
     }
 
     let boards_elem = [];
-    for (let i = 0; i < mode_boards[mode]; i++) {
+    for (let i = 0; i < mode.boards; i++) {
       const board = document.createElement("div");
-      board.classList.add("board", mode);
+      board.classList.add("board", mode.mode);
 
       board_wrapper.appendChild(board);
       boards_elem.push(board);
@@ -138,9 +136,7 @@ export class GameManager {
 
         const attempts = store.state.attempts[i];
         attempts.forEach((attempt, j) => {
-          let row = board.rowAtPosition(
-            new BoardPosition([j, 0], modeRows(mode))
-          );
+          let row = board.rowAtPosition(new BoardPosition([j, 0], mode.rows));
           board.paintAttempt(attempt, row, false);
         });
 
@@ -151,8 +147,8 @@ export class GameManager {
     return boards;
   }
 
-  setMode = (mode: Mode) => {
-    if (this.mode === mode) {
+  setMode = (mode: Modes) => {
+    if (this.mode.mode === mode) {
       return;
     }
 
@@ -276,7 +272,7 @@ export class GameManager {
   };
 
   private updateTitle = (value: number) => {
-    this.title_elem.innerText = `${this.mode} #${value}`;
+    this.title_elem.innerText = `${this.mode.mode} #${value}`;
   };
 
   private handleSendKey = (event: Event) => {
@@ -349,7 +345,7 @@ export class GameManager {
 
   private handleCopyResult = (_: Event) => {
     if (this.playingBoards().length == 0) {
-      const title = `${this.mode} ${this.store.state.game_number} - (🔥 ${this.store.stats.win_streak})`;
+      const title = `${this.mode.mode} ${this.store.state.game_number} - (🔥 ${this.store.stats.win_streak})`;
       utils
         .copyText(renderAsText(title, this.store.state.attempts))
         .then((method) => {
@@ -413,22 +409,22 @@ export class GameBoard {
   dailyWord = (): string => {
     const day_one = GameManager.dayOne().setHours(0, 0, 0, 0);
 
-    let rng = new Prando(`${this.mode}@${day_one}`);
-    rng.skip((GameManager.gameNumber() - 1) * modeBoards(this.mode) + this.id);
+    let rng = new Prando(`${this.mode.mode}@${day_one}`);
+    rng.skip((GameManager.gameNumber() - 1) * this.mode.boards + this.id);
 
     const index = rng.nextInt(0, WordList.size - 1);
     return [...WordList][index];
   };
 
   private generateBoard = (mode: Mode) => {
-    for (let r = 0; r < modeRows(mode); r++) {
+    for (let r = 0; r < mode.rows; r++) {
       let row = new BoardRow(createRowElement(), r);
 
       for (let c = 0; c < N_COLS; c++) {
         row.pushColumn(
           new BoardColumn(
             createLetterElement(null),
-            new BoardPosition([r, c], modeRows(this.mode))
+            new BoardPosition([r, c], this.mode.rows)
           )
         );
       }

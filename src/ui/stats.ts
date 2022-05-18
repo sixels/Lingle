@@ -1,6 +1,6 @@
 import events from "../events";
 import { GameStatus } from "../game";
-import { Mode, modeBoards, modeRows } from "../game/mode";
+import { Mode } from "../game/mode";
 import { LingleStore } from "../store";
 import utils from "../utils";
 
@@ -95,11 +95,11 @@ export class StatsModal {
     const stats = store.stats;
 
     this.chart.destroyLines();
-    this.chart.createLines(modeRows(store.mode), modeBoards(store.mode));
+    this.chart.createLines(store.mode.rows, store.mode.boards);
 
     const n_games = stats.history.reduce((total, value) => total + value, 0);
     const wins = stats.history.reduce((total, value, i) => {
-      return i < modeRows(store.mode) ? total + value : total;
+      return i < store.mode.rows ? total + value : total;
     }, 0);
 
     this.summary.updateData(
@@ -111,7 +111,7 @@ export class StatsModal {
 
     this.chart.max = 0;
     stats.history.forEach((n, i) => {
-      this.chart.setValue(i - (modeBoards(store.mode) - 1), n);
+      this.chart.setValue(i - (store.mode.boards - 1), n);
     });
     this.chart.updateWeights();
 
@@ -229,7 +229,7 @@ class Chart {
     title.classList.add("title");
     this.elem.prepend(title);
 
-    this.createLines(modeRows(mode), modeBoards(mode));
+    this.createLines(mode.rows, mode.boards);
     this.elem.appendChild(this.graph_elem);
   }
 

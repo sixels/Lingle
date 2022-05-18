@@ -1,6 +1,6 @@
 import { GameStatus, WordAttempt } from "../game";
 import { BoardPosition } from "../game/board";
-import { Mode, modeBoards, modeRows } from "../game/mode";
+import { Mode } from "../game/mode";
 
 export class State {
   attempts: WordAttempt[][] = [];
@@ -8,15 +8,13 @@ export class State {
   game_number: number = 0;
 
   mode: Mode;
-  rows: number;
   current_position: BoardPosition;
 
   constructor(mode: Mode) {
     this.mode = mode;
-    this.rows = modeRows(mode);
-    this.current_position = new BoardPosition([0, 0], this.rows);
+    this.current_position = new BoardPosition([0, 0], mode.rows);
 
-    for (let i = 0; i < modeBoards(mode); i++) {
+    for (let i = 0; i < mode.boards; i++) {
       this.attempts.push([]);
       this.status.push(GameStatus.Playing);
     }
@@ -26,10 +24,10 @@ export class State {
     let state = new this(mode);
 
     state.attempts = data.attempts;
-    state.status = data.state;
+    state.status = data.status;
     state.current_position = new BoardPosition(
       data.current_position,
-      state.rows
+      state.mode.rows
     );
     state.game_number = data.game_number;
 
@@ -38,7 +36,7 @@ export class State {
   asJSON = (): object => {
     return {
       attempts: this.attempts,
-      state: this.status,
+      status: this.status,
       current_position: this.current_position.asTuple(),
       game_number: this.game_number,
     };

@@ -1,5 +1,5 @@
 import { GameStatus } from "../game";
-import { Mode, modeRows } from "../game/mode";
+import { Mode } from "../game/mode";
 
 export class Stats {
   win_streak: number = 0;
@@ -8,7 +8,7 @@ export class Stats {
   history: number[] = [];
 
   constructor(mode: Mode) {
-    for (let i = 0; i <= modeRows(mode); i++) {
+    for (let i = 0; i <= mode.rows; i++) {
       this.history.push(0);
     }
   }

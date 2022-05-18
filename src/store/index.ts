@@ -1,5 +1,6 @@
-import { Mode } from "../game/mode";
+import { Mode, Modes } from "../game/mode";
 import utils from "../utils";
+import { Preferences } from "./preferences";
 
 import { State } from "./state";
 import { Stats } from "./stats";
@@ -13,19 +14,26 @@ interface LoadError {
 }
 
 export class LingleStore {
-  // I don't really care about theses values, this is just to keep the
-  // constructor clean
   expires: Date | undefined = undefined;
-  mode: Mode = "lingle";
-  stats: Stats = new Stats(this.mode);
-  state: State = new State(this.mode);
+  mode: Mode;
+  stats: Stats;
+  state: State;
+  prefs: Preferences = new Preferences();
   solutions: string[] = [];
 
   onInvalidateCallbacks: StoreCallback[] = [];
   onSaveCallbacks: StoreCallback[] = [];
 
-  constructor(mode: Mode) {
-    this.mode = mode;
+  constructor(mode: Modes) {
+    this.loadPrefs();
+
+    this.mode =
+      this.prefs.pref_mode !== mode
+        ? new Mode(this.prefs.pref_mode)
+        : new Mode(mode);
+
+    this.stats = new Stats(this.mode);
+    this.state = new State(this.mode);
     this.load();
   }
 
@@ -33,10 +41,10 @@ export class LingleStore {
     return new Date() >= expiration;
   };
 
-  setMode(mode: Mode) {
+  setMode(mode: Modes) {
     // save the current state then change the mode
     this.save();
-    this.mode = mode;
+    this.mode = new Mode(mode);
 
     // load the new state and trigger store invalidate
     this.load();
@@ -67,8 +75,19 @@ export class LingleStore {
       expires: this.expires,
     };
 
-    localStorage.setItem(this.mode, JSON.stringify(object));
+    localStorage.setItem(this.mode.mode, JSON.stringify(object));
+    localStorage.setItem("prefs", JSON.stringify(this.prefs.asJSON()));
     this.onSaveCallbacks.forEach((cb) => cb(this));
+  };
+
+  private loadPrefs = () => {
+    const prefs = localStorage.getItem("prefs");
+    if (prefs) {
+      this.prefs = Preferences.fromJSON(JSON.parse(prefs));
+    } else {
+      this.prefs = new Preferences();
+      localStorage.setItem("prefs", JSON.stringify(this.prefs.asJSON()));
+    }
   };
 
   private load = () => {
@@ -84,7 +103,6 @@ export class LingleStore {
 
       const e = error as LoadError;
 
-      console.log(e.type);
       // retrieve the stats if the state was just expired, then reset
       this.stats =
         e.type === "expired"
@@ -96,13 +114,15 @@ export class LingleStore {
   };
 
   private tryLoad = (): void | never => {
-    const store = localStorage.getItem(this.mode);
+    const store = localStorage.getItem(this.mode.mode);
     if (!store) {
       const error = {
         type: "not_found",
       } as LoadError;
       throw error;
     }
+
+    this.loadPrefs();
 
     const object: any = JSON.parse(store);
 
