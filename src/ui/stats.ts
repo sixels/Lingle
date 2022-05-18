@@ -110,7 +110,7 @@ export class StatsModal {
 
     this.chart.max = 0;
     stats.history.forEach((n, i) => {
-      this.chart.setValue(i - modeBoards(store.mode), n);
+      this.chart.setValue(i - (modeBoards(store.mode) - 1), n);
     });
     this.chart.updateWeights();
   }

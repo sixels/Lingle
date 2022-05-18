@@ -29,7 +29,7 @@ export const renderAsImage = (
   const padding = 10;
   const margin = 40;
   const title_height = 40;
-  const font_family = `${title_height}px Lilita One`;
+  const font_family = `${title_height}px Poppins`;
 
   const colors = {
     right: getCSSBackground("letter-right"),

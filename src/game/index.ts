@@ -200,7 +200,7 @@ export class GameManager {
         continue;
       }
       this.store.state.attempts[attempt.board].push(attempt);
-      n_attempt = this.store.state.attempts[attempt.board].length;
+      n_attempt = this.store.state.attempts[attempt.board].length - 1;
 
       const board = this.boards[attempt.board];
 
