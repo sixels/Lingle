@@ -3,7 +3,7 @@ export type Theme = typeof allThemes[number];
 
 export const defaultTheme = (): Theme => {
   if (
-    window.matchMedia &&
+    "matchMedia" in window &&
     window.matchMedia("(prefers-color-scheme: light)").matches
   ) {
     return "claro";
