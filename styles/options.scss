@@ -63,10 +63,10 @@ html[data-theme="alternativo"] {
   --key-color-bg: hsl(221, 18%, 27%);
 
   --letter-default-color-bd: #81858f;
-  --letter-disabled-color-bg: #4b4f58;
+  --letter-disabled-color-bg: hsl(221, 12%, 26%);
   --letter-wrong-color-bg: hsl(220, 33%, 13%);
   --letter-right-color-bg: hsl(176, 85%, 37%);
-  --letter-occur-color-bg: hsl(40, 86%, 72%);
+  --letter-occur-color-bg: hsl(40, 86%, 65%);
 }
 
 html[data-theme="claro"] {
