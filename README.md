@@ -17,7 +17,7 @@ Disponível em [lingle.vercel.app](https://lingle.vercel.app)
 - [x] Mostrar soluções após o termino do jogo
 - [x] Tela de ajustes
 - [x] PWA
-- [ ] Filtrar wordlist
+- [x] Filtrar a wordlist
 
 ## Recursos
 
@@ -38,5 +38,5 @@ Criei uma mini coleção de scripts para facilitar o processamento das palavras 
 O commando usado para gerar wordlist presente em `src/wordlist.ts` foi:
 
 ```sh
-./scripts/generate_wordlist.sh ./data/palavras.txt | sed 's/\(.*\)/"\1",/'
+./scripts/generate_wordlist.sh ./data/pt-br.f.txt ./data/pt-br.5.txt
 ```
