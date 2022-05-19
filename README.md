@@ -17,6 +17,7 @@ Disponível em [lingle.vercel.app](https://lingle.vercel.app)
 - [x] Mostrar soluções após o termino do jogo
 - [x] Tela de ajustes
 - [x] PWA
+- [ ] Filtrar wordlist
 
 ## Recursos
 
