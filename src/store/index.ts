@@ -76,8 +76,13 @@ export class LingleStore {
     };
 
     localStorage.setItem(this.mode.mode, JSON.stringify(object));
-    localStorage.setItem("prefs", JSON.stringify(this.prefs.asJSON()));
+    this.savePrefs();
     this.onSaveCallbacks.forEach((cb) => cb(this));
+  };
+
+  savePrefs = () => {
+    localStorage.setItem("prefs", JSON.stringify(this.prefs.asJSON()));
+    document.documentElement.dataset["theme"] = this.prefs.theme;
   };
 
   private loadPrefs = () => {
@@ -88,6 +93,7 @@ export class LingleStore {
       this.prefs = new Preferences();
       localStorage.setItem("prefs", JSON.stringify(this.prefs.asJSON()));
     }
+    document.documentElement.dataset["theme"] = this.prefs.theme;
   };
 
   private load = () => {
@@ -96,9 +102,6 @@ export class LingleStore {
     } catch (error: any) {
       if ("type" in error === false) {
         this.reset();
-        throw new Error(
-          "Something weird happened while loading the game state"
-        );
       }
 
       const e = error as LoadError;

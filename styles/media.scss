@@ -1,7 +1,7 @@
 @media screen and (max-width: 600px) {
   .header {
     .strong {
-      font-size: 1.5rem !important;
+      font-size: 1.7rem !important;
     }
     .right {
       position: absolute;
@@ -152,16 +152,15 @@
 
   .modal {
     .copy-btn {
-      min-width: 60%;
       margin-right: 7px;
-      padding: initial 0px;
-      font-size: 1.1rem !important;
+      font-size: 1.1em !important;
       .icon {
         margin-right: 3px !important;
       }
     }
     .timer {
-      font-size: 1.1rem !important;
+      font-size: min(4vw, 1.2em) !important;
+      min-width: max-content;
     }
   }
 }

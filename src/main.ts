@@ -6,10 +6,8 @@ import "../styles/style.scss";
 import { GameManager } from "./game";
 import { KeyboardManager } from "./keyboard";
 import { Message, MessageKind } from "./message";
-import { Menu } from "./ui/menu";
 import { LingleStore } from "./store";
-import { StatsModal } from "./ui/stats";
-import { HTPModal } from "./ui/htp";
+import { Menu, StatsModal, HTPModal, PrefsModal } from "./ui";
 
 window.onload = (_) => {
   const app = document.getElementById("app");
@@ -53,6 +51,7 @@ function setupUIElements(store: LingleStore) {
   const menu = new Menu();
   const stats = new StatsModal(store);
   const htp = new HTPModal(store);
+  const prefs = new PrefsModal(store);
 
   document.getElementById("toggle-stats")?.addEventListener("click", (ev) => {
     ev.stopPropagation();
@@ -64,12 +63,18 @@ function setupUIElements(store: LingleStore) {
     menu.show(false);
     htp.show(true);
   });
+  document.getElementById("toggle-prefs")?.addEventListener("click", (ev)=>{
+    ev.stopPropagation();
+    menu.show(false);
+    prefs.show(true);
+  })
 
   const app = document.getElementById("app");
   if (app !== null) {
     app.style.minHeight = `${window.innerHeight}px`;
     app.prepend(stats.elem);
     app.prepend(htp.elem);
+    app.prepend(prefs.elem);
   }
 }
 

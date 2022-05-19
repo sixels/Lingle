@@ -1,9 +1,9 @@
 import { Modes } from "../game/mode";
-import { Theme } from "../theme";
+import { defaultTheme, Theme } from "../theme";
 
 export class Preferences {
   pref_mode: Modes = "lingle";
-  theme: Theme = "dark";
+  theme: Theme = defaultTheme();
 
   constructor() {}
 
