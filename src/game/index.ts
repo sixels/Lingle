@@ -345,7 +345,7 @@ export class GameManager {
 
   private handleCopyResult = (_: Event) => {
     if (this.playingBoards().length == 0) {
-      const title = `${this.mode.mode} ${this.store.state.game_number} - (🔥 ${this.store.stats.win_streak})`;
+      const title = `${this.mode.mode} ${this.store.state.game_number} (🔥${this.store.stats.win_streak})`;
       utils
         .copyText(renderAsText(title, this.store.state.attempts))
         .then((method) => {
