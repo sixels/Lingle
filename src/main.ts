@@ -3,6 +3,7 @@ import "../styles/fonts.scss";
 import "../styles/keyframes.scss";
 import "../styles/media.scss";
 import "../styles/style.scss";
+import "remixicon/fonts/remixicon.css";
 
 import { GameManager } from "./game";
 import { KeyboardManager } from "./keyboard";

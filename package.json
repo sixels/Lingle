@@ -22,6 +22,7 @@
     "workbox-window": "^6.5.3"
   },
   "dependencies": {
-    "prando": "^6.0.1"
+    "prando": "^6.0.1",
+    "remixicon": "^2.5.0"
   }
 }
