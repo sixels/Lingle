@@ -12,7 +12,7 @@ export class StatsModal {
   private chart: Chart;
   private footer: Footer;
 
-  private show_timeout?: number;
+  private show_timeout?: NodeJS.Timeout;
   solutions?: Solutions;
 
   constructor(store: LingleStore) {
