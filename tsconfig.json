@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "WebWorker"],
     "moduleResolution": "Node",
     "strict": true,
     "sourceMap": true,
@@ -14,7 +14,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["vite/client", "vite-plugin-pwa/client"]
   },
-  "include": ["src"]
+  // "include": ["src"],
+  "exclude": ["dist", "node_modules"]
 }
