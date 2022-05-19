@@ -15,7 +15,7 @@ Disponível em [lingle.vercel.app](https://lingle.vercel.app)
 - [x] Como jogar
 - [x] Mais modos de jogo
 - [x] Mostrar soluções após o termino do jogo
-- [ ] Tela de ajustes
+- [x] Tela de ajustes
 - [ ] PWA
 
 ## Recursos
