@@ -1,4 +1,4 @@
-import { Modes } from "../game/mode";
+// import { Modes } from "../game/mode";
 import { LingleStore } from "../store";
 import { allThemes, defaultTheme, Theme } from "../theme";
 
@@ -7,7 +7,7 @@ export class PrefsModal {
 
   private readonly title: string = "Ajustes";
 
-  private pref_mode: Modes = "lingle";
+  // private pref_mode: Modes = "lingle";
 
   constructor(store: LingleStore) {
     this.elem = document.createElement("aside");
