@@ -1,4 +1,5 @@
 import "../styles/options.scss";
+import "../styles/fonts.scss";
 import "../styles/keyframes.scss";
 import "../styles/media.scss";
 import "../styles/style.scss";
@@ -8,6 +9,10 @@ import { KeyboardManager } from "./keyboard";
 import { Message, MessageKind } from "./message";
 import { LingleStore } from "./store";
 import { Menu, StatsModal, HTPModal, PrefsModal } from "./ui";
+
+if (typeof window !== "undefined") {
+  import("./pwa");
+}
 
 window.onload = (_) => {
   const app = document.getElementById("app");
@@ -63,11 +68,11 @@ function setupUIElements(store: LingleStore) {
     menu.show(false);
     htp.show(true);
   });
-  document.getElementById("toggle-prefs")?.addEventListener("click", (ev)=>{
+  document.getElementById("toggle-prefs")?.addEventListener("click", (ev) => {
     ev.stopPropagation();
     menu.show(false);
     prefs.show(true);
-  })
+  });
 
   const app = document.getElementById("app");
   if (app !== null) {
@@ -78,7 +83,7 @@ function setupUIElements(store: LingleStore) {
   }
 }
 
-let ltimeout: number | undefined = undefined;
+let ltimeout: NodeJS.Timeout | undefined = undefined;
 const handleMessage = (event: Event) => {
   const custom_ev = event as CustomEvent;
   const message = custom_ev.detail["message"] as Message | undefined;
