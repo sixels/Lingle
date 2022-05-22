@@ -10,24 +10,25 @@ import { KeyboardManager } from "./keyboard";
 import { Message, MessageKind } from "./message";
 import { LingleStore } from "./store";
 import { Menu, StatsModal, HTPModal, PrefsModal } from "./ui";
+import { init_wordlists } from "./wordlist";
 
+init_wordlists();
 if (typeof window !== "undefined") {
   import("./pwa");
-}
-
-window.onload = (_) => {
-  const app = document.getElementById("app");
-  window.onresize = () => {
-    if (app !== null) {
-      app.style.minHeight = `${window.innerHeight}px`;
-    }
+  window.onload = (_) => {
+    const app = document.getElementById("app");
+    window.onresize = () => {
+      if (app !== null) {
+        app.style.minHeight = `${window.innerHeight}px`;
+      }
+    };
   };
 
   let store = new LingleStore("lingle");
   main(store);
-};
+}
 
-const main = (store: LingleStore) => {
+function main(store: LingleStore) {
   let keyboard_elem = document.getElementById("keyboard");
 
   if (keyboard_elem === null) {
@@ -50,7 +51,7 @@ const main = (store: LingleStore) => {
   });
 
   setupUIElements(store);
-};
+}
 
 function setupUIElements(store: LingleStore) {
   //setup ui elements

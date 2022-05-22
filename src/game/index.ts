@@ -3,8 +3,8 @@ import Prando from "prando";
 import events from "../events";
 // import { messages } from "../message";
 import utils from "../utils";
-import { WordList } from "../wordlist";
-import { BoardPosition, BoardRow, N_COLS, BoardColumn } from "./board";
+import { Solutions } from "../wordlist";
+import { BoardColumn, BoardPosition, BoardRow, N_COLS } from "./board";
 import { LingleStore } from "../store";
 import { Mode, Modes } from "./mode";
 import input from "./input";
@@ -412,8 +412,8 @@ export class GameBoard {
     let rng = new Prando(`${this.mode.mode}@${day_one}`);
     rng.skip((GameManager.gameNumber() - 1) * this.mode.boards + this.id);
 
-    const index = rng.nextInt(0, WordList.size - 1);
-    return [...WordList][index];
+    const index = rng.nextInt(0, Solutions.size - 1);
+    return [...Solutions][index];
   };
 
   private generateBoard = (mode: Mode) => {
