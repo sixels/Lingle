@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+const app = require("./package.json");
+
 export default defineConfig({
   publicDir: "static",
   plugins: [
@@ -10,6 +12,8 @@ export default defineConfig({
       manifest: {
         name: "Lingle",
         short_name: "Lingle",
+        description: "Um jogo de palavras em português inspirado em Wordle.",
+        id: `lingle-${app.version}`,
         icons: [
           {
             src: "favicon/android-chrome-192x192.png",
