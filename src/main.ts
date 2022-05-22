@@ -15,20 +15,21 @@ import { init_wordlists } from "./wordlist";
 init_wordlists();
 if (typeof window !== "undefined") {
   import("./pwa");
-  window.onload = (_) => {
-    const app = document.getElementById("app");
-    window.onresize = () => {
-      if (app !== null) {
-        app.style.minHeight = `${window.innerHeight}px`;
-      }
-    };
+}
+
+window.onload = (_) => {
+  const app = document.getElementById("app");
+  window.onresize = () => {
+    if (app !== null) {
+      app.style.minHeight = `${window.innerHeight}px`;
+    }
   };
 
   let store = new LingleStore("lingle");
   main(store);
-}
+};
 
-function main(store: LingleStore) {
+const main = (store: LingleStore) => {
   let keyboard_elem = document.getElementById("keyboard");
 
   if (keyboard_elem === null) {
@@ -51,7 +52,7 @@ function main(store: LingleStore) {
   });
 
   setupUIElements(store);
-}
+};
 
 function setupUIElements(store: LingleStore) {
   //setup ui elements
