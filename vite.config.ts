@@ -7,7 +7,7 @@ export default defineConfig({
   publicDir: "static",
   plugins: [
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       includeAssets: ["**/*.png", "**/*.svg", "**/*.woff2", "**/*.css"],
       workbox: {
         // a little hack to get remixicon.woff2 cached
