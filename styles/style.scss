@@ -86,6 +86,8 @@ a {
   grid-template-areas: "header" "boards" "keyboard";
 
   .message {
+    cursor: pointer;
+
     position: absolute;
     top: calc(3.2rem - 4px);
     left: 50%;
@@ -620,7 +622,7 @@ a {
       font-weight: 700;
     }
 
-    &::-webkit-scrollbar{ 
+    &::-webkit-scrollbar {
       background-color: var(--default-color-bg);
       border-top-right-radius: 1rem;
       border-bottom-right-radius: 1rem;
