@@ -155,7 +155,7 @@ class Summary {
 
     this._n_games = createStat("jogos");
     this._win_rate = createStat("taxa de vitórias");
-    this._win_streak = createStat("vitórias consecutivas");
+    this._win_streak = createStat("sequência atual");
     this._longest_streak = createStat("maior sequência");
 
     this.elem.appendChild(this._n_games);
