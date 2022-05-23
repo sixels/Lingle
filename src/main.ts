@@ -3,6 +3,7 @@ import "../styles/fonts.scss";
 import "../styles/keyframes.scss";
 import "../styles/media.scss";
 import "../styles/style.scss";
+
 import "remixicon/fonts/remixicon.css";
 
 import { GameManager } from "./game";
@@ -13,6 +14,7 @@ import { Menu, StatsModal, HTPModal, PrefsModal } from "./ui";
 import { init_wordlists } from "./wordlist";
 
 init_wordlists();
+
 if (typeof window !== "undefined") {
   import("./pwa");
 }
@@ -55,11 +57,13 @@ const main = (store: LingleStore) => {
 };
 
 function setupUIElements(store: LingleStore) {
-  //setup ui elements
+  const message = document.getElementById("message");
   const menu = new Menu();
   const stats = new StatsModal(store);
   const htp = new HTPModal(store);
   const prefs = new PrefsModal(store);
+
+  message?.addEventListener("click", hideMessage);
 
   document.getElementById("toggle-stats")?.addEventListener("click", (ev) => {
     ev.stopPropagation();
@@ -120,10 +124,13 @@ const handleMessage = (event: Event) => {
       clearTimeout(ltimeout);
     }
     ltimeout = setTimeout(
-      () => {
-        document.getElementById("message")?.classList.add("hidden");
-      },
-      message.kind === MessageKind.Error ? 3000 : 6000
+      hideMessage,
+      message.timeout || message.kind === MessageKind.Error ? 3000 : 6000
     );
   });
+};
+
+const hideMessage = (ev: Event | undefined = undefined) => {
+  ev?.stopPropagation();
+  document.getElementById("message")?.classList.add("hidden");
 };
