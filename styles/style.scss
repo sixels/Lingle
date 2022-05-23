@@ -619,6 +619,19 @@ a {
       margin-bottom: 1.2rem;
       font-weight: 700;
     }
+
+    &::-webkit-scrollbar{ 
+      background-color: var(--default-color-bg);
+      border-top-right-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      width: 15px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--letter-default-color-bd);
+      border-radius: 0.1rem;
+      // border-top-right-radius: 0.9rem;
+      // border-bottom-right-radius: 0.9rem;
+    }
   }
 }
 .modal.stats {
