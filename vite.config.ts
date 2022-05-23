@@ -7,8 +7,25 @@ export default defineConfig({
   publicDir: "static",
   plugins: [
     VitePWA({
-      // workbox: { sourcemap: true },
-      includeAssets: ["**/*.png", "**/*.svg", "**/*.woff2"],
+      registerType: "autoUpdate",
+      includeAssets: ["**/*.png", "**/*.svg", "**/*.woff2", "**/*.css"],
+      workbox: {
+        // a little hack to get remixicon.woff2 cached
+        runtimeCaching: [
+          {
+            handler: "CacheFirst",
+            urlPattern:
+              /^(https:\/\/lingle.vercel.app|http:\/\/localhost.*)\/assets\/.*\.woff2/,
+            method: "GET",
+            options: {
+              cacheName: "runtime",
+              // set expiration to 7 days since dependabot updates dependencies every week
+              expiration: { maxEntries: 25, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
+      },
       manifest: {
         name: "Lingle",
         short_name: "Lingle",
