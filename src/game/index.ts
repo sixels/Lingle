@@ -71,12 +71,12 @@ export class GameManager {
     document.addEventListener("copyresult", this.handleCopyResult);
     document.addEventListener("setposition", this.handleSetPosition);
     document.addEventListener("sendkey", this.handleSendKey);
-    // document.getElementById("app")?.addEventListener("click", (ev) => {
-    //   if (store.state.status !== GameStatus.Playing) {
-    //     ev.stopPropagation();
-    //     events.dispatchOpenStatsEvent("toggle");
-    //   }
-    // });
+    document.getElementById("app")?.addEventListener("click", (ev) => {
+      if (store.state.status.every((state) => state !== GameStatus.Playing)) {
+        ev.stopPropagation();
+        events.dispatchOpenStatsEvent("toggle");
+      }
+    });
   }
 
   get current_position(): BoardPosition {
