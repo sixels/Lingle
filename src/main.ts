@@ -57,13 +57,10 @@ const main = (store: LingleStore) => {
 };
 
 function setupUIElements(store: LingleStore) {
-  const message = document.getElementById("message");
   const menu = new Menu();
   const stats = new StatsModal(store);
   const htp = new HTPModal(store);
   const prefs = new PrefsModal(store);
-
-  message?.addEventListener("click", hideMessage);
 
   document.getElementById("toggle-stats")?.addEventListener("click", (ev) => {
     ev.stopPropagation();
@@ -94,15 +91,24 @@ let ltimeout: NodeJS.Timeout | undefined = undefined;
 const handleMessage = (event: Event) => {
   const custom_ev = event as CustomEvent;
   const message = custom_ev.detail["message"] as Message | undefined;
-  if (message === undefined) {
+  const message_elem = document.getElementById("message");
+  if (!message || !message_elem) {
     return;
   }
 
-  function setMessage(message: Message): Promise<void> {
-    const elem = document.getElementById("message");
-    if (elem === null) {
-      return Promise.reject();
-    }
+  const new_message_elem = message_elem.cloneNode(true);
+  message_elem.parentNode?.replaceChild(new_message_elem, message_elem);
+
+  if (message.on_click) {
+    const cb = message.on_click;
+    new_message_elem.addEventListener("click", () => {
+      cb();
+    });
+  }
+  new_message_elem.addEventListener("click", hideMessage);
+
+  function setMessage(message: Message) {
+    const elem = new_message_elem as HTMLElement;
 
     elem.classList.remove("error", "info");
     elem.classList.add(
@@ -111,26 +117,34 @@ const handleMessage = (event: Event) => {
     );
     elem.classList.remove("hidden");
     elem.innerText = message.data;
-
-    return Promise.resolve();
   }
 
-  setMessage(message).then(() => {
-    if (message.callback !== undefined) {
-      message.callback();
-    }
+  setMessage(message);
 
-    if (ltimeout !== undefined) {
-      clearTimeout(ltimeout);
+  if (message.callback !== undefined) {
+    message.callback();
+  }
+
+  if (ltimeout !== undefined) {
+    clearTimeout(ltimeout);
+  }
+
+  const delay = message.timeout ? message.timeout : 0;
+  ltimeout = setTimeout(() => {
+    if (message.on_click) {
+      new_message_elem.removeEventListener("click", message.on_click);
     }
-    ltimeout = setTimeout(
-      hideMessage,
-      message.timeout || message.kind === MessageKind.Error ? 3000 : 6000
-    );
-  });
+    hideMessage(new_message_elem as HTMLElement);
+  }, delay || (message.kind === MessageKind.Error ? 3000 : 6000));
 };
 
-const hideMessage = (ev: Event | undefined = undefined) => {
-  ev?.stopPropagation();
-  document.getElementById("message")?.classList.add("hidden");
+const hideMessage = (m: HTMLElement | Event) => {
+  let message_elem: HTMLElement | null;
+  if (m instanceof Event) {
+    m.stopPropagation();
+    message_elem = m.target as HTMLElement | null;
+  } else {
+    message_elem = m;
+  }
+  message_elem?.classList.add("hidden");
 };
