@@ -22,8 +22,8 @@ export class HTPModal {
     const about = document.createElement("section");
     about.innerHTML = `
         <p> Lingle é um jogo de palavras inspirado em Wordle.
-        Todo o código é aberto, e está
-        <a href="https://github.com/sixels/Lingle">hospedado no GitHub</a> com mais informações.</p>
+        Esse projeto é open source, o código está
+        <a href="https://github.com/sixels/Lingle">hospedado no GitHub</a> com mais informações, caso queira dar uma olhada.</p>
     `.trim();
     about.classList.add("about");
 
