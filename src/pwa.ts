@@ -5,13 +5,18 @@ import { MessageKind } from "./message";
 const refresh = registerSW({
   onNeedRefresh: () => {
     events.dispatchSendMessageEvent({
-      data: "Atualização disponível! Clique aqui para atualizar.",
+      data: "Atualização disponível! Deseja atualizar agora?",
       kind: MessageKind.Info,
-      timeout: 20_000,
+      timeout: 30_000,
       callback: undefined,
-      on_click: () => {
-        console.log("Refreshing the page");
-        if (refresh) refresh(true);
+      options: {
+        Sim: () => {
+          console.log("Refreshing the page");
+          if (refresh) refresh(true);
+        },
+        Não: () => {
+          if (refresh) refresh(false);
+        },
       },
     });
   },

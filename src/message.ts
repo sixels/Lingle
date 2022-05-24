@@ -8,7 +8,7 @@ export interface Message {
   data: string;
   timeout: number | undefined;
   callback: (() => void) | undefined;
-  on_click: (() => void) | undefined;
+  options: { [key: string]: () => void } | undefined;
 }
 
 export const messages = {

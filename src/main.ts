@@ -12,6 +12,7 @@ import { Message, MessageKind } from "./message";
 import { LingleStore } from "./store";
 import { Menu, StatsModal, HTPModal, PrefsModal } from "./ui";
 import { init_wordlists } from "./wordlist";
+import events from "./events";
 
 init_wordlists();
 
@@ -91,60 +92,67 @@ let ltimeout: NodeJS.Timeout | undefined = undefined;
 const handleMessage = (event: Event) => {
   const custom_ev = event as CustomEvent;
   const message = custom_ev.detail["message"] as Message | undefined;
-  const message_elem = document.getElementById("message");
-  if (!message || !message_elem) {
+  const app_elem = document.getElementById("app");
+  if (!message || !app_elem) {
     return;
   }
+  const old_message_elem = document.getElementById("message");
 
-  const new_message_elem = message_elem.cloneNode(true);
-  message_elem.parentNode?.replaceChild(new_message_elem, message_elem);
+  const message_elem = document.createElement("aside");
+  message_elem.id = "message";
 
-  if (message.on_click) {
-    const cb = message.on_click;
-    new_message_elem.addEventListener("click", () => {
-      cb();
+  const text_elem = document.createElement("div");
+  text_elem.classList.add("text");
+  text_elem.innerText = message.data;
+
+  message_elem.append(text_elem);
+  if (message.options) {
+    const options_wrapper = document.createElement("div");
+    options_wrapper.classList.add("options");
+
+    Object.entries(message.options).forEach(([option, callback]) => {
+      const button_elem = document.createElement("div");
+      button_elem.classList.add("option", "btn");
+      button_elem.innerText = option;
+
+      button_elem.addEventListener("click", () => {
+        callback();
+        hideMessage(message_elem);
+      });
+
+      options_wrapper.append(button_elem);
     });
-  }
-  new_message_elem.addEventListener("click", hideMessage);
 
-  function setMessage(message: Message) {
-    const elem = new_message_elem as HTMLElement;
-
-    elem.classList.remove("error", "info");
-    elem.classList.add(
-      "message",
-      message.kind === MessageKind.Error ? "error" : "info"
-    );
-    elem.classList.remove("hidden");
-    elem.innerText = message.data;
+    message_elem.append(options_wrapper);
   }
 
-  setMessage(message);
+  message_elem.classList.add(
+    "message",
+    "hidden",
+    message.kind === MessageKind.Error ? "error" : "info"
+  );
+
+  // message_elem.addEventListener("click", (_) => {
+  //   hideMessage(message_elem);
+  // });
+
+  if (old_message_elem) {
+    old_message_elem.remove();
+    clearTimeout(ltimeout);
+  }
+  app_elem.prepend(message_elem);
 
   if (message.callback !== undefined) {
     message.callback();
   }
 
-  if (ltimeout !== undefined) {
-    clearTimeout(ltimeout);
-  }
-
+  message_elem.classList.remove("hidden");
   const delay = message.timeout ? message.timeout : 0;
   ltimeout = setTimeout(() => {
-    if (message.on_click) {
-      new_message_elem.removeEventListener("click", message.on_click);
-    }
-    hideMessage(new_message_elem as HTMLElement);
+    hideMessage(message_elem);
   }, delay || (message.kind === MessageKind.Error ? 3000 : 6000));
 };
 
-const hideMessage = (m: HTMLElement | Event) => {
-  let message_elem: HTMLElement | null;
-  if (m instanceof Event) {
-    m.stopPropagation();
-    message_elem = m.target as HTMLElement | null;
-  } else {
-    message_elem = m;
-  }
-  message_elem?.classList.add("hidden");
+const hideMessage = (m: HTMLElement) => {
+  m.classList.add("hidden");
 };

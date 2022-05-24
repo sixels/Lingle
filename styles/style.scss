@@ -86,9 +86,8 @@ a {
   grid-template-areas: "header" "boards" "keyboard";
 
   .message {
-    cursor: pointer;
-
     position: absolute;
+
     top: calc(3.2rem - 4px);
     left: 50%;
 
@@ -96,24 +95,53 @@ a {
 
     transform: translate(-50%, 0);
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    padding: 1.2rem 0.84rem;
-
+    padding: 0.7em 0.84em;
     max-width: 90vw;
     width: max-content;
-    height: 2rem;
 
     font-size: 1.07em;
     font-weight: normal;
 
     border-radius: 4px;
     background-color: var(--self-color-bg);
-    color: var(--self-color-fg);
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
       3px 2px 0 2px var(--self-color-bd);
+
+    color: var(--self-color-fg);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .text {
+      line-height: 1.4em;
+    }
+    .options {
+      margin-top: 0.4em;
+      display: flex;
+      gap: 0.7em;
+      .option {
+        @extend .no-select;
+
+        padding: 0.3em 0.7em;
+        font-size: 1.04em;
+
+        color: var(--letter-wrong-color-fg);
+        background-color: #00000050;
+        // font-weight: 600;
+        box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+
+        &:hover {
+          box-shadow: inset 0 0 0px 100px rgba(255, 255, 255, 0.07),
+            0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        &:active {
+          box-shadow: inset 0 0 0px 100px rgba(255, 255, 255, 0.14),
+          0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
 
     &.hidden {
       visibility: hidden;
@@ -246,6 +274,7 @@ a {
 
     display: grid;
     overflow-y: auto;
+    overflow-x: hidden;
     place-items: center;
 
     grid-template-columns: repeat(4, 1fr);
@@ -614,31 +643,19 @@ a {
     align-items: center;
 
     overflow-y: auto;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
 
     .title {
-      font-size: 1.4rem !important;
+      font-size: 1.4em !important;
       text-align: center;
       margin-bottom: 1.2rem;
       font-weight: 700;
-    }
-
-    &::-webkit-scrollbar {
-      background-color: var(--default-color-bg);
-      border-top-right-radius: 1rem;
-      border-bottom-right-radius: 1rem;
-      width: 15px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--letter-default-color-bd);
-      border-radius: 0.1rem;
-      // border-top-right-radius: 0.9rem;
-      // border-bottom-right-radius: 0.9rem;
     }
   }
 }
 .modal.stats {
   display: grid;
-  grid-template-rows: 1.4rem 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1.4em 1fr 1fr 1fr auto;
   grid-template-columns: 100%;
   place-items: center;
 
@@ -656,11 +673,11 @@ a {
       // background-color: #fff;
 
       width: 100%;
-      font-size: min(4vw, 1.3em);
+      // font-size: 1.2em;
 
       span:first-child {
         // line-height: 3.3rem;
-        font-size: 2.1em;
+        font-size: 2.7em;
         font-weight: 500;
         color: var(--default-color-accent);
       }
@@ -672,13 +689,12 @@ a {
         color: var(--letter-default-color-bd);
       }
 
-      padding: 0.4rem 0;
-      // background-color: blue;
+      padding: 0.4em 0.7em;
     }
   }
   .solutions {
-    margin-top: 1.2rem;
-    padding: 1.2rem 3rem;
+    margin-top: 1.2em;
+    padding: 1.2em 3em;
     padding-top: 0.9rem;
     border-radius: 1rem;
     background-color: #00000020;
@@ -703,17 +719,19 @@ a {
     position: relative;
 
     width: 85%;
-    min-height: 16rem;
+    min-height: 16em;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding: 2.5em 0;
 
-    margin-top: 3.5rem;
+    // background-color: #fff;
+    margin-top: 2.5em;
 
     .title {
       position: absolute;
+      top: 0;
       left: 50%;
-      top: -2.5rem;
       font-size: 1.3em !important;
       transform: translateX(-50%);
       width: max-content;
@@ -731,7 +749,7 @@ a {
       min-width: 4.5rem;
 
       &:not(:first-of-type) {
-        margin: 5px 0 0;
+        margin: 1px 0 0;
       }
 
       &:last-of-type .line {
@@ -885,11 +903,11 @@ a {
 }
 
 .modal.htp {
+  line-height: 1.4em;
   .about {
-    font-size: 1.1rem;
+    font-size: 1.1em;
     width: 85%;
-    line-height: 1.1em;
-    margin-top: -1.2rem;
+    margin-top: -1.2em;
   }
   .instruction {
     width: 85%;
@@ -899,9 +917,8 @@ a {
     // margin-top: 1rem;
     p {
       margin-top: 0;
-      line-height: 1.1em;
-      margin-bottom: 0.4rem;
-      font-size: 1.1rem;
+      margin-bottom: 0.5em;
+      font-size: 1.1em;
     }
   }
   .examples {
@@ -909,39 +926,41 @@ a {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    // margin-top: 1rem;
+    margin-top: -1em;
 
     .title {
-      font-size: 1.5rem !important;
+      font-size: 1.5em !important;
     }
 
     .example {
       section {
-        margin-top: 0.6rem;
-        margin-bottom: 1.2rem;
+        margin-top: 0.6em;
+        margin-bottom: 1.2em;
 
         width: 100%;
-        font-size: 1.1rem;
+        font-size: 1.1em;
 
         display: flex;
         align-items: center;
 
         .letters {
-          height: min(9vh, 1.7rem) !important;
-          margin-right: 0.3rem;
+          height: 1.7em !important;
+          display: block !important;
+          margin-right: 0.4em !important;
           .letter {
-            font-size: min(6vh, 1.3rem) !important;
-            margin: 0 0.3rem;
+            font-size: min(6vh, 1.3em) !important;
           }
         }
       }
       .letters {
-        height: min(9vh, 2.9rem) !important;
+        display: grid !important;
+        grid-template-columns: repeat(5, 3em) !important;
+        grid-template-rows: 3em;
+        gap: 0.2em;
 
         .letter {
-          aspect-ratio: 1.05;
-          width: auto;
-          font-size: min(6vh, 1.9rem);
+          aspect-ratio: 1 / 1;
+          font-size: 1.9em;
         }
       }
     }
