@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
         soup = BeautifulSoup(res.content, "html.parser")
         title = soup.find("title")
-        if title and "Busca" in title.text:
+        if title and "- Busca" in title.text:
             results = soup.find("ul", class_="resultados")
             if type(results) is bs4.Tag:
                 for a in results.find_all(attrs={"data-s": "es"}):
