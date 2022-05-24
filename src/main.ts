@@ -12,7 +12,6 @@ import { Message, MessageKind } from "./message";
 import { LingleStore } from "./store";
 import { Menu, StatsModal, HTPModal, PrefsModal } from "./ui";
 import { init_wordlists } from "./wordlist";
-import events from "./events";
 
 init_wordlists();
 
