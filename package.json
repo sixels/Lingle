@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "prando": "^6.0.1",
-    "remixicon": "^2.5.0"
+    "remixicon": "^2.5.0",
+    "solid-js": "^1.4.3",
+    "vite-plugin-solid": "^2.2.6"
   }
 }

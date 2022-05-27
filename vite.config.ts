@@ -1,11 +1,17 @@
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import ViteSolid from "vite-plugin-solid";
 
 const app = require("./package.json");
 
 export default defineConfig({
   publicDir: "static",
+  build: {
+    target: "esnext",
+    polyfillDynamicImport: false,
+  },
   plugins: [
+    ViteSolid(),
     VitePWA({
       registerType: "prompt",
       includeAssets: ["**/*.png", "**/*.svg", "**/*.woff2", "**/*.css"],
