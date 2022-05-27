@@ -15,7 +15,7 @@
 
 @media screen and (max-width: 750px) {
   .header {
-    .btn-mode.open {
+    #mode-selector.open {
       flex-direction: column !important;
       height: auto !important;
       min-width: 100% !important;
