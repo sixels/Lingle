@@ -37,7 +37,7 @@ export const messages = {
     const message =
       solutions.length > 1
         ? "As palavras de hoje eram"
-        : "A palavra de hoje erX";
+        : "A palavra de hoje era";
     return {
       kind: MessageKind.Info,
       data: `Você perdeu. ${message}: ${solutions.join(", ")}.`,
