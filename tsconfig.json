@@ -19,8 +19,11 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "allowSyntheticDefaultImports": true,
-    "types": ["vite/client", "vite-plugin-pwa/client"]
+    "types": ["vite/client", "vite-plugin-pwa/client"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  // "include": ["src"],
+  // "include": ["src/**/*.tsx", "src/**/*.ts", "src/**/*.d.ts"],
   "exclude": ["dist", "node_modules"]
 }
