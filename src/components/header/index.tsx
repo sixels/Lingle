@@ -5,6 +5,7 @@ import "@/../styles/header.scss";
 import { createSignal } from "solid-js";
 import ModeSelector from "./ModeSelector";
 import { GameState, GameStoreMethods } from "@/store/game";
+import Button from "./Button";
 
 const Header: Component<{
   gameState: GameState;
@@ -19,25 +20,35 @@ const Header: Component<{
   return (
     <header id="header" class="header">
       <div class="left" id="header-left">
-        <div class="btn" id="toggle-htp" aria-label="Sobre">
-          <span class="label">Sobre</span>
-          <i class="ri-information-fill"></i>
-        </div>
+        <Button
+          label="Sobre"
+          icon="information"
+          onClick={() => {
+            //TODO: Toggle HTP Modal
+          }}
+        />
+        <span class="strong">{`${gameState.mode}#${
+          gameState.state.game_number + 1
+        }`}</span>
       </div>
       <div class="right" id="menu" classList={{ visible: menuOpen() }}>
         <ModeSelector gameState={gameState} setMode={setMode} />
-        <div class="btn" id="toggle-stats" aria-label="Estatísticas">
-          <span class="label">Estatísticas</span>
-          <i class="ri-bar-chart-fill"></i>
-        </div>
-        <div class="btn" id="toggle-prefs" aria-label="Ajustes">
-          <span class="label">Ajustes</span>
-          <i class="ri-settings-fill"></i>
-        </div>
+        <Button
+          label="Estatísticas"
+          icon="bar-chart"
+          onClick={() => {
+            //TODO: Toggle Stats Modal
+          }}
+        />
+        <Button
+          label="Ajustes"
+          icon="settings"
+          onClick={() => {
+            //TODO: Toggle Stats Modal
+          }}
+        />
       </div>
-      <div class="btn menu" id="menu-btn" onClick={toggleMenu}>
-        <i class="ri-menu-fill"></i>
-      </div>
+      <Button icon="menu" classList={{ menu: true }} onClick={toggleMenu} />
     </header>
   );
 };
