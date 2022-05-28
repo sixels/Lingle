@@ -11,11 +11,7 @@ import input from "./input";
 import { Message, MessageKind, messages } from "../message";
 import { renderAsText } from "./share";
 
-export enum GameStatus {
-  Won,
-  Lost,
-  Playing,
-}
+export type GameStatus = "won" | "lost" | "playing";
 
 export namespace AttemptType {
   export const Occur: "occur" = "occur" as const;
