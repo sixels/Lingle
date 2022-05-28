@@ -10,7 +10,7 @@
   --dropdown-color-bg: hsl(230, 10%, 26%);
   --overlay-color-bg: hsl(230, 5%, 12%);
 
-  --key-color-bg: hsl(209, 17%, 29%);
+  --key-color-bg: hsl(209, 17%, 34%);
   --key-color-fg: var(--default-color-fg);
   --key-highlight-color-bg: hsl(230, 6%, 26%);
 
@@ -60,7 +60,7 @@ html[data-theme="alternativo"] {
   --default-color-accent: hsl(176, 85%, 37%);
   --default-color-second: hsl(176, 85%, 31%);
 
-  --key-color-bg: hsl(221, 18%, 27%);
+  --key-color-bg: hsl(221, 18%, 35%);
 
   --letter-default-color-bd: #81858f;
   --letter-disabled-color-bg: hsl(221, 12%, 26%);
@@ -78,7 +78,7 @@ html[data-theme="claro"] {
   --dropdown-color-bg: hsl(230, 3%, 88%);
   --overlay-color-bg: hsl(230, 5%, 12%);
 
-  --key-color-bg: hsl(209, 17%, 29%);
+  --key-color-bg: hsl(209, 14%, 35%);
   --key-color-fg: hsl(230, 3%, 88%);
   --key-highlight-color-bg: hsl(230, 6%, 26%);
 
@@ -100,7 +100,7 @@ html[data-theme="claro"] {
   --letter-focused-color-fg: var(--letter-default-color-fg);
   --letter-focused-color-bd: var(--letter-default-color-bd);
 
-  --letter-wrong-color-bg: hsl(209, 17%, 17.5%);
+  --letter-wrong-color-bg: hsl(209, 17%, 15%);
   --letter-wrong-color-fg: hsl(230, 3%, 88%);
   --letter-right-color-bg: hsl(144, 41%, 54%);
   --letter-right-color-fg: var(--letter-default-color-fg);
