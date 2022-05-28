@@ -1,5 +1,6 @@
 import { For, Component } from "solid-js";
-import { ALL_MODES, Modes } from "@/game/mode";
+import { ALL_MODES, Mode, Modes } from "@/game/mode";
+import { GameStoreMethods } from "@/store/game";
 
 interface MappedMode {
   mode: Modes;
@@ -11,14 +12,9 @@ const modes = ALL_MODES.map(
   (mode, i) => ({ mode, active: i === 0 } as MappedMode)
 );
 
-const selectMode = (next_mode: MappedMode) => {
-  const current_active = modes.find(({ active }) => active);
-  if (current_active) current_active.active = false;
-
-  next_mode.active = true;
-};
-
-const ModeSelector: Component = () => {
+const ModeSelector: Component<{ setMode: GameStoreMethods["setMode"] }> = ({
+  setMode,
+}) => {
   return (
     <div id="mode-selector" class="btn open" aria-label="Modo">
       <label class="label">Modo</label>
@@ -32,7 +28,7 @@ const ModeSelector: Component = () => {
               class="mode"
               classList={{ selected: mode.active }}
               data-select-mode={mode}
-              onClick={() => selectMode(mode)}
+              onClick={() => setMode(new Mode(mode.mode))}
             >
               {mode.mode}
             </span>

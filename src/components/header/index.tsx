@@ -1,9 +1,13 @@
 import { Component } from "solid-js";
 
 import "@/../styles/header.scss";
-import ModeSelector from "./ModeSelector";
 
-const Header: Component = () => {
+import ModeSelector from "./ModeSelector";
+import { GameStoreMethods } from "@/store/game";
+
+const Header: Component<{ setMode: GameStoreMethods["setMode"] }> = ({
+  setMode,
+}) => {
   return (
     <header id="header" class="header">
       <div class="left" id="header-left">
@@ -12,7 +16,7 @@ const Header: Component = () => {
         </div>
       </div>
       <div class="right" id="menu">
-        <ModeSelector />
+        <ModeSelector setMode={setMode}/>
         <div class="btn" id="toggle-stats" aria-label="Estatísticas">
           <label>Estatísticas</label>
           <i class="ri-bar-chart-fill"></i>
