@@ -22,7 +22,7 @@ const ModeSelector: Component<{
             <span
               class="mode"
               classList={{ selected: mode == gameState.mode }}
-              onClick={() => changeMode(mode)}
+              onClick={[changeMode, mode]}
             >
               {mode}
             </span>
