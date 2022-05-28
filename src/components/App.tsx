@@ -17,7 +17,7 @@ const App: Component = () => {
 
   return (
     <>
-      <Header setMode={setMode} />
+      <Header gameState={game} setMode={setMode} />
       {game.mode}
       <Board />
       <Keyboard />
