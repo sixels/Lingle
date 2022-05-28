@@ -118,11 +118,12 @@
     .label {
       display: none !important;
     }
+
     .icon {
-      display: flex !important;
+      display: flex ;
       justify-content: center;
       place-items: center;
-      padding: 0 !important;
+      // padding: 0 !important;
 
       height: 100%;
       width: 3rem !important;
