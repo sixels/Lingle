@@ -106,6 +106,8 @@
 }
 
 #mode-selector {
+  cursor:unset;
+
   .modes {
     display: none !important;
     text-transform: capitalize;
@@ -123,6 +125,7 @@
       display: flex ;
       justify-content: center;
       place-items: center;
+      cursor: pointer;
       // padding: 0 !important;
 
       height: 100%;
@@ -147,6 +150,7 @@
         @extend a;
         position: relative;
         color: var(--default-color-fg) !important;
+        cursor: pointer;
 
         display: flex;
         align-items: center;

@@ -54,7 +54,9 @@
   --boards-height: calc(100% - var(--keyboard-height) - var(--header-height));
 }
 
-html[data-theme="alternativo"] {
+[data-theme="alternativo"] {
+  @extend :root;
+
   --default-color-bg: #2b313e;
   --default-color-fg: #fffefa;
   --default-color-accent: hsl(176, 85%, 37%);
@@ -69,7 +71,9 @@ html[data-theme="alternativo"] {
   --letter-occur-color-bg: hsl(40, 86%, 65%);
 }
 
-html[data-theme="claro"] {
+[data-theme="claro"] {
+  @extend :root;
+
   --default-color-bg: hsl(210, 12%, 84%);
   --default-color-fg: hsl(204, 5%, 18%);
   --default-color-accent: hsl(144, 41%, 40%);
