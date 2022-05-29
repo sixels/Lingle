@@ -15,6 +15,9 @@ export class Mode {
     return modeBoards[this.mode];
   }
   get rows(): number {
-    return this.boards + 5;
+    return this.boards + this.columns;
+  }
+  get columns(): number {
+    return 5;
   }
 }
