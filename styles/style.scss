@@ -6,6 +6,11 @@
   font-weight: 300;
 }
 
+button {
+  background-color: transparent;
+  outline: none;
+}
+
 html,
 body {
   padding: 0;
@@ -138,7 +143,7 @@ a {
         }
         &:active {
           box-shadow: inset 0 0 0px 100px rgba(255, 255, 255, 0.14),
-          0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+            0px 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
       }
     }
@@ -158,7 +163,6 @@ a {
       --self-color-fg: var(--message-error-color-fg);
     }
   }
-
 
   .board-wrapper {
     @extend .no-select;
@@ -188,7 +192,6 @@ a {
     grid-area: "keyboard";
   }
 }
-
 
 .board.lingle {
   grid-column: 1 / span 4;
