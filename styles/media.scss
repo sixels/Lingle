@@ -95,7 +95,7 @@
         padding: 2px !important;
 
         &:hover {
-          label {
+          .label {
             color: var(--default-color-fg) !important;
           }
           i {
@@ -104,7 +104,7 @@
           }
         }
 
-        label {
+        .label {
           margin-left: 0.5rem;
           margin-right: 0.5rem;
           display: block !important;

@@ -47,8 +47,17 @@
       border-radius: 4px;
 
       transition: border-color 160ms ease, color 160ms ease;
+
       *:not(i) {
-        font-weight: 500 !important;
+        font-weight: 500;
+      }
+      i {
+        font-size: 1.3em;
+      }
+
+      .label {
+        cursor: pointer;
+        display: none;
       }
 
       &:hover {
@@ -56,10 +65,6 @@
         * {
           color: var(--default-color-accent);
         }
-      }
-      label {
-        cursor: pointer;
-        display: none;
       }
     }
   }
@@ -106,7 +111,7 @@
 }
 
 #mode-selector {
-  cursor:unset;
+  cursor: unset;
 
   .modes {
     display: none !important;
@@ -115,14 +120,14 @@
 
   &.open {
     width: auto !important;
-    padding: 2px 2px 2px 2px !important;
+    padding: 2px !important;
 
     .label {
       display: none !important;
     }
-
+    
     .icon {
-      display: flex ;
+      display: flex;
       justify-content: center;
       place-items: center;
       cursor: pointer;
@@ -131,8 +136,8 @@
       height: 100%;
       width: 3rem !important;
       background-color: var(--letter-default-color-bd);
-      border-radius: 4px !important;
-      padding: 0.2rem 0.8rem;
+      border-radius: 2px !important;
+      padding: 0.2rem 0.4rem;
       margin-left: 0 !important;
     }
 
@@ -145,7 +150,7 @@
       margin-left: 0.4rem;
       margin-right: 4px;
       height: 100%;
-
+      
       .mode {
         @extend a;
         position: relative;
@@ -154,10 +159,11 @@
 
         display: flex;
         align-items: center;
-
+        
         max-height: 1.8em !important;
         // background-color: #fff;
         padding: 0.2em 0 !important;
+        font-size: 0.9em;
       }
     }
 
