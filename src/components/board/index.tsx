@@ -77,9 +77,8 @@ const Board: Component<Props> = ({
 
   // handle keyboard
   createEffect(
-    on(keyboard.key_pressed, () => {
-      const key = keyboard.key_pressed();
-      if (key) {
+    on(keyboard.key_pressed, (key) => {
+      if (key && gameState.state.boards.some((b) => b.status == "playing")) {
         let handler = keyboardHandler[key];
         if (handler) {
           handler();
