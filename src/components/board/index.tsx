@@ -1,4 +1,11 @@
-import { Component, createEffect, createSignal, Index, on } from "solid-js";
+import {
+  Component,
+  createEffect,
+  createRenderEffect,
+  createSignal,
+  For,
+  on,
+} from "solid-js";
 
 import { GameState, GameStoreMethods } from "@/store/game";
 import GameBoard from "./GameBoards";
@@ -6,6 +13,7 @@ import { Mode } from "@/game/mode";
 
 import "@/../styles/board.scss";
 import { KeyboardState } from "@/keyboardProvider";
+import { makeWordAttempt } from "@/game/attempt";
 
 type Props = {
   gameState: GameState;
@@ -20,49 +28,97 @@ const Board: Component<Props> = ({
   setRow,
   createAttempt,
 }) => {
-  const [active_row, setActiveRow] = createSignal(gameState.state.row);
+  const newAttempt = (): undefined[] => {
+    return [...new Array(new Mode(gameState.mode).columns).fill(undefined)];
+  };
+
   const [position, setPosition] = createSignal<[number, number]>([
-    active_row(),
+    gameState.state.row,
     0,
   ]);
+  const [attempt, setAttempt] = createSignal<(string | undefined)[]>(
+    newAttempt()
+  );
 
-  // update row when state changes
+  const keyboardHandler: any = {
+    Enter() {
+      createAttempt(makeWordAttempt(attempt()));
+    },
+    Backspace() {
+      let word = [...attempt()];
+      let [row, col] = position();
+
+      if (col < word.length && word[col]) {
+        word[Math.max(col, 0)] = undefined;
+        setAttempt(word);
+      } else {
+        word[Math.max(col - 1, 0)] = undefined;
+        setAttempt(word);
+        setPosition([row, Math.max(col - 1, 0)]);
+      }
+    },
+  };
+
+  // handle keyboard
+  createEffect(
+    on(keyboard.key_pressed, () => {
+      const key = keyboard.key_pressed();
+      if (key) {
+        let handler = keyboardHandler[key];
+        if (handler) {
+          handler();
+        } else {
+          let word = [...attempt()];
+          let [row, col] = position();
+
+          if (col >= word.length) {
+            return;
+          }
+
+          word[col] = key;
+          setAttempt(word);
+
+          setPosition([row, Math.min(col + 1, attempt().length)]);
+          console.log(position());
+        }
+      }
+    })
+  );
+
+  createRenderEffect(
+    on(
+      () => gameState.mode,
+      () => {
+        setAttempt(newAttempt());
+      }
+    )
+  );
+
   createEffect(
     on(
       () => gameState.state.row,
       () => {
-        setActiveRow(gameState.state.row);
+        setAttempt(attempt().map(() => ""));
+        setPosition([gameState.state.row, 0]);
       }
     )
-  );
-  // update position when row changes
-  createEffect(
-    on(active_row, () => {
-      setPosition([active_row(), 0]);
-    })
-  );
-
-  // update row when position changes
-  createEffect(
-    on(position, (pos) => {
-      if (pos[0] > gameState.state.row) setRow(pos[1]);
-    })
   );
 
   return (
     <div id="board-wrapper" class="board-wrapper">
-      <Index each={gameState.state.boards}>
+      <For each={gameState.state.boards}>
         {(_, i) => {
           return (
             <GameBoard
               gameState={gameState}
-              boardNumber={i}
+              boardNumber={i()}
+              attempt={attempt}
               mode={new Mode(gameState.mode)}
               position={[position, setPosition]}
             />
           );
         }}
-      </Index>
+      </For>
     </div>
   );
 };
