@@ -66,9 +66,9 @@ const GameBoard: Component<Props> = ({
         const attempts = gameState.state.boards[boardNumber].attempts;
         const [r, _c] = position();
         const attempt = attempts[r];
-        console.log(attempts, r, attempt);
+        // console.log(attempts, r, attempt);
         if (attempt) {
-          console.log(attempt.length);
+          // console.log(attempt.length);
           const [_row, setRow] = board[r];
 
           setRow([...attempt]);
@@ -91,7 +91,6 @@ const GameBoard: Component<Props> = ({
               <For each={attempt()}>
                 {(col, j) => {
                   const letter = col;
-                  console.log("A");
 
                   return (
                     <div
