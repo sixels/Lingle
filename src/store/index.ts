@@ -2,10 +2,10 @@ import { createEffect } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 import { Mode, Modes } from "@/game/mode";
-import { BoardPosition } from "@/game/board";
 import { GameStatus } from "@/game";
 import { defaultGameStore, GameState, GameStore } from "./game";
 import { defaultPrefsStore, PrefsStore } from "./prefs";
+import { WordAttempt } from "@/game/attempt";
 
 const STORE_LINGLE_KEY: string = "v2.lingle.normal" as const;
 const STORE_DUOLINGLE_KEY: string = "v2.lingle.duo" as const;
@@ -79,9 +79,8 @@ export function createLingleStore(mode: Mode): LingleStore {
             getOrElse(storageKeyFromMode(mode.mode), defaultGameStore(mode))
           );
         },
-        setPosition: (position: BoardPosition) => {
-          const rc = position.asTuple();
-          setGame({ state: { ...game.state, position: rc } });
+        setRow: (row: number) => {
+          setGame({ state: { ...game.state, row } });
         },
         setBoardStatus: (board: number, status: GameStatus) => {
           if (board >= game.state.boards.length) {
@@ -92,6 +91,29 @@ export function createLingleStore(mode: Mode): LingleStore {
           state.boards[board].status = status;
 
           setGame({ state });
+        },
+        createAttempt: (attempt: WordAttempt) => {
+          const board = game.state.boards[attempt.board];
+
+          const attempts = [...board.attempts];
+          attempts.push(attempt);
+
+          const boards: typeof game.state.boards = [];
+          game.state.boards.forEach((board, i) => {
+            const b: typeof board = {
+              solution: board.solution,
+              status: board.status,
+              attempts: [...board.attempts],
+            };
+            if (i == attempt.board) {
+              b.attempts = attempts;
+            }
+            boards.push(b);
+          });
+
+          setGame({
+            state: { ...game.state, row: game.state.row + 1, boards },
+          });
         },
       },
     ],
