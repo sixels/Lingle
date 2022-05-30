@@ -1,0 +1,43 @@
+@import "./common.scss";
+@import "./letter.scss";
+
+.board-wrapper {
+  @extend .no-select;
+
+  grid-area: "boards";
+  background-color: var(--default-color-bg);
+
+  // margin-top: 2.1rem;
+  padding: 0 !important;
+
+  display: grid;
+  overflow-y: auto;
+  overflow-x: hidden;
+  place-items: center;
+
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 100%;
+}
+
+.board.lingle {
+  grid-column: 1 / span 4;
+  grid-row: 1 / span 2;
+  grid-template-rows: repeat(6, 1em);
+  font-size: clamp(1.4rem, 6.3vh, 3.8rem);
+}
+.board.duolingle {
+  grid-column: auto / span 2;
+  grid-row: 1 / span 2;
+  grid-template-rows: repeat(7, 1em);
+  font-size: clamp(1.4rem, 5.5vh, 3.8rem);
+}
+.board {
+  display: grid;
+  gap: 0.44em;
+
+  .row.letters {
+    .letter {
+      aspect-ratio: 1 / 1;
+    }
+  }
+}
