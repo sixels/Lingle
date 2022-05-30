@@ -93,8 +93,12 @@ const Board: Component<Props> = ({
           word[col] = key;
           setAttempt(word);
 
-          setPosition([row, Math.min(col + 1, attempt().length)]);
-          console.log(position());
+          let next_column = Math.min(col + 1, attempt().length);
+          if (word[next_column]) {
+            next_column = word.indexOf(undefined);
+            console.log(next_column);
+          }
+          setPosition([row, next_column]);
         }
       }
     })
