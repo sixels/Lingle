@@ -8,7 +8,6 @@ export type GameStore = [GameState, GameStoreMethods];
 export interface GameState {
   stats: IGameStats;
   state: IGameState;
-  solutions: string[];
   expires: Date;
   mode: Modes;
 }
@@ -53,7 +52,6 @@ export const defaultGameStore = (mode: Mode): GameState => {
       game_number: 0,
       row: 0,
     },
-    solutions: [],
     expires: utils.tomorrow(),
     mode: mode.mode,
   };
