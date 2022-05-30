@@ -7,10 +7,12 @@ import ModeSelector from "./ModeSelector";
 import { GameState, GameStoreMethods } from "@/store/game";
 import Button from "./Button";
 
-const Header: Component<{
+type Props = {
   gameState: GameState;
   setMode: GameStoreMethods["setMode"];
-}> = ({ gameState, setMode }) => {
+};
+
+const Header: Component<Props> = ({ gameState, setMode }) => {
   const [menuOpen, setMenuOpen] = createSignal(false);
 
   const toggleMenu = () => {
