@@ -57,6 +57,22 @@ const Board: Component<Props> = ({
         setPosition([row, Math.max(col - 1, 0)]);
       }
     },
+    ArrowRight() {
+      let [row, col] = position();
+      setPosition([row, Math.min(col + 1, attempt().length - 1)]);
+    },
+    ArrowLeft() {
+      let [row, col] = position();
+      setPosition([row, Math.max(col - 1, 0)]);
+    },
+    Home() {
+      let [row, _] = position();
+      setPosition([row, 0]);
+    },
+    End() {
+      let [row, _] = position();
+      setPosition([row, attempt().length - 1]);
+    },
   };
 
   // handle keyboard
