@@ -116,9 +116,11 @@ const Board: Component<Props> = ({
   createEffect(
     on(
       () => gameState.state.row,
-      () => {
-        setAttempt(attempt().map(() => ""));
-        setPosition([gameState.state.row, 0]);
+      (cur, prev) => {
+        if (prev === undefined || cur > prev) {
+          setAttempt(attempt().map(() => ""));
+          setPosition([gameState.state.row, 0]);
+        }
       }
     )
   );
