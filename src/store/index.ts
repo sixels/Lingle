@@ -96,27 +96,35 @@ export function createLingleStore(mode: Mode): LingleStore {
           // TODO: validate attempt
 
           const boards: typeof game.state.boards = [];
+          let row = game.state.row;
           game.state.boards.forEach((board) => {
             const attempts = [...board.attempts];
-            attempts.push(
-              attempt.map((a) => {
-                if (a) a.type = "right";
-                return a;
-              })
-            );
+            const last = attempt.map((a) => {
+              if (a) a.type = Math.random() > 0.2 ? "right" : "wrong";
+              return a;
+            });
+            attempts.push(last);
+
+            let { status, solution } = board;
+            // win
+            if (last.every((l) => (l ? l.type === "right" : false))) {
+              status = "won";
+              solution = last.map((l) => (l ? l.letter : "")).join("");
+            } else {
+              row = game.state.row + 1;
+            }
 
             const copy: typeof board = {
-              solution: board.solution,
-              status: board.status,
-              attempts: attempts,
+              status,
+              attempts,
+              solution,
             };
             boards.push(copy);
           });
 
           setGame({
-            state: { ...game.state, row: game.state.row + 1, boards },
+            state: { ...game.state, row, boards },
           });
-
         },
       },
     ],
