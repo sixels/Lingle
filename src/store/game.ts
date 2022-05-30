@@ -1,5 +1,5 @@
-import { GameStatus, WordAttempt } from "@/game";
-import { BoardPosition } from "@/game/board";
+import { GameStatus } from "@/game";
+import { WordAttempt } from "@/game/attempt";
 import { Mode, Modes } from "@/game/mode";
 import utils from "@/utils";
 
@@ -15,14 +15,15 @@ export interface GameState {
 
 export interface GameStoreMethods {
   setMode: (mode: Mode) => void;
-  setPosition: (position: BoardPosition) => void;
+  setRow: (row: number) => void;
   setBoardStatus: (board: number, status: GameStatus) => void;
+  createAttempt: (attempt: WordAttempt) => void;
 }
 
 interface IGameStats {}
 
 interface IGameState {
-  position: [number, number];
+  row: number;
   game_number: number;
   boards: {
     status: GameStatus;
@@ -50,7 +51,7 @@ export const defaultGameStore = (mode: Mode): GameState => {
     state: {
       boards: makeBoards(mode),
       game_number: 0,
-      position: [0, 0],
+      row: 0,
     },
     solutions: [],
     expires: utils.tomorrow(),
