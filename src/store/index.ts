@@ -29,9 +29,15 @@ function storageKeyFromMode(mode: Modes): string {
   return table[mode];
 }
 
-function getOrElse<T extends Object>(key: string, fallback: T): T {
+function getOrElse<T extends Object>(
+  key: string,
+  fallback: T,
+  reviver?: typeof JSON.parse
+): T {
   const stored = localStorage.getItem(key);
-  return stored ? ({ ...fallback, ...JSON.parse(stored) } as T) : fallback;
+  return stored
+    ? ({ ...fallback, ...JSON.parse(stored, reviver) } as T)
+    : fallback;
 }
 
 function makeStore<T>(value: T): [T, SetStoreFunction<T>] {
