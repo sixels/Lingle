@@ -126,8 +126,11 @@ const Board: Component<Props> = ({
   createRenderEffect(
     on(
       () => gameState.mode,
-      () => {
-        setAttempt(newAttempt());
+      (new_mode) => {
+        const mode = new Mode(new_mode);
+        setAttempt(newAttempt(mode));
+        setSolution(generateSolution(mode));
+        setPosition([gameState.state.row, 0]);
       }
     )
   );
