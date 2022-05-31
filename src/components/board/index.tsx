@@ -47,13 +47,21 @@ const Board: Component<Props> = ({
     Backspace() {
       let word = [...attempt()];
       let [row, col] = position();
+      const mode = new Mode(gameState.mode);
 
-      if (col < word.length && word[col]) {
-        word[Math.max(col, 0)] = undefined;
-        setAttempt(word);
-      } else {
-        word[Math.max(col - 1, 0)] = undefined;
-        setAttempt(word);
+      if (row > mode.rows || row < 0 || col > mode.columns || col < 0) {
+        return;
+      }
+
+      let delete_index = col;
+      if (col >= word.length || !word[col]) {
+        delete_index = Math.max(col - 1, 0);
+      }
+
+      word[delete_index] = undefined;
+      setPosition([row, delete_index]);
+      setAttempt(word);
+    },
         setPosition([row, Math.max(col - 1, 0)]);
       }
     },
