@@ -86,7 +86,7 @@ export function createLingleStore(mode: Mode): LingleStore {
           );
         },
         setRow: (row: number) => {
-          setGame({ state: { ...game.state, row } });
+          setGame("state", "row", row);
         },
         setBoardStatus: (board: number, status: GameStatus) => {
           if (board >= game.state.boards.length) {
