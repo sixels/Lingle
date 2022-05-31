@@ -64,8 +64,17 @@ const Board: Component<Props> = ({
       setPosition([row, delete_index]);
       setAttempt(word);
     },
-        setPosition([row, Math.max(col - 1, 0)]);
+    Delete() {
+      let word = [...attempt()];
+      let [row, col] = position();
+      const mode = new Mode(gameState.mode);
+
+      if (row > mode.rows || row < 0 || col > mode.columns || col < 0) {
+        return;
       }
+
+      word[col] = undefined;
+      setAttempt(word);
     },
     ArrowRight() {
       let [row, col] = position();
