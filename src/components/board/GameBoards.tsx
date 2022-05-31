@@ -7,6 +7,7 @@ import {
   Signal,
   Accessor,
   For,
+  createRenderEffect,
 } from "solid-js";
 
 import { GameState } from "@/store/game";
@@ -28,8 +29,10 @@ const GameBoard: Component<Props> = ({
   mode,
   attempt,
 }) => {
+  const getStateBoard = () => gameState.state.boards[boardNumber];
+
   const createBoard = () => {
-    const attempts = gameState.state.boards[boardNumber].attempts;
+    const attempts = getStateBoard().attempts;
     // fill the remaining attempts with undefined
     const board = [...attempts].concat([
       ...new Array(mode.rows - attempts.length).fill([
@@ -41,10 +44,21 @@ const GameBoard: Component<Props> = ({
 
   const selectLetter = ([r, c]: [number, number]) => {
     const [row, col] = position();
-    if (row === r && col !== c) {
+    if (getStateBoard().status === "playing" && row === r && col !== c) {
       setPosition([r, c]);
     }
   };
+
+  const [inner_position, setInnerPosition] = createSignal<[number, number]>([
+    0, 0,
+  ]);
+
+  createRenderEffect(
+    on(position, (pos, prev) => {
+      console.log(pos);
+      if (!prev || getStateBoard().status === "playing") setInnerPosition(pos);
+    })
+  );
 
   // sharded board
   const board = createBoard().map((row) => createSignal(row));
@@ -61,16 +75,15 @@ const GameBoard: Component<Props> = ({
   // update row after attempting a word
   createEffect(
     on(
-      () => gameState.state.boards[boardNumber].attempts,
-      () => {
-        const attempts = gameState.state.boards[boardNumber].attempts;
+      () => getStateBoard().attempts,
+      (attempts) => {
+        if (getStateBoard().status != "playing") {
+          return;
+        }
         const [r, _c] = position();
         const attempt = attempts[r];
-        // console.log(attempts, r, attempt);
         if (attempt) {
-          // console.log(attempt.length);
           const [_row, setRow] = board[r];
-
           setRow([...attempt]);
         }
       }
@@ -86,7 +99,7 @@ const GameBoard: Component<Props> = ({
           return (
             <div
               class="row letters"
-              classList={{ disabled: i > position()[0] }}
+              classList={{ disabled: i > inner_position()[0] }}
             >
               <For each={attempt()}>
                 {(col, j) => {
@@ -96,7 +109,9 @@ const GameBoard: Component<Props> = ({
                     <div
                       class="letter"
                       classList={{
-                        focused: position()[0] === i && position()[1] === j(),
+                        focused:
+                          inner_position()[0] === i &&
+                          inner_position()[1] === j(),
                         right: letter && letter.type == AttemptType.Right,
                         occur: letter && letter.type == AttemptType.Occur,
                         wrong: letter && letter.type == AttemptType.Wrong,
