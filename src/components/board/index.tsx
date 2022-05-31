@@ -42,7 +42,9 @@ const Board: Component<Props> = ({
 
   const keyboardHandler: any = {
     Enter() {
-      createAttempt(makeWordAttempt(attempt()));
+      // if (createAttempt(makeWordAttempt(attempt()))) {
+      //   setRow(Math.min(position()[0] + 1, new Mode(gameState.mode).columns));
+      // }
     },
     Backspace() {
       let word = [...attempt()];
