@@ -14,6 +14,7 @@ import { Mode } from "@/game/mode";
 import "@/../styles/board.scss";
 import { KeyboardState } from "@/keyboardProvider";
 import { makeWordAttempt } from "@/game/attempt";
+import { generateSolution } from "@/game/solution";
 
 type Props = {
   gameState: GameState;
@@ -28,17 +29,12 @@ const Board: Component<Props> = ({
   setRow,
   createAttempt,
 }) => {
-  const newAttempt = (): undefined[] => {
-    return [...new Array(new Mode(gameState.mode).columns).fill(undefined)];
+  const newAttempt = (mode: Mode): undefined[] => {
+    return [...new Array(mode.columns).fill(undefined)];
   };
-
-  const [position, setPosition] = createSignal<[number, number]>([
-    gameState.state.row,
-    0,
-  ]);
-  const [attempt, setAttempt] = createSignal<(string | undefined)[]>(
-    newAttempt()
-  );
+  const [position, setPosition] = createSignal<[number, number]>([0, 0]);
+  const [attempt, setAttempt] = createSignal<(string | undefined)[]>([]);
+  const [solution, setSolution] = createSignal<string[]>([]);
 
   const keyboardHandler: any = {
     Enter() {
