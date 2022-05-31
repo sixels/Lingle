@@ -93,10 +93,9 @@ export function createLingleStore(mode: Mode): LingleStore {
             return;
           }
 
-          const state = { ...game.state };
-          state.boards[board].status = status;
-
-          setGame({ state });
+          setGame(({ state }) => {
+            state.boards[board].status = status;
+          });
         },
         createAttempt: (attempt: WordAttempt) => {
           // TODO: validate attempt
