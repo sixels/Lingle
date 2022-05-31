@@ -13,8 +13,7 @@ import { Mode } from "@/game/mode";
 
 import "@/../styles/board.scss";
 import { KeyboardState } from "@/keyboardProvider";
-import { makeWordAttempt } from "@/game/attempt";
-import { generateSolution } from "@/game/solution";
+import { compareWordWithSolution, generateSolution } from "@/game/solution";
 
 type Props = {
   gameState: GameState;
@@ -38,9 +37,12 @@ const Board: Component<Props> = ({
 
   const keyboardHandler: any = {
     Enter() {
-      // if (createAttempt(makeWordAttempt(attempt()))) {
-      //   setRow(Math.min(position()[0] + 1, new Mode(gameState.mode).columns));
-      // }
+      // invalid attempt size
+      if (attempt().includes(undefined)) {
+        return;
+      }
+      createAttempt(compareWordWithSolution(attempt().join(""), solution()[0]));
+      setRow(position()[0] + 1);
     },
     Backspace() {
       let word = [...attempt()];
