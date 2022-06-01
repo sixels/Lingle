@@ -16,7 +16,7 @@ export interface GameStoreMethods {
   setMode: (mode: Mode) => void;
   setRow: (row: number) => void;
   setBoardStatus: (board: number, status: GameStatus) => void;
-  createAttempt: (attempt: WordAttempt) => boolean;
+  createAttempts: (attempts: WordAttempt[]) => boolean;
 }
 
 interface IGameStats {}
@@ -36,7 +36,7 @@ interface IGameState {
  * @param mode The game mode
  * @returns A GameState
  */
-export const defaultGameStore = (mode: Mode): GameState => {
+export const defaultGameState = (mode: Mode): GameState => {
   const makeBoards = (mode: Mode): IGameState["boards"] => {
     let boards: IGameState["boards"] = [];
     for (let i = 0; i < mode.boards; i++) {

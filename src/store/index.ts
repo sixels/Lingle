@@ -1,10 +1,10 @@
 import { createEffect } from "solid-js";
-import { createStore, SetStoreFunction } from "solid-js/store";
+import { createStore, produce, SetStoreFunction } from "solid-js/store";
 
 import { Mode, Modes } from "@/game/mode";
 import { GameStatus } from "@/game";
-import { defaultGameStore, GameState, GameStore } from "./game";
-import { defaultPrefsStore, PrefsStore } from "./prefs";
+import { defaultGameState, GameState, GameStore } from "./game";
+import { defaultPrefsState, PrefsState, Theme } from "./prefs";
 import { WordAttempt } from "@/game/attempt";
 
 const STORE_LINGLE_KEY: string = "v2.lingle.normal" as const;
@@ -13,12 +13,12 @@ const STORE_PREFS_KEY: string = "v2.prefs" as const;
 
 export interface LingleStore {
   game: GameStore;
-  prefs: [PrefsStore, any];
+  prefs: [PrefsState, any];
 }
 
 interface AppState {
   game: [GameState, SetStoreFunction<GameState>];
-  prefs: [PrefsStore, SetStoreFunction<PrefsStore>];
+  prefs: [PrefsState, SetStoreFunction<PrefsState>];
 }
 
 function storageKeyFromMode(mode: Modes): string {
@@ -47,7 +47,7 @@ function makeStore<T>(value: T): [T, SetStoreFunction<T>] {
 
 function createAppState(
   game_state: GameState,
-  prefs_state: PrefsStore
+  prefs_state: PrefsState
 ): AppState {
   const [game, setGame] = makeStore(
     getOrElse(storageKeyFromMode(game_state.mode), game_state)
@@ -67,7 +67,7 @@ function createAppState(
 
 export function createLingleStore(mode: Mode): LingleStore {
   // create state with default values
-  const state = createAppState(defaultGameStore(mode), defaultPrefsStore());
+  const state = createAppState(defaultGameState(mode), defaultPrefsState());
 
   const [game, setGame] = state.game;
   const [prefs, setPrefs] = state.prefs;
@@ -81,8 +81,8 @@ export function createLingleStore(mode: Mode): LingleStore {
             return;
           }
 
-          setGame(
-            getOrElse(storageKeyFromMode(mode.mode), defaultGameStore(mode))
+          setGame(() =>
+            getOrElse(storageKeyFromMode(mode.mode), defaultGameState(mode))
           );
         },
         setRow: (row: number) => {
@@ -97,18 +97,21 @@ export function createLingleStore(mode: Mode): LingleStore {
             state.boards[board].status = status;
           });
         },
-        createAttempt: (attempt: WordAttempt): boolean => {
-          setGame(({ mode, state }) => {
-            state.boards.forEach((board) => {
-              board.attempts.push([...attempt]);
-
-              // win
-              if (attempt.every((l) => (l ? l.type === "right" : false))) {
-                board.status = "won";
-              } else if (state.row === new Mode(mode).rows - 1) {
-                board.status = "lost";
-              }
-            });
+        createAttempts: (attempts: WordAttempt[]): boolean => {
+          attempts.forEach((attempt, i) => {
+            setGame(
+              "state",
+              "boards",
+              (b, n) => b.status === "playing" && i == n,
+              produce((b) => {
+                if (attempt.every((l) => (l ? l.type === "right" : false))) {
+                  b.status = "won";
+                } else if (game.state.row === new Mode(game.mode).rows - 1) {
+                  b.status = "lost";
+                }
+                b.attempts = b.attempts.concat([[...attempt]]);
+              })
+            );
           });
 
           return true;
@@ -118,8 +121,8 @@ export function createLingleStore(mode: Mode): LingleStore {
     prefs: [
       prefs,
       {
-        setTheme: () => {
-          // TODO
+        setTheme: (theme: Theme) => {
+          setPrefs("theme", theme);
         },
       },
     ],
