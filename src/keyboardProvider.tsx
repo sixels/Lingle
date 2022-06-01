@@ -13,6 +13,7 @@ export const SPECIAL_KEYS = new Set([
   "End",
   "Backspace",
   "Delete",
+  " ", // Space
 ]);
 
 export const LETTER_KEYS = new Set([..."abcdefghijklmnopqrstuvwxyz"]);
