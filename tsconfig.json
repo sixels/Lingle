@@ -21,7 +21,8 @@
     "allowSyntheticDefaultImports": true,
     "types": ["vite/client", "vite-plugin-pwa/client"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@styles/*": ["./styles/*"]
     }
   },
   // "include": ["src/**/*.tsx", "src/**/*.ts", "src/**/*.d.ts"],
