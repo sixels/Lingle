@@ -168,7 +168,7 @@ const Board: Component<Props> = ({
   );
 
   createEffect(
-    on(position, (pos) => {
+    on(position, () => {
       setLock(false);
     })
   );

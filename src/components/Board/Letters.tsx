@@ -1,6 +1,5 @@
-import { LetterAttempt } from "@/game/attempt";
 import { AttemptType, WordAttempt } from "@/game/attempt";
-import { Accessor, Component, createSelector, For, Signal } from "solid-js";
+import { Accessor, Component, For } from "solid-js";
 
 type LettersProps = {
   row: number;
