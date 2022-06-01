@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  normalize.css: ^8.0.1
   pnpm: ^7.1.0
   prando: ^6.0.1
   remixicon: ^2.5.0
@@ -13,6 +14,7 @@ specifiers:
   workbox-window: ^6.5.3
 
 dependencies:
+  normalize.css: 8.0.1
   prando: 6.0.1
   remixicon: 2.5.0
   solid-js: 1.4.3
@@ -2326,6 +2328,10 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /normalize.css/8.0.1:
+    resolution: {integrity: sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==}
+    dev: false
 
   /object-inspect/1.12.0:
     resolution: {integrity: sha512-Ho2z80bVIvJloH+YzRmpZVQe87+qASmBUKZDWgx9cu+KDrX2ZDH/3tMy+gXbZETVGs2M8YdxObOh7XAtim9Y0g==}
