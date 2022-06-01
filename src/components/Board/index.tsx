@@ -11,37 +11,49 @@ import { GameState, GameStoreMethods } from "@/store/game";
 import GameBoard from "./GameBoards";
 import { Mode } from "@/game/mode";
 
-import "@/../styles/board.scss";
 import { KeyboardState } from "@/keyboardProvider";
 import { compareWordWithSolution, generateSolution } from "@/game/solution";
+
+import "@styles/board.scss";
+import { WordListNormalized } from "@/wordlist";
 
 type Props = {
   gameState: GameState;
   keyboard: KeyboardState;
   setRow: GameStoreMethods["setRow"];
-  createAttempt: GameStoreMethods["createAttempt"];
+  createAttempts: GameStoreMethods["createAttempts"];
 };
 
 const Board: Component<Props> = ({
   gameState,
   keyboard,
   setRow,
-  createAttempt,
+  createAttempts,
 }) => {
-  const newAttempt = (mode: Mode): undefined[] => {
-    return [...new Array(mode.columns).fill(undefined)];
+  const newAttempt = (mode: Mode): string[] => {
+    return [...new Array(mode.columns).fill(" ")];
   };
   const [position, setPosition] = createSignal<[number, number]>([0, 0]);
-  const [attempt, setAttempt] = createSignal<(string | undefined)[]>([]);
+  const [attempt, setAttempt] = createSignal<string[]>([]);
   const [solution, setSolution] = createSignal<string[]>([]);
+  const [lock, setLock] = createSignal<boolean>(false);
 
   const keyboardHandler: any = {
     Enter() {
       // invalid attempt size
-      if (attempt().includes(undefined)) {
+      if (attempt().includes(" ")) {
         return;
       }
-      createAttempt(compareWordWithSolution(attempt().join(""), solution()[0]));
+
+      const word = WordListNormalized.get(attempt().join(""));
+      if (!word) {
+        // invalid word
+        return;
+      }
+
+      createAttempts(
+        solution().map((solution) => compareWordWithSolution(word, solution))
+      );
       setRow(position()[0] + 1);
     },
     Backspace() {
@@ -54,12 +66,12 @@ const Board: Component<Props> = ({
       }
 
       let delete_index = col;
-      if (col >= word.length || !word[col]) {
-        delete_index = Math.max(col - 1, 0);
+      if (!lock() && (col >= word.length || word[col] === " ")) {
+        delete_index = Math.max(position()[1] - 1, 0);
+        setPosition([row, delete_index]);
       }
 
-      word[delete_index] = undefined;
-      setPosition([row, delete_index]);
+      word[delete_index] = " ";
       setAttempt(word);
     },
     Delete() {
@@ -71,7 +83,7 @@ const Board: Component<Props> = ({
         return;
       }
 
-      word[col] = undefined;
+      word[col] = " ";
       setAttempt(word);
     },
     ArrowRight() {
@@ -90,6 +102,11 @@ const Board: Component<Props> = ({
       let [row, _] = position();
       setPosition([row, attempt().length - 1]);
     },
+    " "() {
+      setLock((l) => {
+        return !l;
+      });
+    },
   };
 
   // handle keyboard
@@ -99,21 +116,23 @@ const Board: Component<Props> = ({
         let handler = keyboardHandler[key];
         if (handler) {
           handler();
-        } else {
-          let word = [...attempt()];
-          let [row, col] = position();
+          return;
+        }
+        let word = [...attempt()];
+        let [row, col] = position();
 
-          if (col >= word.length) {
-            return;
-          }
+        if (col >= word.length) {
+          return;
+        }
 
-          word[col] = key;
-          setAttempt(word);
+        word[col] = key;
+        setAttempt(word);
 
-          let next_column = Math.min(col + 1, attempt().length);
-          if (word[next_column]) {
-            next_column = word.indexOf(undefined);
-          }
+        let next_column = Math.min(col + 1, attempt().length);
+        if (word[next_column] !== " ") {
+          next_column = word.indexOf(" ");
+        }
+        if (!lock()) {
           setPosition([row, next_column >= 0 ? next_column : attempt().length]);
         }
       }
@@ -127,6 +146,8 @@ const Board: Component<Props> = ({
         const mode = new Mode(new_mode);
         setAttempt(newAttempt(mode));
         setSolution(generateSolution(mode));
+
+        setLock(false);
         setPosition([gameState.state.row, 0]);
       }
     )
@@ -137,21 +158,29 @@ const Board: Component<Props> = ({
       () => gameState.state.row,
       (cur, prev) => {
         if (prev === undefined || cur > prev) {
-          setAttempt(attempt().map(() => ""));
+          setAttempt(attempt().map(() => " "));
+
+          setLock(false);
           setPosition([gameState.state.row, 0]);
         }
       }
     )
   );
 
+  createEffect(
+    on(position, (pos) => {
+      setLock(false);
+    })
+  );
+
   return (
     <div id="board-wrapper" class="board-wrapper">
       <For each={gameState.state.boards}>
-        {(_, i) => {
+        {(board) => {
           return (
             <GameBoard
-              gameState={gameState}
-              boardNumber={i()}
+              lock={lock}
+              stateBoard={board}
               attempt={attempt}
               mode={new Mode(gameState.mode)}
               position={[position, setPosition]}

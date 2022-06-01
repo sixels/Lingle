@@ -7,10 +7,10 @@ const Button: Component<{
   onClick: () => void;
 }> = ({ label, icon, classList, onClick }) => {
   return (
-    <button class="btn" classList={classList} onClick={onClick}>
+    <div class="btn" classList={classList} onClick={onClick}>
       {label ? <span class="label">{label}</span> : ""}
-      <i class={`ri-${icon}-fill`}></i>
-    </button>
+      <i class={`icon ri-${icon}-fill`}></i>
+    </div>
   );
 };
 

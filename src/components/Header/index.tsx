@@ -1,11 +1,11 @@
 import { Component } from "solid-js";
 
-import "@/../styles/header.scss";
-
 import { createSignal } from "solid-js";
 import ModeSelector from "./ModeSelector";
 import { GameState, GameStoreMethods } from "@/store/game";
 import Button from "./Button";
+
+import "@styles/header.scss";
 
 type Props = {
   gameState: GameState;
