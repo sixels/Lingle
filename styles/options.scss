@@ -25,12 +25,15 @@
   --letter-default-color-fg: var(--default-color-fg);
   --letter-default-color-bd: hsl(195, 17%, 43%);
 
+  --letter-locked-color-bd: hsl(195, 12%, 78%);
+
   --letter-disabled-color-bg: hsl(209, 17%, 26%);
   --letter-disabled-color-fg: var(--letter-default-color-fg);
 
   --letter-focused-color-bg: var(--letter-default-color-bg);
   --letter-focused-color-fg: var(--letter-default-color-fg);
   --letter-focused-color-bd: var(--letter-default-color-bd);
+
 
   --letter-wrong-color-bg: hsl(209, 17%, 17.5%);
   --letter-wrong-color-fg: var(--letter-default-color-fg);
@@ -69,6 +72,8 @@
   --letter-wrong-color-bg: hsl(220, 33%, 13%);
   --letter-right-color-bg: hsl(176, 85%, 37%);
   --letter-occur-color-bg: hsl(40, 86%, 65%);
+
+  --letter-locked-color-bd: #000;
 }
 
 [data-theme="claro"] {
@@ -95,7 +100,8 @@
 
   --letter-default-color-bg: var(--default-color-bg);
   --letter-default-color-fg: var(--default-color-fg);
-  --letter-default-color-bd: hsl(195, 17%, 55%);
+  --letter-default-color-bd: hsl(195, 17%, 40%);
+  --letter-locked-color-bd: #000;
 
   --letter-disabled-color-bg: hsl(209, 17%, 26%);
   --letter-disabled-color-fg: var(--letter-default-color-fg);

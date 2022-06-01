@@ -9,6 +9,8 @@
 button {
   background-color: transparent;
   outline: none;
+  box-shadow: none;
+  border: none;
 }
 
 html,
@@ -35,8 +37,8 @@ body {
 }
 
 .btn {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent;
+  // -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  // -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 }
 
@@ -77,13 +79,15 @@ a {
   font-weight: normal !important;
 }
 
+#root,
 #app {
   width: 100%;
   height: 100%;
-
   background-color: var(--default-color-bg);
   overflow-x: hidden;
+}
 
+#app {
   display: grid;
   grid-template-rows: var(--header-height) var(--boards-height) var(
       --keyboard-height
@@ -164,7 +168,6 @@ a {
     }
   }
 
-
   .keyboard-wrapper {
     @extend .no-select;
 
@@ -175,7 +178,6 @@ a {
     grid-area: "keyboard";
   }
 }
-
 
 .example {
   .letters {

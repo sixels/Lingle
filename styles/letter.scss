@@ -15,7 +15,8 @@
   }
   .letter {
     --self-color-bg: var(--letter-default-color-bg);
-    --self-box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --self-color-bd: var(--letter-default-color-bd);
+    --self-box-shadow: 3px 8px 8px -9px rgba(0, 0, 0, 0.1);
   }
 
   .letter {
@@ -29,8 +30,7 @@
 
     min-height: 100%;
 
-    box-shadow: var(--self-box-shadow),
-      inset 0 0 0 2px var(--letter-default-color-bd);
+    box-shadow: var(--self-box-shadow), inset 0 0 0 2px var(--self-color-bd);
 
     background-color: var(--self-color-bg);
     color: var(--self-color-fg);
@@ -38,14 +38,13 @@
     text-transform: uppercase;
     font-weight: 700;
 
-    border-radius: 4px;
+    border-radius: 10%;
 
     transition: transform 60ms ease-in-out, box-shadow 80ms ease-in-out;
 
     &.focused {
-      box-shadow: var(--self-box-shadow),
-        inset 0 0 0 2px var(--letter-focused-color-bd),
-        inset 0px -7px 0px 0px var(--letter-focused-color-bd);
+      box-shadow: var(--self-box-shadow), inset 0 0 0 2px var(--self-color-bd),
+        inset 0px calc(-16px * 3.5) 0px calc(-16px * 3) var(--self-color-bd);
     }
 
     &.right {

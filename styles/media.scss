@@ -144,29 +144,6 @@
     }
   }
 
-  .board {
-    &.lingle {
-      font-size: clamp(1.2rem, 10.3vw, 2.6rem) !important;
-    }
-    &:not(.lingle) {
-      font-size: clamp(1.2rem, 6.2vw, 3.8rem) !important;
-
-      .row.letters {
-        display: grid;
-        gap: 0.12em;
-        grid-template-columns: repeat(5, 1.3em);
-        .letter {
-          aspect-ratio: 1;
-          &.focused {
-            box-shadow: var(--self-box-shadow),
-              inset 0 0 0 2px var(--letter-focused-color-bd),
-              inset 0px -15px 0px -10px var(--letter-focused-color-bd);
-          }
-        }
-      }
-    }
-  }
-
   .modal {
     .copy-btn {
       margin-right: 7px;

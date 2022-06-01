@@ -48,11 +48,11 @@
 
       transition: border-color 160ms ease, color 160ms ease;
 
-      *:not(i) {
+      *:not(.icon) {
         font-weight: 500;
       }
-      i {
-        font-size: 1.3em;
+      .icon {
+        font-size: 1.1em;
       }
 
       .label {
@@ -125,7 +125,7 @@
     .label {
       display: none !important;
     }
-    
+
     .icon {
       display: flex;
       justify-content: center;
@@ -150,7 +150,7 @@
       margin-left: 0.4rem;
       margin-right: 4px;
       height: 100%;
-      
+
       .mode {
         @extend a;
         position: relative;
@@ -159,11 +159,10 @@
 
         display: flex;
         align-items: center;
-        
+
         max-height: 1.8em !important;
         // background-color: #fff;
         padding: 0.2em 0 !important;
-        font-size: 0.9em;
       }
     }
 
