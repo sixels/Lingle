@@ -12,7 +12,7 @@ import GameBoard from "./GameBoards";
 import { Mode } from "@/game/mode";
 
 import { KeyboardState } from "@/keyboardProvider";
-import { compareWordWithSolution, generateSolution } from "@/game/solution";
+import { compareWordWithSolution, gameNumber, generateSolution } from "@/game/solution";
 
 import "@styles/board.scss";
 import { WordListNormalized } from "@/wordlist";
@@ -22,6 +22,7 @@ type Props = {
   keyboard: KeyboardState;
   setRow: GameStoreMethods["setRow"];
   createAttempts: GameStoreMethods["createAttempts"];
+  setGameNumber: GameStoreMethods["setGameNumber"];
 };
 
 const Board: Component<Props> = ({
@@ -29,6 +30,7 @@ const Board: Component<Props> = ({
   keyboard,
   setRow,
   createAttempts,
+  setGameNumber,
 }) => {
   const newAttempt = (mode: Mode): string[] => {
     return [...new Array(mode.columns).fill(" ")];
@@ -109,6 +111,9 @@ const Board: Component<Props> = ({
     },
   };
 
+  // TODO: update on daily ticker
+  setGameNumber(gameNumber(new Date()))
+
   // handle keyboard
   createEffect(
     on(keyboard.key_pressed, (key) => {
@@ -145,7 +150,7 @@ const Board: Component<Props> = ({
       (new_mode) => {
         const mode = new Mode(new_mode);
         setAttempt(newAttempt(mode));
-        setSolution(generateSolution(mode));
+        setSolution(generateSolution(mode, new Date()));
 
         setLock(false);
         setPosition([gameState.state.row, 0]);

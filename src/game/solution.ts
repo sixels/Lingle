@@ -6,13 +6,16 @@ import { Mode } from "./mode";
 
 const DAY_ONE = Object.freeze(new Date("2022-05-22T00:00:00"));
 
-export const generateSolution = (mode: Mode): string[] => {
+export const gameNumber = (day: Date): number => {
+  return Math.floor((day.setHours(0, 0, 0, 0) - DAY_ONE.getTime()) / 864e5);
+};
+
+export const generateSolution = (mode: Mode, day: Date): string[] => {
   const day_one = DAY_ONE.getTime();
-  const today = new Date().setHours(0, 0, 0, 0);
-  const day = Math.floor((today - day_one) / 864e5);
+  const game_number = gameNumber(day);
 
   let rng = new Prando(`${mode.mode}@${day_one}`);
-  rng.skip(day * mode.boards);
+  rng.skip(game_number * mode.boards);
 
   const solutions = [];
   for (let i = 0; i < mode.boards; i++) {
