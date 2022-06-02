@@ -13,7 +13,7 @@ const default_mode = new Mode("lingle");
 
 const App: Component = () => {
   const {
-    game: [game, { setMode, setRow, createAttempts }],
+    game: [game, { setMode, setRow, setGameNumber, createAttempts }],
     prefs: [prefs, _],
   } = createLingleStore(default_mode);
 
@@ -26,6 +26,7 @@ const App: Component = () => {
           keyboard={keyboard}
           setRow={setRow}
           createAttempts={createAttempts}
+          setGameNumber={setGameNumber}
         />
         <Keyboard keyboard={keyboard} />
       </div>
