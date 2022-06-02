@@ -116,6 +116,9 @@ export function createLingleStore(mode: Mode): LingleStore {
 
           return true;
         },
+        setGameNumber: (n: number) => {
+          setGame("state", "game_number", n);
+        },
       },
     ],
     prefs: [
