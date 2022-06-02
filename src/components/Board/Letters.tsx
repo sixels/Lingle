@@ -1,5 +1,5 @@
 import { AttemptType, WordAttempt } from "@/game/attempt";
-import { Accessor, Component, For } from "solid-js";
+import { Accessor, Component, For, Index } from "solid-js";
 
 type LettersProps = {
   row: number;
@@ -16,25 +16,26 @@ const Letters: Component<LettersProps> = ({
 }) => {
   return (
     <>
-      <For each={letters()}>
+      <Index each={letters()}>
         {(col, j) => {
-          const pos: [number, number] = [row, j()];
+          const pos: [number, number] = [row, j];
+
           return (
             <div
               class="btn letter"
               classList={{
                 focused: isFocused(pos),
-                right: col?.type === AttemptType.Right,
-                occur: col?.type === AttemptType.Occur,
-                wrong: col?.type === AttemptType.Wrong,
+                right: col()?.type === AttemptType.Right,
+                occur: col()?.type === AttemptType.Occur,
+                wrong: col()?.type === AttemptType.Wrong,
               }}
               onClick={[selectLetter, pos]}
             >
-              {col?.letter}
+              {col()?.letter}
             </div>
           );
         }}
-      </For>
+      </Index>
     </>
   );
 };
