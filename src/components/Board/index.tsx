@@ -12,10 +12,15 @@ import GameBoard from "./GameBoards";
 import { Mode } from "@/game/mode";
 
 import { KeyboardState } from "@/keyboardProvider";
-import { compareWordWithSolution, gameNumber, generateSolution } from "@/game/solution";
+import {
+  compareWordWithSolution,
+  gameNumber,
+  generateSolution,
+} from "@/game/solution";
+import { WordListNormalized } from "@/wordlist";
 
 import "@styles/board.scss";
-import { WordListNormalized } from "@/wordlist";
+import "@styles/letters.scss";
 
 type Props = {
   gameState: GameState;
@@ -112,7 +117,7 @@ const Board: Component<Props> = ({
   };
 
   // TODO: update on daily ticker
-  setGameNumber(gameNumber(new Date()))
+  setGameNumber(gameNumber(new Date()));
 
   // handle keyboard
   createEffect(
@@ -130,7 +135,7 @@ const Board: Component<Props> = ({
           return;
         }
 
-        word[col] = key;
+        word[col] = key.toLowerCase();
         setAttempt(word);
 
         let next_column = Math.min(col + 1, attempt().length);
