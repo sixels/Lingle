@@ -1,30 +1,53 @@
-import { Component, createEffect, For, on } from "solid-js";
-import { KeyboardState } from "@/keyboardProvider";
+import { Component, createEffect, For, on, onCleanup } from "solid-js";
 
-type SpecialKey = { name: "Backspace" | "Enter"; icon?: string };
-type KeyboardKey = string | SpecialKey;
+import { KeyboardState } from "@/keyboardProvider";
+import { Key, KeyboardKey } from "./Key";
 
 type Props = { keyboard: KeyboardState };
 
-function isKeySpecial(key: KeyboardKey): key is SpecialKey {
-  return (key as SpecialKey)["name"] !== undefined;
-}
-
 const Keyboard: Component<Props> = ({ keyboard }) => {
+  const makeKeys = (keys: string): KeyboardKey[] => {
+    return [...keys].map((k) => ({ key: k }));
+  };
   const keys: KeyboardKey[][] = [
-    [..."QWERTYUIOP"],
-    [..."ASDFGHJKL", { name: "Backspace", icon: "delete-back-2" }],
-    [..."ZXCVBNM", { name: "Enter" }],
+    makeKeys("qwertyuiop"),
+    [...makeKeys("asdfghjkl"), { key: "Backspace", icon: "delete-back-2" }],
+    [...makeKeys("zxcvbnm"), { key: "Enter", icon: undefined }],
   ];
+
+  let timeout: NodeJS.Timeout;
+
+  const highlightKey = (key_elem: HTMLElement | string) => {
+    let elem: HTMLElement | null;
+    if (!(key_elem instanceof HTMLElement)) {
+      elem = document.querySelector(`[data-key=${key_elem}]`);
+    } else {
+      elem = key_elem;
+    }
+
+    elem?.classList.add("highlighted");
+    timeout = setTimeout(() => {
+      elem?.classList.remove("highlighted");
+    }, 180);
+  };
+
+  const pressKey = (ev: MouseEvent, key: KeyboardKey) => {
+    const target = ev.target;
+    if (!target) return;
+
+    keyboard.pressKey(key.key);
+    highlightKey(target as HTMLElement);
+  };
+
+  onCleanup(() => {
+    clearTimeout(timeout);
+  });
 
   createEffect(
     on(keyboard.key_pressed, (key) => {
-      // TODO: Animate key pressing
+      if (key) highlightKey(key);
     })
   );
-  const clickKey = (key: KeyboardKey) => {
-    keyboard.pressKey(isKeySpecial(key) ? key.name : key);
-  };
 
   return (
     <div class="keyboard-wrapper" id="keyboard-wrapper">
@@ -35,23 +58,7 @@ const Keyboard: Component<Props> = ({ keyboard }) => {
               <div class="row">
                 <For each={keys}>
                   {(key) => {
-                    const is_special = isKeySpecial(key);
-                    const key_name = is_special ? key.name : key;
-                    return (
-                      <div
-                        class="key"
-                        classList={{
-                          special: is_special,
-                          [key_name.toLowerCase()]: is_special,
-                        }}
-                      >
-                        {is_special && key.icon ? (
-                          <i class={`ri-${key.icon}-fill`}></i>
-                        ) : (
-                          key_name
-                        )}
-                      </div>
-                    );
+                    return <Key key={key} onClick={pressKey} />;
                   }}
                 </For>
               </div>
