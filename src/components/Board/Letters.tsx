@@ -1,5 +1,5 @@
 import { AttemptType, WordAttempt } from "@/game/attempt";
-import { Accessor, Component, For, Index } from "solid-js";
+import { Accessor, Component, Index } from "solid-js";
 
 type LettersProps = {
   row: number;
