@@ -5,7 +5,7 @@ export type KeyboardState = {
   pressKey: (key: string | null) => void;
 };
 
-export const SPECIAL_KEYS = new Set([
+export const SPECIAL_KEYS = [
   "Enter",
   "ArrowLeft",
   "ArrowRight",
@@ -14,7 +14,13 @@ export const SPECIAL_KEYS = new Set([
   "Backspace",
   "Delete",
   " ", // Space
-]);
+] as const;
+export type SpecialKey = typeof SPECIAL_KEYS[number];
+
+const SPECIAL_KEYS_SET = new Set(SPECIAL_KEYS as readonly string[]);
+export function isKeySpecial(key: string): key is SpecialKey {
+  return SPECIAL_KEYS_SET.has(key);
+}
 
 export const LETTER_KEYS = new Set([..."abcdefghijklmnopqrstuvwxyz"]);
 
@@ -24,13 +30,14 @@ const createKeyboard = () => {
       key_pressed: pressed,
       pressKey: (key: string | null) => {
         setPressed(key);
+        setPressed(null);
       },
     };
 
   document.addEventListener("keyup", (event: KeyboardEvent) => {
     const key = event.key;
     // filter pressed key
-    if (SPECIAL_KEYS.has(key) || LETTER_KEYS.has(key)) {
+    if (isKeySpecial(key) || LETTER_KEYS.has(key)) {
       setPressed(key);
     }
     setPressed(null);
