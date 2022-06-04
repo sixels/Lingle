@@ -42,8 +42,10 @@ const GameBoard: Component<Props> = ({
   };
 
   const [inner_position, setInnerPosition] = createSignal<[number, number]>([
-    0, 0,
-  ]);
+      0, 0,
+    ]),
+    [reveal, setReveal] = createSignal(-1),
+    isRevealing = createSelector(reveal);
 
   // sharded signals
   const board = createBoard().map((attempt) => createSignal(attempt));
@@ -94,6 +96,7 @@ const GameBoard: Component<Props> = ({
 
       const [_row, setRow] = board[row];
       setRow(makeWordAttempt(attempt));
+      setReveal(prev && !prev.includes(" ") ? row - 1 : -1);
     })
   );
 
@@ -101,7 +104,7 @@ const GameBoard: Component<Props> = ({
   createEffect(
     on(
       () => stateBoard.attempts,
-      (attempts) => {
+      (attempts, prev) => {
         const [r, _c] = position();
         if (r < 0 || r >= mode.rows) {
           return;
@@ -110,6 +113,9 @@ const GameBoard: Component<Props> = ({
         if (attempt) {
           const [_row, setRow] = board[r];
           setRow([...attempt]);
+          if (prev) {
+            setReveal(r);
+          }
         }
       }
     )
@@ -125,7 +131,7 @@ const GameBoard: Component<Props> = ({
             <div
               class="row letters"
               classList={{
-                disabled: i > inner_position()[0],
+                disabled: i != inner_position()[0],
                 locked: stateBoard.status === "playing" && lock(),
               }}
             >
@@ -134,6 +140,7 @@ const GameBoard: Component<Props> = ({
                 row={i}
                 isFocused={isFocused}
                 selectLetter={selectLetter}
+                isRevealing={isRevealing}
               ></Letters>
             </div>
           );
