@@ -60,7 +60,6 @@ const Letters: Component<LettersProps> = ({
           setLetters(letters());
           return;
         }
-        console.log("AAAA");
 
         for (let i = 0; i < columns_ref.length; i++) {
           const column = columns_ref[i];
