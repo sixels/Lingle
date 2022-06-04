@@ -8,6 +8,7 @@ import {
   createRenderEffect,
   Index,
   createSelector,
+  batch,
 } from "solid-js";
 
 import { GameState } from "@/store/game";
@@ -95,8 +96,10 @@ const GameBoard: Component<Props> = ({
       }
 
       const [_row, setRow] = board[row];
-      setRow(makeWordAttempt(attempt));
-      setReveal(prev && !prev.includes(" ") ? row - 1 : -1);
+      batch(() => {
+        setRow(makeWordAttempt(attempt));
+        setReveal(prev && !prev.includes(" ") ? row - 1 : -1);
+      });
     })
   );
 
@@ -111,11 +114,11 @@ const GameBoard: Component<Props> = ({
         }
         const attempt = attempts[r];
         if (attempt) {
-          const [_row, setRow] = board[r];
-          setRow([...attempt]);
-          if (prev) {
-            setReveal(r);
-          }
+          batch(() => {
+            const [_row, setRow] = board[r];
+            setRow([...attempt]);
+            if (prev) setReveal(r);
+          });
         }
       }
     )
