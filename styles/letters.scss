@@ -50,16 +50,16 @@
   }
 
   &.right {
-    --self-color-bg: var(--letter-right-color-bg);
-    --self-color-fg: var(--letter-right-color-fg);
+    --self-color-bg: var(--letter-right-color-bg) !important;
+    --self-color-fg: var(--letter-right-color-fg) !important;
   }
   &.occur {
-    --self-color-bg: var(--letter-occur-color-bg);
-    --self-color-fg: var(--letter-occur-color-fg);
+    --self-color-bg: var(--letter-occur-color-bg) !important;
+    --self-color-fg: var(--letter-occur-color-fg) !important;
   }
   &.wrong {
-    --self-color-bg: var(--letter-wrong-color-bg);
-    --self-color-fg: var(--letter-wrong-color-fg);
+    --self-color-bg: var(--letter-wrong-color-bg) !important;
+    --self-color-fg: var(--letter-wrong-color-fg) !important;
   }
   &.right,
   &.occur,
