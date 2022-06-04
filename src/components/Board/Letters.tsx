@@ -3,10 +3,8 @@ import {
   Accessor,
   Component,
   createEffect,
-  createRenderEffect,
   createSignal,
   For,
-  Index,
   on,
 } from "solid-js";
 
