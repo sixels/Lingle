@@ -44,7 +44,7 @@ const Header: Component<Props> = ({
           label="Estatísticas"
           icon="bar-chart"
           onClick={() => {
-            //TODO: Toggle Stats Modal
+            setOpenModal(openModal() === "stats" ? "none" : "stats");
           }}
         />
         <Button

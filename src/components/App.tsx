@@ -1,22 +1,24 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, onMount } from "solid-js";
 import { Dynamic } from "solid-js/web";
-
 import { Transition } from "solid-transition-group";
-
-import Board from "./Board";
-import Keyboard from "./Keyboard";
-import Header from "./Header";
 
 import { createLingleStore } from "@/store";
 import { Mode } from "@/game/mode";
+import { initWordlists } from "@/wordlist";
+
+import AboutModal from "./Modal/About";
+import StatsModal from "./Modal/Stats";
+import Header from "./Header";
+import Board from "./Board";
+import Keyboard from "./Keyboard";
 
 import keyboard from "../keyboardProvider";
-import AboutModal from "./Modal/About";
 
 const defaultMode = new Mode("lingle");
 
 const modals = {
   about: AboutModal,
+  stats: StatsModal,
   none: undefined,
 };
 
@@ -27,6 +29,10 @@ const App: Component = () => {
   } = createLingleStore(defaultMode);
 
   const [openModal, setOpenModal] = createSignal<keyof typeof modals>("none");
+
+  onMount(() => {
+    initWordlists();
+  });
 
   return (
     <>
