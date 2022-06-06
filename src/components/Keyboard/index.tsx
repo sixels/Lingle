@@ -3,9 +3,9 @@ import { Component, createEffect, For, on, onCleanup } from "solid-js";
 import { KeyboardState } from "@/keyboardProvider";
 import { Key, KeyboardKey } from "./Key";
 
-type Props = { keyboard: KeyboardState };
-
 import "@styles/keyboard.scss";
+
+type Props = { keyboard: KeyboardState };
 
 const Keyboard: Component<Props> = ({ keyboard }) => {
   const makeKeys = (keys: string): KeyboardKey[] => {
