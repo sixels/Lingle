@@ -369,17 +369,15 @@
       margin: 0 auto;
       font-size: 1.2rem;
 
-      display: flex;
-      gap: 1em;
-
       .subtitle {
         font-size: 1em;
+        margin-bottom: 0.3em;
       }
 
       .themes {
         display: flex;
-        width: min(21em, 90%);
-        // gap: 1em;
+        width: min(20em, 90%);
+        margin: 0 auto;
 
         border-radius: 4px;
 
@@ -390,8 +388,10 @@
           background-color: var(--letter-wrong-color-bg);
           color: var(--letter-wrong-color-fg);
 
-          padding: 0 1.5em;
+          width: calc(20em / 3);
+          padding: 0 0.5em;
           line-height: 2.8em;
+          text-align: center;
 
           &:first-child {
             border-top-left-radius: inherit;
@@ -403,7 +403,7 @@
           }
           &.active {
             background-color: var(--letter-right-color-bg);
-            color: var(--letter-right-color-fg);
+            color: var(--letter-right-color-fg) !important;
           }
         }
       }
