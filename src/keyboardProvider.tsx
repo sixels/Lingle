@@ -13,6 +13,7 @@ export const SPECIAL_KEYS = [
   "End",
   "Backspace",
   "Delete",
+  "Escape",
   " ", // Space
 ] as const;
 export type SpecialKey = typeof SPECIAL_KEYS[number];
