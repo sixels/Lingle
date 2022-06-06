@@ -1,4 +1,4 @@
-import { Component } from "solid-js";
+import { Component, Signal } from "solid-js";
 
 import { createSignal } from "solid-js";
 import ModeSelector from "./ModeSelector";
@@ -10,9 +10,14 @@ import "@styles/header.scss";
 type Props = {
   gameState: GameState;
   setMode: GameStoreMethods["setMode"];
+  openModal: Signal<string>;
 };
 
-const Header: Component<Props> = ({ gameState, setMode }) => {
+const Header: Component<Props> = ({
+  gameState,
+  setMode,
+  openModal: [openModal, setOpenModal],
+}) => {
   const [menuOpen, setMenuOpen] = createSignal(false);
 
   const toggleMenu = () => {
@@ -26,7 +31,7 @@ const Header: Component<Props> = ({ gameState, setMode }) => {
           label="Sobre"
           icon="information"
           onClick={() => {
-            //TODO: Toggle HTP Modal
+            setOpenModal(openModal() === "about" ? "none" : "about");
           }}
         />
         <span class="strong">{`${gameState.mode}#${
