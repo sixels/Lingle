@@ -167,8 +167,6 @@ a {
       --self-color-fg: var(--message-error-color-fg);
     }
   }
-
-  
 }
 
 .example {
@@ -181,7 +179,6 @@ a {
   }
 }
 
-
 .modal-wrapper {
   z-index: 13;
 
@@ -189,32 +186,13 @@ a {
   width: 100%;
   height: 100%;
 
-  visibility: hidden;
-
-  &.visible {
-    visibility: visible;
-
-    .modal,
-    .overlay {
-      transition: visibility 0ms linear 0ms, opacity 300ms ease;
-
-      visibility: visible;
-      opacity: 1;
-    }
-    :is(.overlay) {
-      opacity: 0.5;
-    }
-  }
-
   .overlay {
     width: 100%;
     height: 100%;
 
     background-color: var(--overlay-color-bg);
 
-    transition: visibility 0ms linear 300ms, opacity 300ms ease;
-    visibility: hidden;
-    opacity: 0;
+    opacity: 0.5;
   }
 
   .modal {
@@ -236,10 +214,6 @@ a {
     color: var(--default-color-fg);
     border-radius: 1rem;
     box-shadow: 0px 10px 30px -6px rgba(0, 0, 0, 0.4);
-
-    transition: visibility 0ms linear 300ms, opacity 300ms ease;
-    visibility: hidden;
-    opacity: 0;
 
     display: flex;
     flex-direction: column;
@@ -505,14 +479,14 @@ a {
   }
 }
 
-.modal.htp {
+.modal.about {
   line-height: 1.4em;
   .about {
     font-size: 1.1em;
     width: 85%;
     margin-top: -1.2em;
   }
-  .instruction {
+  .instructions {
     width: 85%;
     display: flex;
     justify-content: center;
@@ -536,7 +510,7 @@ a {
     }
 
     .example {
-      section {
+      > div {
         margin-top: 0.6em;
         margin-bottom: 1.2em;
 
