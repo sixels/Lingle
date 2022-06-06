@@ -5,6 +5,8 @@ import { Key, KeyboardKey } from "./Key";
 
 type Props = { keyboard: KeyboardState };
 
+import "@styles/keyboard.scss";
+
 const Keyboard: Component<Props> = ({ keyboard }) => {
   const makeKeys = (keys: string): KeyboardKey[] => {
     return [...keys].map((k) => ({ key: k }));
