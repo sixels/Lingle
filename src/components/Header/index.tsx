@@ -51,7 +51,7 @@ const Header: Component<Props> = ({
           label="Ajustes"
           icon="settings"
           onClick={() => {
-            //TODO: Toggle Stats Modal
+            setOpenModal(openModal() === "prefs" ? "none" : "prefs");
           }}
         />
       </div>

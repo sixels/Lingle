@@ -13,20 +13,24 @@ import Board from "./Board";
 import Keyboard from "./Keyboard";
 
 import keyboard from "../keyboardProvider";
+import PreferencesModal from "./Modal/Preferences";
 
 const defaultMode = new Mode("lingle");
 
 const modals = {
   about: AboutModal,
   stats: StatsModal,
+  prefs: PreferencesModal,
   none: undefined,
 };
 
 const App: Component = () => {
   const {
     game: [game, { setMode, setRow, setGameNumber, createAttempts }],
-    prefs: [prefs, _],
+    prefs: prefsStore,
   } = createLingleStore(defaultMode);
+
+  const prefs = prefsStore[0];
 
   const [openModal, setOpenModal] = createSignal<keyof typeof modals>("none");
 
@@ -61,6 +65,7 @@ const App: Component = () => {
           close={() => {
             setOpenModal("none");
           }}
+          prefsStore={prefsStore}
         />
       </Transition>
       <div id="app" data-theme={prefs.theme}>
