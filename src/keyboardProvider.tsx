@@ -38,7 +38,7 @@ const createKeyboard = () => {
   document.addEventListener("keyup", (event: KeyboardEvent) => {
     const key = event.key;
     // filter pressed key
-    if (isKeySpecial(key) || LETTER_KEYS.has(key)) {
+    if ((isKeySpecial(key) || LETTER_KEYS.has(key)) && !event.ctrlKey) {
       setPressed(key);
     }
     setPressed(null);
