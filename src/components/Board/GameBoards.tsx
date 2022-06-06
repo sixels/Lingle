@@ -61,7 +61,7 @@ const GameBoard: Component<Props> = ({
   );
 
   const selectLetter = ([r, c]: [number, number]) => {
-    if (r < 0 || r >= mode.rows || c < 0 || c >= mode.columns) {
+    if (r != innerPosition()[0] || c < 0 || c >= mode.columns) {
       return;
     }
 
