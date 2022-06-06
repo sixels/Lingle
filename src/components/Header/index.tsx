@@ -10,13 +10,13 @@ import "@styles/header.scss";
 type Props = {
   gameState: GameState;
   setMode: GameStoreMethods["setMode"];
-  openModal: Signal<string>;
+  openModalSignal: Signal<string>;
 };
 
 const Header: Component<Props> = ({
   gameState,
   setMode,
-  openModal: [openModal, setOpenModal],
+  openModalSignal: [openModal, setOpenModal],
 }) => {
   const [menuOpen, setMenuOpen] = createSignal(false);
 
