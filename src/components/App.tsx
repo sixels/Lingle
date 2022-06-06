@@ -1,5 +1,5 @@
-import { Component, createEffect, createSignal, on } from "solid-js";
-import { Dynamic, Portal } from "solid-js/web";
+import { Component, createSignal } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 import { Transition } from "solid-transition-group";
 
@@ -55,7 +55,6 @@ const App: Component = () => {
           close={() => {
             setOpenModal("none");
           }}
-          openModal={openModal}
         />
       </Transition>
       <div id="app" data-theme={prefs.theme}>

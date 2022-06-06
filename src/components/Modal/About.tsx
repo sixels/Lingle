@@ -1,9 +1,9 @@
 import { Component } from "solid-js";
 import { Modal, ModalProps } from ".";
 
-const AboutModal: Component<ModalProps> = ({ close, openModal }) => {
+const AboutModal: Component<ModalProps> = ({ close }) => {
   return (
-    <Modal name="about" close={close} openModal={openModal}>
+    <Modal name="about" close={close}>
       <section class="about">
         <h1 class="title">Sobre</h1>
         <div class="content">

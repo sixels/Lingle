@@ -1,23 +1,13 @@
-import {
-  Accessor,
-  Component,
-  createSignal,
-  on,
-  onCleanup,
-  onMount,
-  ParentProps,
-  Show,
-} from "solid-js";
-import { Portal } from "solid-js/web";
+import { Component, ParentProps } from "solid-js";
+
+import "@styles/modal.scss";
 
 export type ModalProps = {
   close: () => void;
-  openModal: Accessor<string>;
 };
 
 export const Modal: Component<ParentProps & ModalProps & { name: string }> = ({
   name,
-  openModal,
   close,
   children,
 }) => {
