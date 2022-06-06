@@ -26,6 +26,7 @@
     "prando": "^6.0.1",
     "remixicon": "^2.5.0",
     "solid-js": "^1.4.3",
+    "solid-transition-group": "^0.0.10",
     "vite-plugin-solid": "^2.2.6"
   }
 }
