@@ -24,7 +24,7 @@ interface IGameStats {}
 
 interface IGameState {
   row: number;
-  game_number: number;
+  gameNumber: number;
   boards: {
     status: GameStatus;
     attempts: WordAttempt[];
@@ -50,7 +50,7 @@ export const defaultGameState = (mode: Mode): GameState => {
     stats: {},
     state: {
       boards: makeBoards(mode),
-      game_number: 0,
+      gameNumber: 0,
       row: 0,
     },
     expires: utils.tomorrow(),

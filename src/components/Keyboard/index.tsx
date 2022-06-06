@@ -17,12 +17,12 @@ const Keyboard: Component<Props> = ({ keyboard }) => {
 
   let timeout: NodeJS.Timeout;
 
-  const highlightKey = (key_elem: HTMLElement | string) => {
+  const highlightKey = (keyElem: HTMLElement | string) => {
     let elem: HTMLElement | null;
-    if (!(key_elem instanceof HTMLElement)) {
-      elem = document.querySelector(`[data-key=${key_elem}]`);
+    if (!(keyElem instanceof HTMLElement)) {
+      elem = document.querySelector(`[data-key=${keyElem}]`);
     } else {
-      elem = key_elem;
+      elem = keyElem;
     }
 
     elem?.classList.add("highlighted");
@@ -44,7 +44,7 @@ const Keyboard: Component<Props> = ({ keyboard }) => {
   });
 
   createEffect(
-    on(keyboard.key_pressed, (key) => {
+    on(keyboard.keyPressed, (key) => {
       if (key) highlightKey(key);
     })
   );

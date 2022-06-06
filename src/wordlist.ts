@@ -1,5 +1,19 @@
 import utils from "./utils";
 
+function normalizedWordList(): Map<string, string> {
+  let normalized: Map<string, string> = new Map();
+  for (const word of wordlist) {
+    normalized.set(utils.normalizedWord(word), word);
+  }
+  return normalized;
+}
+
+export function initWordlists() {
+  for (const s of Solutions) {
+    wordlist.add(s);
+  }
+}
+
 const solutions = new Set([
   "busca",
   "corre",
@@ -17144,20 +17158,6 @@ const wordlist = new Set([
   "voara",
   "devem",
 ]);
-
-function normalizedWordList(): Map<string, string> {
-  let normalized: Map<string, string> = new Map();
-  for (const word of wordlist) {
-    normalized.set(utils.normalizedWord(word), word);
-  }
-  return normalized;
-}
-
-export function init_wordlists() {
-  for (const s of Solutions) {
-    wordlist.add(s);
-  }
-}
 
 export const Solutions = Object.freeze(solutions);
 export const WordList = Object.freeze(wordlist);

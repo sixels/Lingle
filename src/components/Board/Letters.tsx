@@ -23,7 +23,7 @@ const Letters: Component<LettersProps> = ({
   selectLetter,
   isRevealing,
 }) => {
-  const columns_ref: HTMLDivElement[] = [];
+  const columnsRef: HTMLDivElement[] = [];
 
   const lettersShards = letters().map((la) =>
     createSignal<LetterAttempt<AttemptType.Any>>(
@@ -59,8 +59,8 @@ const Letters: Component<LettersProps> = ({
           return;
         }
 
-        for (let i = 0; i < columns_ref.length; i++) {
-          const column = columns_ref[i];
+        for (let i = 0; i < columnsRef.length; i++) {
+          const column = columnsRef[i];
           setLettersColumn(i, letters()[i] as LetterAttempt<AttemptType.Any>);
           column.classList.add("reveal");
           await new Promise((r: any) => setTimeout(r, 200));
@@ -85,7 +85,7 @@ const Letters: Component<LettersProps> = ({
                 occur: column[0]()?.type === AttemptType.Occur,
                 wrong: column[0]()?.type === AttemptType.Wrong,
               }}
-              ref={(el) => columns_ref.push(el)}
+              ref={(el) => columnsRef.push(el)}
               onClick={[selectLetter, pos]}
             >
               {column[0]()?.letter}

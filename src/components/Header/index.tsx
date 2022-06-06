@@ -30,7 +30,7 @@ const Header: Component<Props> = ({ gameState, setMode }) => {
           }}
         />
         <span class="strong">{`${gameState.mode}#${
-          gameState.state.game_number + 1
+          gameState.state.gameNumber + 1
         }`}</span>
       </div>
       <div class="right" id="menu" classList={{ visible: menuOpen() }}>

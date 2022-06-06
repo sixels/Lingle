@@ -14,7 +14,7 @@ import { Mode } from "@/game/mode";
 import { KeyboardState } from "@/keyboardProvider";
 import {
   compareWordWithSolution,
-  gameNumber,
+  getGameNumber,
   generateSolution,
 } from "@/game/solution";
 import { WordListNormalized } from "@/wordlist";
@@ -61,6 +61,7 @@ const Board: Component<Props> = ({
       createAttempts(
         solution().map((solution) => compareWordWithSolution(word, solution))
       );
+
       setRow(position()[0] + 1);
     },
     Backspace() {
@@ -72,13 +73,13 @@ const Board: Component<Props> = ({
         return;
       }
 
-      let delete_index = col;
+      let deleteIndex = col;
       if (!lock() && (col >= word.length || word[col] === " ")) {
-        delete_index = Math.max(position()[1] - 1, 0);
-        setPosition([row, delete_index]);
+        deleteIndex = Math.max(position()[1] - 1, 0);
+        setPosition([row, deleteIndex]);
       }
 
-      word[delete_index] = " ";
+      word[deleteIndex] = " ";
       setAttempt(word);
     },
     Delete() {
@@ -117,11 +118,11 @@ const Board: Component<Props> = ({
   };
 
   // TODO: update on daily ticker
-  setGameNumber(gameNumber(new Date()));
+  setGameNumber(getGameNumber(new Date()));
 
   // handle keyboard
   createEffect(
-    on(keyboard.key_pressed, (key) => {
+    on(keyboard.keyPressed, (key) => {
       if (key && gameState.state.boards.some((b) => b.status == "playing")) {
         let handler = keyboardHandler[key];
         if (handler) {
@@ -138,12 +139,12 @@ const Board: Component<Props> = ({
         word[col] = key.toLowerCase();
         setAttempt(word);
 
-        let next_column = Math.min(col + 1, attempt().length);
-        if (word[next_column] !== " ") {
-          next_column = word.indexOf(" ");
+        let nextColumn = Math.min(col + 1, attempt().length);
+        if (word[nextColumn] !== " ") {
+          nextColumn = word.indexOf(" ");
         }
         if (!lock()) {
-          setPosition([row, next_column >= 0 ? next_column : attempt().length]);
+          setPosition([row, nextColumn >= 0 ? nextColumn : attempt().length]);
         }
       }
     })
@@ -152,8 +153,8 @@ const Board: Component<Props> = ({
   createRenderEffect(
     on(
       () => gameState.mode,
-      (new_mode) => {
-        const mode = new Mode(new_mode);
+      (newMode) => {
+        const mode = new Mode(newMode);
         setAttempt(newAttempt(mode));
         setSolution(generateSolution(mode, new Date()));
 

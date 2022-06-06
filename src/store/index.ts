@@ -46,13 +46,13 @@ function makeStore<T>(value: T): [T, SetStoreFunction<T>] {
 }
 
 function createAppState(
-  game_state: GameState,
-  prefs_state: PrefsState
+  gameState: GameState,
+  prefsState: PrefsState
 ): AppState {
   const [game, setGame] = makeStore(
-    getOrElse(storageKeyFromMode(game_state.mode), game_state)
+    getOrElse(storageKeyFromMode(gameState.mode), gameState)
   );
-  const [prefs, setPrefs] = makeStore(getOrElse(STORE_PREFS_KEY, prefs_state));
+  const [prefs, setPrefs] = makeStore(getOrElse(STORE_PREFS_KEY, prefsState));
 
   createEffect(() => {
     localStorage.setItem(storageKeyFromMode(game.mode), JSON.stringify(game));
@@ -117,7 +117,7 @@ export function createLingleStore(mode: Mode): LingleStore {
           return true;
         },
         setGameNumber: (n: number) => {
-          setGame("state", "game_number", n);
+          setGame("state", "gameNumber", n);
         },
       },
     ],

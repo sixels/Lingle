@@ -18,25 +18,24 @@ export const Key: Component<KeyProps> = ({ key, onClick }) => {
     return isKeySpecial(key.key);
   };
 
-  const is_special = isSpecial(key);
-  const key_name = key.key;
+  const keyName = key.key;
 
   return (
     <div
       class="key"
       classList={{
-        special: is_special,
-        [key_name.toLowerCase()]: is_special,
+        special: isSpecial(key),
+        [keyName.toLowerCase()]: isSpecial(key),
       }}
       onClick={(event) => {
         onClick && onClick(event, key);
       }}
       data-key={key.key}
     >
-      {is_special && key.icon ? (
+      {isSpecial(key) && key.icon ? (
         <i class={`ri-${key.icon}-fill`}></i>
       ) : (
-        key_name
+        keyName
       )}
     </div>
   );

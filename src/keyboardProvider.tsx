@@ -1,7 +1,7 @@
 import { Accessor, createRoot, createSignal } from "solid-js";
 
 export type KeyboardState = {
-  key_pressed: Accessor<string | null>;
+  keyPressed: Accessor<string | null>;
   pressKey: (key: string | null) => void;
 };
 
@@ -27,7 +27,7 @@ export const LETTER_KEYS = new Set([..."abcdefghijklmnopqrstuvwxyz"]);
 const createKeyboard = () => {
   const [pressed, setPressed] = createSignal<string | null>(null),
     state: KeyboardState = {
-      key_pressed: pressed,
+      keyPressed: pressed,
       pressKey: (key: string | null) => {
         setPressed(key);
         setPressed(null);

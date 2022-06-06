@@ -9,13 +9,13 @@ import { Mode } from "@/game/mode";
 
 import keyboard from "../keyboardProvider";
 
-const default_mode = new Mode("lingle");
+const defaultMode = new Mode("lingle");
 
 const App: Component = () => {
   const {
     game: [game, { setMode, setRow, setGameNumber, createAttempts }],
     prefs: [prefs, _],
-  } = createLingleStore(default_mode);
+  } = createLingleStore(defaultMode);
 
   return (
     <>

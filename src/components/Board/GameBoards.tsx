@@ -42,7 +42,7 @@ const GameBoard: Component<Props> = ({
     return board;
   };
 
-  const [inner_position, setInnerPosition] = createSignal<[number, number]>([
+  const [innerPosition, setInnerPosition] = createSignal<[number, number]>([
       0, 0,
     ]),
     [reveal, setReveal] = createSignal(-1),
@@ -53,7 +53,7 @@ const GameBoard: Component<Props> = ({
 
   const isFocused = createSelector(
     () => {
-      return inner_position();
+      return innerPosition();
     },
     ([r1, c1]: [number, number], [r2, c2]) => {
       return r1 === r2 && c1 === c2;
@@ -134,7 +134,7 @@ const GameBoard: Component<Props> = ({
             <div
               class="row letters"
               classList={{
-                disabled: i != inner_position()[0],
+                disabled: i != innerPosition()[0],
                 locked: stateBoard.status === "playing" && lock(),
               }}
             >
