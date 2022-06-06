@@ -309,7 +309,6 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    // margin-top: 1rem;
     p {
       margin-top: 0;
       margin-bottom: 0.5em;
@@ -321,7 +320,6 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    margin-top: -1em;
 
     .title {
       font-size: 1.5em !important;
@@ -329,7 +327,6 @@
 
     .example {
       > div {
-        margin-top: 0.6em;
         margin-bottom: 1.2em;
 
         width: 100%;
