@@ -361,55 +361,50 @@
 
 .modal.prefs {
   padding-bottom: 4em;
-  .theme-selector {
-    width: 80%;
-    font-size: 1.2rem;
+  .preferences {
+    width: 100%;
 
-    display: flex;
-    flex-direction: column;
+    .theme-selector {
+      width: 80%;
+      margin: 0 auto;
+      font-size: 1.2rem;
 
-    .label {
-      font-weight: 500;
-      margin-bottom: 0.5em;
-    }
-
-    .themes {
       display: flex;
-      width: min(21em, 90%);
-      height: 2.8em;
+      gap: 1em;
 
-      align-self: center;
+      .subtitle {
+        font-size: 1em;
+      }
 
-      --self-border-radius: 4px;
-      border-radius: var(--self-border-radius);
-
-      background-color: var(--letter-wrong-color-bg);
-
-      .theme {
-        @extend .btn;
-        @extend .no-select;
-
-        width: 7em;
-
+      .themes {
         display: flex;
-        line-height: 2em;
-        padding: 0 0.3em;
-        align-items: center;
-        justify-content: center;
-        color: var(--letter-wrong-color-fg);
+        width: min(21em, 90%);
+        // gap: 1em;
 
-        &:first-child {
-          border-top-left-radius: var(--self-border-radius);
-          border-bottom-left-radius: var(--self-border-radius);
-        }
-        &:last-child {
-          border-top-right-radius: var(--self-border-radius);
-          border-bottom-right-radius: var(--self-border-radius);
-        }
+        border-radius: 4px;
 
-        &.active {
-          background-color: var(--letter-right-color-bg);
-          color: var(--letter-right-color-fg);
+        .theme {
+          @extend .btn;
+          @extend .no-select;
+
+          background-color: var(--letter-wrong-color-bg);
+          color: var(--letter-wrong-color-fg);
+
+          padding: 0 1.5em;
+          line-height: 2.8em;
+
+          &:first-child {
+            border-top-left-radius: inherit;
+            border-bottom-left-radius: inherit;
+          }
+          &:last-child {
+            border-top-right-radius: inherit;
+            border-bottom-right-radius: inherit;
+          }
+          &.active {
+            background-color: var(--letter-right-color-bg);
+            color: var(--letter-right-color-fg);
+          }
         }
       }
     }
