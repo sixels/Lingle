@@ -1,7 +1,13 @@
-import { Component } from "solid-js";
-import { Modal, ModalProps } from ".";
+import { getGamesPlayed, getWinRate } from "@/store/game/stats";
+import { Component, For, Show } from "solid-js";
+import { Modal, StatefulModalProps } from ".";
 
-const StatsModal: Component<ModalProps> = ({ close }) => {
+const StatsModal: Component<StatefulModalProps> = ({
+  store: {
+    game: [{ stats, state }],
+  },
+  close,
+}) => {
   return (
     <Modal name="stats" close={close}>
       <section class="summary">
