@@ -7,6 +7,7 @@ import { defaultGameState, GameState, GameStore } from "./game";
 import { defaultPrefsState, PrefsState } from "./prefs";
 import { WordAttempt } from "@/game/attempt";
 import { Theme } from "@/theme";
+import utils from "@/utils";
 
 const STORE_LINGLE_KEY: string = "v2.lingle.normal" as const;
 const STORE_DUOLINGLE_KEY: string = "v2.lingle.duo" as const;
@@ -37,10 +38,8 @@ function getOrElse<T extends Object>(
 ): T {
   const stored = localStorage.getItem(key);
 
-  if (stored)
-    console.log(({ ...fallback, ...JSON.parse(stored, reviver) } as T))
   return stored
-    ? ({ ...fallback, ...JSON.parse(stored, reviver) } as T)
+    ? utils.mergeObjectWith(JSON.parse(stored, reviver), fallback)
     : fallback;
 }
 
