@@ -6,6 +6,7 @@ import {
   createSignal,
   For,
   on,
+  onCleanup,
 } from "solid-js";
 
 type LettersProps = {
@@ -24,6 +25,7 @@ const Letters: Component<LettersProps> = ({
   isRevealing,
 }) => {
   const columnsRef: HTMLDivElement[] = [];
+  let bounceTimeout: NodeJS.Timeout;
 
   const lettersShards = letters().map((la) =>
     createSignal<LetterAttempt<AttemptType.Any>>(
@@ -68,7 +70,25 @@ const Letters: Component<LettersProps> = ({
       }
     )
   );
-  // createRenderEffect(() => setLettersProxy(letters()));
+
+  createEffect(() => {
+    console.log("A");
+    for (const [i, column] of Object.entries(columnsRef)) {
+      const c = Number.parseInt(i);
+      const pos: [number, number] = [row, !Number.isNaN(c) ? c : -1];
+
+      if (isFocused(pos)) {
+        column.classList.add("bouncing");
+        bounceTimeout = setTimeout(() => {
+          column.classList.remove("bouncing");
+        }, 70);
+      }
+    }
+  }, [isFocused]);
+
+  onCleanup(() => {
+    clearTimeout(bounceTimeout);
+  });
 
   return (
     <>
