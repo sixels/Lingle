@@ -154,7 +154,6 @@
       .mode {
         @extend a;
         position: relative;
-        color: var(--default-color-fg) !important;
         cursor: pointer;
 
         display: flex;
@@ -163,6 +162,16 @@
         max-height: 1.8em !important;
         // background-color: #fff;
         padding: 0.2em 0 !important;
+
+        &:not(.selected) {
+          color: var(--letter-default-color-bd) !important;
+          &:hover {
+            color: var(--default-color-fg) !important;
+          }
+        }
+        &.selected {
+          color: var(--default-color-fg) !important;
+        }
       }
     }
 
