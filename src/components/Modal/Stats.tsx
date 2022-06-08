@@ -14,19 +14,19 @@ const StatsModal: Component<StatefulModalProps> = ({
         <h1 class="title"> Estatísticas Pessoais </h1>
         <div class="content">
           <div class="stat game-count">
-            <span class="value">0</span>
+            <span class="value">{getGamesPlayed(stats)}</span>
             <span class="label">jogos</span>
           </div>
           <div class="stat win-rate">
-            <span class="value">0%</span>
+            <span class="value">{getWinRate(stats)}%</span>
             <span class="label">taxa de vitórias</span>
           </div>
           <div class="stat current-sequency">
-            <span class="value">0</span>
+            <span class="value">{stats.winStreak}</span>
             <span class="label">sequência atual</span>
           </div>
           <div class="stat best-sequency">
-            <span class="value">0</span>
+            <span class="value">{stats.bestStreak}</span>
             <span class="label">maior sequência</span>
           </div>
         </div>
