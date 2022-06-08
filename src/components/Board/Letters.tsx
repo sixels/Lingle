@@ -65,14 +65,17 @@ const Letters: Component<LettersProps> = ({
           const column = columnsRef[i];
           setLettersColumn(i, letters()[i] as LetterAttempt<AttemptType.Any>);
           column.classList.add("reveal");
-          await new Promise((r: any) => setTimeout(r, 200));
+          await new Promise((r) => setTimeout(r, 65));
+          column.classList.add("bouncing");
+          await new Promise((r) => setTimeout(r, 70));
+          column.classList.remove("bouncing");
+          await new Promise((r) => setTimeout(r, 65));
         }
       }
     )
   );
 
   createEffect(() => {
-    console.log("A");
     for (const [i, column] of Object.entries(columnsRef)) {
       const c = Number.parseInt(i);
       const pos: [number, number] = [row, !Number.isNaN(c) ? c : -1];
@@ -84,7 +87,7 @@ const Letters: Component<LettersProps> = ({
         }, 70);
       }
     }
-  }, [isFocused]);
+  });
 
   onCleanup(() => {
     clearTimeout(bounceTimeout);

@@ -63,9 +63,7 @@ const GameBoard: Component<Props> = ({
   const board = createBoard().map((attempt) => createSignal(attempt));
 
   const isFocused = createSelector(
-    () => {
-      return innerPosition();
-    },
+    () => innerPosition(),
     ([r1, c1]: [number, number], [r2, c2]) => {
       return r1 === r2 && c1 === c2;
     }

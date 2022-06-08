@@ -7,6 +7,7 @@ import {
   For,
   on,
 } from "solid-js";
+import { Rerun } from "@solid-primitives/keyed";
 
 import { GameState, GameStoreMethods } from "@/store/game";
 import GameBoard from "./GameBoards";
@@ -46,7 +47,8 @@ const Board: Component<Props> = ({
   const [position, setPosition] = createSignal<[number, number]>([0, 0]),
     [attempt, setAttempt] = createSignal<string[]>([]),
     [solutions, setSolutions] = createSignal<string[]>([]),
-    [lock, setLock] = createSignal<boolean>(false);
+    [lock, setLock] = createSignal<boolean>(false),
+    [mode, setMode] = createSignal<Mode>(new Mode("lingle"));
 
   const [animatedAttempt, setAnimatedAttempt] = createSignal(false),
     [submittedAttempt, setSubmittedAttempt] = createSignal<WordAttempt[]>([]);
@@ -134,11 +136,13 @@ const Board: Component<Props> = ({
       () => gameState.mode,
       (newMode) => {
         const mode = new Mode(newMode);
-        setAttempt(newAttempt(mode));
-        setSolutions(generateSolution(mode, new Date()));
-
-        setLock(false);
-        setPosition([gameState.state.row, 0]);
+        batch(() => {
+          setMode(mode);
+          setAttempt(newAttempt(mode));
+          setSolutions(generateSolution(mode, new Date()));
+          setLock(false);
+          setPosition([gameState.state.row, 0]);
+        });
       }
     )
   );
@@ -176,9 +180,11 @@ const Board: Component<Props> = ({
   createEffect(
     on(animatedAttempt, (animated) => {
       if (animated) {
-        createAttempts(submittedAttempt());
-        setSubmittedAttempt([]);
-        setRow(position()[0] + 1);
+        batch(() => {
+          createAttempts(submittedAttempt());
+          setSubmittedAttempt([]);
+          setRow(position()[0] + 1);
+        });
       }
     })
   );
@@ -188,10 +194,12 @@ const Board: Component<Props> = ({
       () => gameState.state.row,
       (cur, prev) => {
         if (prev === undefined || cur > prev) {
-          setAttempt(attempt().map(() => " "));
+          batch(() => {
+            setAttempt(attempt().map(() => " "));
 
-          setLock(false);
-          setPosition([gameState.state.row, 0]);
+            setLock(false);
+            setPosition([gameState.state.row, 0]);
+          });
         }
       }
     )
@@ -205,22 +213,24 @@ const Board: Component<Props> = ({
 
   return (
     <div id="board-wrapper" class="board-wrapper">
-      <For each={gameState.state.boards}>
-        {(board, i) => {
-          return (
-            <GameBoard
-              lock={lock}
-              stateBoard={board}
-              attempt={attempt}
-              mode={new Mode(gameState.mode)}
-              position={[position, setPosition]}
-              boardNumber={i()}
-              submittedAttempt={submittedAttempt}
-              setAnimatedAttempts={setAnimatedAttempt}
-            />
-          );
-        }}
-      </For>
+      <Rerun on={mode}>
+        <For each={gameState.state.boards}>
+          {(board, i) => {
+            return (
+              <GameBoard
+                lock={lock}
+                stateBoard={board}
+                attempt={attempt}
+                mode={mode()}
+                position={[position, setPosition]}
+                boardNumber={i()}
+                submittedAttempt={submittedAttempt}
+                setAnimatedAttempts={setAnimatedAttempt}
+              />
+            );
+          }}
+        </For>
+      </Rerun>
     </div>
   );
 };
