@@ -59,21 +59,27 @@ const StatsModal: Component<StatefulModalProps> = ({
         <h1 class="title">Histórico de Tentativas</h1>
         <div class="content">
           <div class="chart">
-            <div class="line-wrapper">
-              <span class="legend">1</span>
-              <div class="line">0</div>
-            </div>
+            <For each={stats.history}>
+              {({ attempt, count }) => {
+                return (
+                  <div class="line-wrapper" classList={{ empty: count === 0 }}>
+                    <span class="legend">{attempt}</span>
+                    <div class="line">{count}</div>
+                  </div>
+                );
+              }}
+            </For>
           </div>
         </div>
       </section>
 
       <div class="footer">
-        <button class="btn copy-btn">
+        <button class="btn copy-btn" onClick={() => console.error("TODO")}>
           <i class="ri-share-fill"></i> Compartilhar
         </button>
         <div class="timer">
           <span class="label">Próxima palavra em</span>
-          <span class="time">00:00:00</span>
+          <span class="time">00:00:00 (TODO)</span>
         </div>
       </div>
     </Modal>
