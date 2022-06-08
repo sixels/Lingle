@@ -4,7 +4,7 @@ import { createStore, produce, SetStoreFunction } from "solid-js/store";
 import { Mode, Modes } from "@/game/mode";
 import { GameStatus } from "@/game";
 import { defaultGameState, GameState, GameStore } from "./game";
-import { defaultPrefsState, PrefsState } from "./prefs";
+import { defaultPrefsState, PrefsState, PrefsStore } from "./prefs";
 import { WordAttempt } from "@/game/attempt";
 import { Theme } from "@/theme";
 import utils from "@/utils";
@@ -15,7 +15,7 @@ const STORE_PREFS_KEY: string = "v2.prefs" as const;
 
 export interface LingleStore {
   game: GameStore;
-  prefs: [PrefsState, any];
+  prefs: PrefsStore;
 }
 
 interface AppState {
