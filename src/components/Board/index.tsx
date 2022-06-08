@@ -115,6 +115,7 @@ const Board: Component<Props> = ({
         return !l;
       });
     },
+    Escape() {},
   };
 
   // TODO: update on daily ticker
