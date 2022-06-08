@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@solid-primitives/keyed': ^1.0.0
   normalize.css: ^8.0.1
   pnpm: ^7.1.0
   prando: ^6.0.1
@@ -15,6 +16,7 @@ specifiers:
   workbox-window: ^6.5.3
 
 dependencies:
+  '@solid-primitives/keyed': 1.0.0_solid-js@1.4.3
   normalize.css: 8.0.1
   prando: 6.0.1
   remixicon: 2.5.0
@@ -1325,6 +1327,14 @@ packages:
       picomatch: 2.3.1
       rollup: 2.73.0
     dev: true
+
+  /@solid-primitives/keyed/1.0.0_solid-js@1.4.3:
+    resolution: {integrity: sha512-9vznFq6xR1FLEcQH3S3aGZ3iWOY6EZmDEl0raNOXJxdgXnudHepcAOfx8G52bROHJ3AdPnIqv4ITIegPQOK2BA==}
+    peerDependencies:
+      solid-js: ^1.4.0
+    dependencies:
+      solid-js: 1.4.3
+    dev: false
 
   /@surma/rollup-plugin-off-main-thread/2.2.3:
     resolution: {integrity: sha512-lR8q/9W7hZpMWweNiAKU7NQerBnzQQLvi8qnTDU/fxItPhtZVMbPV3lbCwjhIlNBe9Bbr5V+KHshvWmVSG9cxQ==}
