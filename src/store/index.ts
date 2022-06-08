@@ -109,8 +109,10 @@ export function createLingleStore(mode: Mode): LingleStore {
               produce((b) => {
                 if (attempt.every((l) => (l ? l.type === "right" : false))) {
                   b.status = "won";
+                  b.solution = attempt.map((l) => l?.letter).join("");
                 } else if (game.state.row === new Mode(game.mode).rows - 1) {
                   b.status = "lost";
+                  b.solution = attempt.map((l) => l?.letter).join("");
                 }
                 b.attempts = b.attempts.concat([[...attempt]]);
               })
