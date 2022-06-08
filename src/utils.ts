@@ -6,7 +6,7 @@ type MergeObject = Record<string, any>;
 
 function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
   for (const [k, v] of Object.entries(source)) {
-    if (v !== null && typeof v === "object") {
+    if (v !== null && typeof v === "object" && !Array.isArray(v)) {
       if (target[k] === undefined) {
         Object.assign(target, { [k]: new v.__proto__.constructor() });
       }
