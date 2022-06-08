@@ -40,6 +40,7 @@
 
         &:before {
           content: attr(data-legend);
+          font-weight: 500;
           font-family: var(--default-font-family);
           margin-right: 3px;
         }
