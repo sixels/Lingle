@@ -33,10 +33,16 @@ const StatsModal: Component<StatefulModalProps> = ({
       </section>
 
       <section class="solutions">
-        <h1 class="title"> As palavras de hoje eram </h1>
-        <div class="content">
-          <span class="solution">surja, tedio</span>
-        </div>
+        <Show when={state.boards.every((board) => board.status != "playing")}>
+          <h1 class="title"> As palavras de hoje eram </h1>
+          <div class="content">
+            <For each={state.boards}>
+              {(board) => {
+                return <span class="solution">{board.solution}</span>;
+              }}
+            </For>
+          </div>
+        </Show>
       </section>
 
       <section class="history">
