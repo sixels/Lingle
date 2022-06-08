@@ -32,18 +32,28 @@ const StatsModal: Component<StatefulModalProps> = ({
         </div>
       </section>
 
-      <section class="solutions">
-        <Show when={state.boards.every((board) => board.status != "playing")}>
+      <Show when={state.boards.every((board) => board.status != "playing")}>
+        <section class="solutions">
           <h1 class="title"> As palavras de hoje eram </h1>
           <div class="content">
             <For each={state.boards}>
-              {(board) => {
-                return <span class="solution">{board.solution}</span>;
+              {(board, i) => {
+                return (
+                  <span class="solution">
+                    <a
+                      href={`https://dicio.com.br/${board.solution}`}
+                      target="_blank"
+                    >
+                      {board.solution}
+                    </a>
+                    {i() < state.boards.length - 1 ? "," : ""}
+                  </span>
+                );
               }}
             </For>
           </div>
-        </Show>
-      </section>
+        </section>
+      </Show>
 
       <section class="history">
         <h1 class="title">Histórico de Tentativas</h1>
