@@ -14,15 +14,15 @@ import { DynamicModal, Modals } from "./Modal";
 const defaultMode = new Mode("lingle");
 
 const App: Component = () => {
-  const {
-    game: [game, { setMode, setRow, setGameNumber, createAttempts }],
-    prefs: prefsStore,
-  } = createLingleStore(defaultMode);
+  const store = createLingleStore(defaultMode),
+    {
+      game: [game, { setMode, setRow, setGameNumber, createAttempts }],
+      prefs: prefsStore,
+    } = store,
+    prefs = prefsStore[0];
 
-  const prefs = prefsStore[0];
-
-  const openModalSignal = createSignal<keyof Modals>("none");
-  const setOpenModal = openModalSignal[1];
+  const openModalSignal = createSignal<keyof Modals>("none"),
+    setOpenModal = openModalSignal[1];
 
   onMount(() => {
     initWordlists();
@@ -37,10 +37,7 @@ const App: Component = () => {
   return (
     <>
       <div id="app" data-theme={prefs.theme}>
-        <DynamicModal
-          openModalSignal={openModalSignal}
-          prefsStore={prefsStore}
-        />
+        <DynamicModal openModalSignal={openModalSignal} store={store} />
 
         <Header
           gameState={game}
