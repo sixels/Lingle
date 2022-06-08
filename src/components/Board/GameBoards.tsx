@@ -9,11 +9,14 @@ import {
   Index,
   createSelector,
   batch,
+  Setter,
+  onMount,
+  onCleanup,
 } from "solid-js";
 
 import { GameState } from "@/store/game";
 import { Mode } from "@/game/mode";
-import { makeWordAttempt } from "@/game/attempt";
+import { makeWordAttempt, WordAttempt } from "@/game/attempt";
 import Letters from "./Letters";
 
 type Props = {
@@ -22,6 +25,9 @@ type Props = {
   mode: Mode;
   attempt: Accessor<(string | undefined)[]>;
   lock: Accessor<boolean>;
+  boardNumber: number;
+  submittedAttempt: Accessor<WordAttempt[]>;
+  setAnimatedAttempts: Setter<boolean>;
 };
 
 const GameBoard: Component<Props> = ({
@@ -30,6 +36,9 @@ const GameBoard: Component<Props> = ({
   mode,
   attempt,
   lock,
+  boardNumber,
+  submittedAttempt,
+  setAnimatedAttempts,
 }) => {
   const createBoard = () => {
     const attempts = stateBoard.attempts;
@@ -41,6 +50,8 @@ const GameBoard: Component<Props> = ({
     ]);
     return board;
   };
+
+  let animateTimeout: NodeJS.Timeout;
 
   const [innerPosition, setInnerPosition] = createSignal<[number, number]>([
       0, 0,
@@ -70,6 +81,18 @@ const GameBoard: Component<Props> = ({
     }
   };
 
+  onMount(() => {
+    const [r, _c] = position();
+    if (r < 0 || r >= mode.rows) {
+      return;
+    }
+    const attempt = stateBoard.attempts[r];
+    if (attempt !== undefined) {
+      const [_row, setRow] = board[r];
+      setRow([...attempt]);
+    }
+  });
+
   createRenderEffect(
     on(position, (pos) => {
       switch (stateBoard.status) {
@@ -96,33 +119,38 @@ const GameBoard: Component<Props> = ({
       }
 
       const [_row, setRow] = board[row];
-      batch(() => {
-        setRow(makeWordAttempt(attempt));
-        setReveal(prev && !prev.includes(" ") ? row - 1 : -1);
-      });
+      setRow(makeWordAttempt(attempt));
     })
   );
 
   // update row after attempting a word
   createEffect(
-    on(
-      () => stateBoard.attempts,
-      (attempts, prev) => {
-        const [r, _c] = position();
-        if (r < 0 || r >= mode.rows) {
-          return;
-        }
-        const attempt = attempts[r];
-        if (attempt) {
-          batch(() => {
-            const [_row, setRow] = board[r];
-            setRow([...attempt]);
-            if (prev) setReveal(r);
-          });
-        }
+    on(submittedAttempt, (attempts) => {
+      const attempt = attempts[boardNumber];
+      if (attempt === undefined) return;
+
+      const [row, _col] = position();
+      if (row < 0 || row >= mode.rows || stateBoard.status !== "playing") {
+        return;
       }
-    )
+      const [_row, setRow] = board[row];
+      batch(() => {
+        setReveal(row);
+        setRow(attempt);
+      });
+
+      animateTimeout = setTimeout(() => {
+        batch(() => {
+          setAnimatedAttempts(true);
+          setReveal(-1);
+        });
+      }, mode.columns * 180 + 160);
+    })
   );
+
+  onCleanup(() => {
+    clearTimeout(animateTimeout);
+  });
 
   return (
     <div class={`board ${mode.mode}`}>

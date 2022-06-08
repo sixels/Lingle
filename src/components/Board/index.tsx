@@ -1,4 +1,5 @@
 import {
+  batch,
   Component,
   createEffect,
   createRenderEffect,
@@ -21,6 +22,7 @@ import { WordListNormalized } from "@/wordlist";
 
 import "@styles/board.scss";
 import "@styles/letters.scss";
+import { WordAttempt } from "@/game/attempt";
 
 type Props = {
   gameState: GameState;
@@ -40,10 +42,14 @@ const Board: Component<Props> = ({
   const newAttempt = (mode: Mode): string[] => {
     return [...new Array(mode.columns).fill(" ")];
   };
-  const [position, setPosition] = createSignal<[number, number]>([0, 0]);
-  const [attempt, setAttempt] = createSignal<string[]>([]);
-  const [solution, setSolution] = createSignal<string[]>([]);
-  const [lock, setLock] = createSignal<boolean>(false);
+
+  const [position, setPosition] = createSignal<[number, number]>([0, 0]),
+    [attempt, setAttempt] = createSignal<string[]>([]),
+    [solutions, setSolutions] = createSignal<string[]>([]),
+    [lock, setLock] = createSignal<boolean>(false);
+
+  const [animatedAttempt, setAnimatedAttempt] = createSignal(false),
+    [submittedAttempt, setSubmittedAttempt] = createSignal<WordAttempt[]>([]);
 
   const keyboardHandler: any = {
     Enter() {
@@ -58,11 +64,13 @@ const Board: Component<Props> = ({
         return;
       }
 
-      createAttempts(
-        solution().map((solution) => compareWordWithSolution(word, solution))
+      const attempts = solutions().map((solution) =>
+        compareWordWithSolution(word, solution)
       );
-
-      setRow(position()[0] + 1);
+      batch(() => {
+        setSubmittedAttempt(attempts);
+        setAnimatedAttempt(false);
+      });
     },
     Backspace() {
       let word = [...attempt()];
@@ -121,6 +129,20 @@ const Board: Component<Props> = ({
   // TODO: update on daily ticker
   setGameNumber(getGameNumber(new Date()));
 
+  createRenderEffect(
+    on(
+      () => gameState.mode,
+      (newMode) => {
+        const mode = new Mode(newMode);
+        setAttempt(newAttempt(mode));
+        setSolutions(generateSolution(mode, new Date()));
+
+        setLock(false);
+        setPosition([gameState.state.row, 0]);
+      }
+    )
+  );
+
   // handle keyboard
   createEffect(
     on(keyboard.keyPressed, (key) => {
@@ -151,18 +173,14 @@ const Board: Component<Props> = ({
     })
   );
 
-  createRenderEffect(
-    on(
-      () => gameState.mode,
-      (newMode) => {
-        const mode = new Mode(newMode);
-        setAttempt(newAttempt(mode));
-        setSolution(generateSolution(mode, new Date()));
-
-        setLock(false);
-        setPosition([gameState.state.row, 0]);
+  createEffect(
+    on(animatedAttempt, (animated) => {
+      if (animated) {
+        createAttempts(submittedAttempt());
+        setSubmittedAttempt([]);
+        setRow(position()[0] + 1);
       }
-    )
+    })
   );
 
   createEffect(
@@ -188,7 +206,7 @@ const Board: Component<Props> = ({
   return (
     <div id="board-wrapper" class="board-wrapper">
       <For each={gameState.state.boards}>
-        {(board) => {
+        {(board, i) => {
           return (
             <GameBoard
               lock={lock}
@@ -196,6 +214,9 @@ const Board: Component<Props> = ({
               attempt={attempt}
               mode={new Mode(gameState.mode)}
               position={[position, setPosition]}
+              boardNumber={i()}
+              submittedAttempt={submittedAttempt}
+              setAnimatedAttempts={setAnimatedAttempt}
             />
           );
         }}
