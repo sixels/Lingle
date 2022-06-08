@@ -1,4 +1,4 @@
-import { Component, Signal } from "solid-js";
+import { Component, createRenderEffect, on, Signal } from "solid-js";
 
 import { createSignal } from "solid-js";
 import ModeSelector from "./ModeSelector";
@@ -19,10 +19,17 @@ const Header: Component<Props> = ({
   openModalSignal: [openModal, setOpenModal],
 }) => {
   const [menuOpen, setMenuOpen] = createSignal(false);
-
   const toggleMenu = () => {
     setMenuOpen(menuOpen() !== true);
   };
+
+  createRenderEffect(
+    on(openModal, (modal) => {
+      if (modal !== "none") {
+        setMenuOpen(false);
+      }
+    })
+  );
 
   return (
     <header id="header" class="header">
