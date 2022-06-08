@@ -1,6 +1,6 @@
 import { Component, createEffect, For, on, onCleanup } from "solid-js";
 
-import { KeyboardState } from "@/keyboardProvider";
+import { isKeySpecial, KeyboardState } from "@/keyboardProvider";
 import { Key, KeyboardKey } from "./Key";
 
 import "@styles/keyboard.scss";
@@ -19,17 +19,14 @@ const Keyboard: Component<Props> = ({ keyboard }) => {
 
   let timeout: NodeJS.Timeout;
 
-  const highlightKey = (keyElem: HTMLElement | string) => {
-    let elem: HTMLElement | null;
-    if (!(keyElem instanceof HTMLElement)) {
-      elem = document.querySelector(`[data-key=${keyElem}]`);
-    } else {
-      elem = keyElem;
+  const highlightKey = (keyElem: HTMLElement | null) => {
+    if (!keyElem) {
+      return;
     }
 
-    elem?.classList.add("highlighted");
+    keyElem.classList.add("highlighted");
     timeout = setTimeout(() => {
-      elem?.classList.remove("highlighted");
+      keyElem.classList.remove("highlighted");
     }, 180);
   };
 
@@ -47,7 +44,8 @@ const Keyboard: Component<Props> = ({ keyboard }) => {
 
   createEffect(
     on(keyboard.keyPressed, (key) => {
-      if (key) highlightKey(key);
+      if (key && !isKeySpecial(key))
+        highlightKey(document.querySelector(`[data-key=${key}]`));
     })
   );
 
