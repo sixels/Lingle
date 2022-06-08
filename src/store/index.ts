@@ -4,8 +4,9 @@ import { createStore, produce, SetStoreFunction } from "solid-js/store";
 import { Mode, Modes } from "@/game/mode";
 import { GameStatus } from "@/game";
 import { defaultGameState, GameState, GameStore } from "./game";
-import { defaultPrefsState, PrefsState, Theme } from "./prefs";
+import { defaultPrefsState, PrefsState } from "./prefs";
 import { WordAttempt } from "@/game/attempt";
+import { Theme } from "@/theme";
 
 const STORE_LINGLE_KEY: string = "v2.lingle.normal" as const;
 const STORE_DUOLINGLE_KEY: string = "v2.lingle.duo" as const;
@@ -32,9 +33,12 @@ function storageKeyFromMode(mode: Modes): string {
 function getOrElse<T extends Object>(
   key: string,
   fallback: T,
-  reviver?: typeof JSON.parse
+  reviver?: Parameters<typeof JSON.parse>["1"]
 ): T {
   const stored = localStorage.getItem(key);
+
+  if (stored)
+    console.log(({ ...fallback, ...JSON.parse(stored, reviver) } as T))
   return stored
     ? ({ ...fallback, ...JSON.parse(stored, reviver) } as T)
     : fallback;

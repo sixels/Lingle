@@ -1,6 +1,8 @@
 import { GameStatus } from "@/game";
 import { WordAttempt } from "@/game/attempt";
 import { Mode, Modes } from "@/game/mode";
+import { IGameStats } from "./stats";
+
 import utils from "@/utils";
 
 export type GameStore = [GameState, GameStoreMethods];
@@ -20,8 +22,6 @@ export interface GameStoreMethods {
   setGameNumber: (n: number) => void;
 }
 
-interface IGameStats {}
-
 interface IGameState {
   row: number;
   gameNumber: number;
@@ -38,18 +38,29 @@ interface IGameState {
  * @returns A GameState
  */
 export const defaultGameState = (mode: Mode): GameState => {
-  const makeBoards = (mode: Mode): IGameState["boards"] => {
-    let boards: IGameState["boards"] = [];
+  const makeBoards = (): IGameState["boards"] => {
+    const boards: IGameState["boards"] = [];
     for (let i = 0; i < mode.boards; i++) {
       boards.push({ status: "playing", attempts: [], solution: undefined });
     }
     return boards;
   };
+  const makeHistory = (): IGameStats["history"] => {
+    const history: IGameStats["history"] = [];
+    for (let i = 0; i < mode.rows; i++) {
+      history.push({ attempt: i, count: 0 });
+    }
+    return history;
+  };
 
   return {
-    stats: {},
+    stats: {
+      winStreak: 0,
+      bestStreak: 0,
+      history: makeHistory(),
+    },
     state: {
-      boards: makeBoards(mode),
+      boards: makeBoards(),
       gameNumber: 0,
       row: 0,
     },
