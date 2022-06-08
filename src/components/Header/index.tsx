@@ -41,9 +41,7 @@ const Header: Component<Props> = ({
             setOpenModal(openModal() === "about" ? "none" : "about");
           }}
         />
-        <span class="strong">{`${gameState.mode}#${
-          gameState.state.gameNumber + 1
-        }`}</span>
+        <span class="strong">{gameState.mode}</span>
       </div>
       <div class="right" id="menu" classList={{ visible: menuOpen() }}>
         <ModeSelector gameState={gameState} setMode={setMode} />
