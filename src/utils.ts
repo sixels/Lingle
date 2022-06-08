@@ -2,7 +2,32 @@ const { ClipboardItem } = window;
 
 const ONE_DAY_IN_MS = 864e5; // 1000 * 60 * 60 * 24
 
+type MergeObject = Record<string, any>;
+
+function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
+  for (const [k, v] of Object.entries(source)) {
+    if (v !== null && typeof v === "object") {
+      if (target[k] === undefined) {
+        Object.assign(target, { [k]: new v.__proto__.constructor() });
+      }
+      recursiveMerge(v, target[k]);
+    } else {
+      // if key already exists in target, do nothing.
+      if (target[k] != null) continue;
+      Object.assign(target, { [k]: v });
+    }
+  }
+
+  return target;
+}
+
 export default Object.freeze({
+  mergeObjectWith: <T extends MergeObject>(target: T, source: T): T => {
+    const targetClone: typeof target = JSON.parse(JSON.stringify(target));
+    recursiveMerge(targetClone, source);
+    return targetClone;
+  },
+
   normalizedWord: (word: string): string => {
     return word.normalize("NFD").replace(/\p{Diacritic}/gu, "");
   },
