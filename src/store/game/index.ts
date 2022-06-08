@@ -47,8 +47,8 @@ export const defaultGameState = (mode: Mode): GameState => {
   };
   const makeHistory = (): IGameStats["history"] => {
     const history: IGameStats["history"] = [];
-    for (let i = 0; i < mode.rows; i++) {
-      history.push({ attempt: i + 1, count: 0 });
+    for (let i = mode.boards; i <= mode.rows; i++) {
+      history.push({ attempt: i, count: 0 });
     }
     history.push({ attempt: "X", count: 0 });
     return history;
