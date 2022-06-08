@@ -44,7 +44,7 @@
 
   border-radius: 5%;
 
-  transition: transform 60ms ease-in-out, box-shadow 80ms ease-in-out;
+  transition: transform 69ms ease-in-out, box-shadow 80ms ease-in-out;
 
   &.focused {
     box-shadow: var(--self-box-shadow), inset 0 0 0 2px var(--self-color-bd),
@@ -78,7 +78,7 @@
   }
 
   &.reveal {
-    transition: background-color 940ms ease-out, transform 170ms ease-in-out;
+    transition: background-color 340ms ease-out, transform 170ms ease-in-out;
     --self-bounce-scale: 1.25;
   }
 }
