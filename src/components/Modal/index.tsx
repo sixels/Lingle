@@ -1,14 +1,13 @@
-import { Component, createEffect, ParentProps, Signal } from "solid-js";
+import { Component, ParentProps, Signal } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { Transition } from "solid-transition-group";
-
-import { PrefsStore } from "@/store/prefs";
 
 import AboutModal from "./About";
 import StatsModal from "./Stats";
 import PreferencesModal from "./Preferences";
 
 import "@styles/modal.scss";
+import { LingleStore } from "@/store";
 
 const MODALS = {
   about: AboutModal,
@@ -21,6 +20,10 @@ export type Modals = typeof MODALS;
 export type ModalProps = {
   close: () => void;
 };
+export type StatefulModalProps = {
+  store: LingleStore;
+} & ModalProps;
+
 export const Modal: Component<ParentProps & ModalProps & { name: string }> = ({
   name,
   close,
@@ -35,11 +38,11 @@ export const Modal: Component<ParentProps & ModalProps & { name: string }> = ({
 };
 
 type DynamicModalProps = {
-  prefsStore: PrefsStore;
+  store: LingleStore;
   openModalSignal: Signal<keyof Modals>;
 };
 export const DynamicModal: Component<DynamicModalProps> = ({
-  prefsStore,
+  store,
   openModalSignal: [openModal, setOpenModal],
 }) => {
   return (
@@ -68,7 +71,7 @@ export const DynamicModal: Component<DynamicModalProps> = ({
         close={() => {
           setOpenModal("none");
         }}
-        prefsStore={prefsStore}
+        store={store}
       />
     </Transition>
   );
