@@ -43,12 +43,13 @@
     overflow-y: auto;
     font-size: clamp(0.8rem, 2vw, 0.9rem);
 
+    font-size: clamp(1em, 2vw, 1.14em);
     .title {
-      font-size: 1.4em !important;
+      font-size: 1.18em !important;
       text-align: center;
       margin-bottom: 1.2rem;
       margin-top: 1em;
-      font-weight: 700;
+      font-weight: 500;
     }
   }
 }
@@ -75,15 +76,13 @@
         width: 100%;
 
         .value {
-          font-size: 2.7em;
+          font-size: 2.2em;
           font-weight: 500;
           color: var(--default-color-accent);
         }
         .label {
-          margin-top: -0.2em;
           font-size: 0.9em;
-          line-height: 1em;
-          font-weight: 500;
+          text-align: center;
           color: var(--letter-default-color-bd);
         }
         padding: 0 0.7em 0.4em 0.7em;
@@ -101,7 +100,7 @@
 
     background-color: #00000020;
 
-    font-size: min(3.9vw, 1.2em);
+    font-size: 1em;
 
     .title {
       font-size: 1em !important;
@@ -115,7 +114,6 @@
         margin: 0;
         text-align: center;
         font-size: 1.12em;
-        font-weight: 300;
         color: var(--default-color-accent);
       }
     }
@@ -129,9 +127,8 @@
       min-height: 16em;
       display: flex;
       flex-direction: column;
-      // justify-content: center;
-      padding: 2.5em 0;
       margin: 0 auto;
+      padding: 5px 0;
 
       .line-wrapper {
         display: flex;
@@ -165,7 +162,6 @@
           position: relative;
           min-width: 2.1rem;
           text-align: center;
-          font-size: 1.2em;
           padding-right: 0.6rem;
           color: var(--letter-default-color-bd);
 
@@ -196,7 +192,6 @@
           width: 100%;
           height: 100%;
 
-          font-size: 1em;
           padding-right: 0.5rem;
 
           font-weight: 500;
@@ -299,10 +294,11 @@
 }
 
 .modal.about {
-  line-height: 1.4em;
   .about {
-    font-size: 1.1em;
     width: 85%;
+    a {
+      margin: 0 0.35em;
+    }
   }
   .instructions {
     width: 85%;
@@ -312,7 +308,6 @@
     p {
       margin-top: 0;
       margin-bottom: 0.5em;
-      font-size: 1.1em;
     }
   }
   .examples {
@@ -320,10 +315,6 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-
-    .title {
-      font-size: 1.5em !important;
-    }
 
     .example {
       > div {
@@ -336,18 +327,17 @@
         align-items: center;
 
         .letters {
-          height: 1.7em !important;
+          height: 1.4em !important;
           display: block !important;
           margin-right: 0.4em !important;
           .letter {
-            font-size: min(6vh, 1.3em) !important;
+            font-size: 1.2em !important;
           }
         }
       }
       .letters {
         display: grid !important;
-        grid-template-columns: repeat(5, 3em) !important;
-        grid-template-rows: 3em;
+        grid-template-columns: repeat(5, 2.5em) !important;
         gap: 0.2em;
 
         .letter {
