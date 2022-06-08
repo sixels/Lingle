@@ -1,15 +1,12 @@
-import { PrefsStore } from "@/store/prefs";
 import { THEMES } from "@/theme";
 import { Component, createSelector, For } from "solid-js";
-import { Modal, ModalProps } from ".";
+import { Modal, StatefulModalProps } from ".";
 
-type PreferencesProps = {
-  prefsStore: PrefsStore;
-};
-
-const PreferencesModal: Component<ModalProps & PreferencesProps> = ({
+const PreferencesModal: Component<StatefulModalProps> = ({
   close,
-  prefsStore: [state, { setTheme }],
+  store: {
+    prefs: [state, { setTheme }],
+  },
 }) => {
   const isThemeSelected = createSelector(() => state.theme);
 
