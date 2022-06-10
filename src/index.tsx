@@ -1,4 +1,5 @@
 import { MountableElement, render } from "solid-js/web";
+import { Router } from "solid-app-router";
 
 import App from "./components/App";
 
@@ -11,4 +12,11 @@ import "@styles/fonts.scss";
 import "@styles/media.scss";
 import "@styles/style.scss";
 
-render(() => <App />, document.getElementById("root") as MountableElement);
+render(
+  () => (
+    <Router>
+      <App />
+    </Router>
+  ),
+  document.getElementById("root") as MountableElement
+);
