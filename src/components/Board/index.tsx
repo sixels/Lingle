@@ -2,12 +2,10 @@ import {
   batch,
   Component,
   createEffect,
-  createRenderEffect,
   createSignal,
   For,
   on,
 } from "solid-js";
-import { Rerun } from "@solid-primitives/keyed";
 
 import { GameState, GameStoreMethods } from "@/store/game";
 import GameBoard from "./GameBoards";
@@ -33,6 +31,8 @@ type Props = {
   setGameNumber: GameStoreMethods["setGameNumber"];
 };
 
+export type AttemptAnimation = [WordAttempt[], () => void];
+
 const Board: Component<Props> = ({
   gameState,
   keyboard,
@@ -44,34 +44,81 @@ const Board: Component<Props> = ({
     return [...new Array(mode.columns).fill(" ")];
   };
 
-  const [position, setPosition] = createSignal<[number, number]>([0, 0]),
-    [attempt, setAttempt] = createSignal<string[]>([]),
-    [solutions, setSolutions] = createSignal<string[]>([]),
-    [lock, setLock] = createSignal<boolean>(false),
-    [mode, setMode] = createSignal<Mode>(new Mode("lingle"));
+  const mode = new Mode(gameState.mode),
+    solutions = generateSolution(mode, new Date());
 
-  const [animatedAttempt, setAnimatedAttempt] = createSignal(false),
-    [submittedAttempt, setSubmittedAttempt] = createSignal<WordAttempt[]>([]);
+  const [position, setPosition] = createSignal<[number, number]>([
+      gameState.state.row,
+      0,
+    ]),
+    [attempt, setAttempt] = createSignal<string[]>(newAttempt(mode)),
+    [lock, setLock] = createSignal<boolean>(false),
+    boardStatus = gameState.state.boards.map((board) =>
+      createSignal(board.status)
+    );
+
+  const [submittedAttempt, setSubmittedAttempt] = createSignal<
+    AttemptAnimation | undefined
+  >(undefined);
+  const [animating, setAnimating] = createSignal(false);
+
+  const submitAttempt = (attempts: WordAttempt[], cb: () => void) => {
+    const done = () => {
+      if (!animating()) return;
+      cb();
+    };
+
+    console.log("Submit attempt", attempts);
+    setSubmittedAttempt([attempts, done]);
+  };
+
+  const submitAttemptValidWord = (attempts: WordAttempt[]) => {
+    submitAttempt(attempts, () => {
+      batch(() => {
+        setAnimating(false);
+
+        for (let i = 0; i < gameState.state.boards.length; i++) {
+          const status = gameState.state.boards[i].status,
+            [, setStatus] = boardStatus[i];
+          setStatus(status);
+        }
+
+        setSubmittedAttempt(undefined);
+        setPosition([gameState.state.row, 0]);
+
+        setAttempt(attempt().map(() => " "));
+        setLock(false);
+      });
+    });
+  };
 
   const keyboardHandler: any = {
     Enter() {
-      // invalid attempt size
-      if (attempt().includes(" ")) {
+      const attemptStr = attempt().join("");
+
+      if (attemptStr.includes(" ")) {
+        // invalid attempt size
+        console.info("Invalid attempt size");
         return;
       }
 
-      const word = WordListNormalized.get(attempt().join(""));
+      const word = WordListNormalized.get(attemptStr);
       if (!word) {
         // invalid word
+        console.info("Unknown word");
         return;
       }
 
-      const attempts = solutions().map((solution) =>
+      const attempts = solutions.map((solution) =>
         compareWordWithSolution(word, solution)
       );
       batch(() => {
-        setSubmittedAttempt(attempts);
-        setAnimatedAttempt(false);
+        setAnimating(true);
+
+        createAttempts(attempts);
+        setRow(position()[0] + 1);
+
+        submitAttemptValidWord(attempts);
       });
     },
     Backspace() {
@@ -131,78 +178,39 @@ const Board: Component<Props> = ({
   // TODO: update on daily ticker
   setGameNumber(getGameNumber(new Date()));
 
-  createRenderEffect(
-    on(
-      () => gameState.mode,
-      (newMode) => {
-        const mode = new Mode(newMode);
-        batch(() => {
-          setMode(mode);
-          setAttempt(newAttempt(mode));
-          setSolutions(generateSolution(mode, new Date()));
-          setLock(false);
-          setPosition([gameState.state.row, 0]);
-        });
-      }
-    )
-  );
-
   // handle keyboard
   createEffect(
     on(keyboard.keyPressed, (key) => {
-      if (key && gameState.state.boards.some((b) => b.status == "playing")) {
-        let handler = keyboardHandler[key];
-        if (handler) {
-          handler();
-          return;
-        }
-        let word = [...attempt()];
-        let [row, col] = position();
+      if (
+        !key ||
+        gameState.state.boards.every((b) => b.status !== "playing") ||
+        animating()
+      )
+        return;
 
-        if (col >= word.length) {
-          return;
-        }
+      let handler = keyboardHandler[key];
+      if (handler) {
+        handler();
+        return;
+      }
+      let word = [...attempt()];
+      let [row, col] = position();
 
-        word[col] = key.toLowerCase();
-        setAttempt(word);
+      if (col >= word.length) {
+        return;
+      }
 
-        let nextColumn = Math.min(col + 1, attempt().length);
-        if (word[nextColumn] !== " ") {
-          nextColumn = word.indexOf(" ");
-        }
-        if (!lock()) {
-          setPosition([row, nextColumn >= 0 ? nextColumn : attempt().length]);
-        }
+      word[col] = key.toLowerCase();
+      setAttempt(word);
+
+      let nextColumn = Math.min(col + 1, attempt().length);
+      if (word[nextColumn] !== " ") {
+        nextColumn = word.indexOf(" ");
+      }
+      if (!lock()) {
+        setPosition([row, nextColumn >= 0 ? nextColumn : attempt().length]);
       }
     })
-  );
-
-  createEffect(
-    on(animatedAttempt, (animated) => {
-      if (animated) {
-        batch(() => {
-          createAttempts(submittedAttempt());
-          setSubmittedAttempt([]);
-          setRow(position()[0] + 1);
-        });
-      }
-    })
-  );
-
-  createEffect(
-    on(
-      () => gameState.state.row,
-      (cur, prev) => {
-        if (prev === undefined || cur > prev) {
-          batch(() => {
-            setAttempt(attempt().map(() => " "));
-
-            setLock(false);
-            setPosition([gameState.state.row, 0]);
-          });
-        }
-      }
-    )
   );
 
   createEffect(
@@ -213,24 +221,22 @@ const Board: Component<Props> = ({
 
   return (
     <div id="board-wrapper" class="board-wrapper">
-      <Rerun on={mode}>
-        <For each={gameState.state.boards}>
-          {(board, i) => {
-            return (
-              <GameBoard
-                lock={lock}
-                stateBoard={board}
-                attempt={attempt}
-                mode={mode()}
-                position={[position, setPosition]}
-                boardNumber={i()}
-                submittedAttempt={submittedAttempt}
-                setAnimatedAttempts={setAnimatedAttempt}
-              />
-            );
-          }}
-        </For>
-      </Rerun>
+      <For each={gameState.state.boards}>
+        {(board, i) => {
+          return (
+            <GameBoard
+              lock={lock}
+              stateBoard={board}
+              status={boardStatus[i()][0]}
+              attempt={attempt}
+              mode={mode}
+              position={[position, setPosition]}
+              boardNumber={i()}
+              submittedAttempt={submittedAttempt}
+            />
+          );
+        }}
+      </For>
     </div>
   );
 };

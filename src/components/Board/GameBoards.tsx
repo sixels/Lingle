@@ -9,7 +9,6 @@ import {
   Index,
   createSelector,
   batch,
-  Setter,
   onMount,
   onCleanup,
 } from "solid-js";
@@ -18,27 +17,29 @@ import { GameState } from "@/store/game";
 import { Mode } from "@/game/mode";
 import { makeWordAttempt, WordAttempt } from "@/game/attempt";
 import Letters from "./Letters";
+import { AttemptAnimation } from ".";
+import { GameStatus } from "@/game";
 
 type Props = {
   stateBoard: GameState["state"]["boards"][number];
   position: Signal<[number, number]>;
   mode: Mode;
+  status: Accessor<GameStatus>;
   attempt: Accessor<(string | undefined)[]>;
   lock: Accessor<boolean>;
   boardNumber: number;
-  submittedAttempt: Accessor<WordAttempt[]>;
-  setAnimatedAttempts: Setter<boolean>;
+  submittedAttempt: Accessor<AttemptAnimation | undefined>;
 };
 
 const GameBoard: Component<Props> = ({
   stateBoard,
   position: [position, setPosition],
   mode,
+  status,
   attempt,
   lock,
   boardNumber,
   submittedAttempt,
-  setAnimatedAttempts,
 }) => {
   const createBoard = () => {
     const attempts = stateBoard.attempts;
@@ -60,7 +61,7 @@ const GameBoard: Component<Props> = ({
     isRevealing = createSelector(reveal);
 
   // sharded signals
-  const board = createBoard().map((attempt) => createSignal(attempt));
+  const [board, setBoard] = createSignal<Signal<WordAttempt>[]>([]);
 
   const isFocused = createSelector(
     () => innerPosition(),
@@ -74,26 +75,30 @@ const GameBoard: Component<Props> = ({
       return;
     }
 
-    if (stateBoard.status === "playing") {
+    if (status() === "playing") {
       setPosition([r, c]);
     }
   };
 
   onMount(() => {
+    const b = createBoard().map((attempt) => createSignal(attempt));
+    setBoard(b);
+
     const [r, _c] = position();
     if (r < 0 || r >= mode.rows) {
       return;
     }
+
     const attempt = stateBoard.attempts[r];
     if (attempt !== undefined) {
-      const [_row, setRow] = board[r];
+      const [_row, setRow] = b[r];
       setRow([...attempt]);
     }
   });
 
   createRenderEffect(
     on(position, (pos) => {
-      switch (stateBoard.status) {
+      switch (status()) {
         case "playing":
           setInnerPosition(pos);
           break;
@@ -107,42 +112,46 @@ const GameBoard: Component<Props> = ({
   createEffect(
     on(attempt, (attempt, prev) => {
       const [row, _col] = position();
-      if (
-        row < 0 ||
-        row >= mode.rows ||
-        stateBoard.status !== "playing" ||
-        !prev
-      ) {
+      if (row < 0 || row >= mode.rows || status() !== "playing" || !prev) {
         return;
       }
 
-      const [_row, setRow] = board[row];
+      const [_row, setRow] = board()[row];
       setRow(makeWordAttempt(attempt));
     })
   );
 
   // update row after attempting a word
   createEffect(
-    on(submittedAttempt, (attempts) => {
-      const attempt = attempts[boardNumber];
+    on(submittedAttempt, (attemptAnimation) => {
+      if (!attemptAnimation) return;
+
+      const [attempts, done] = attemptAnimation,
+        attempt = attempts[boardNumber];
+
       if (attempt === undefined) return;
 
-      const [row, _col] = position();
-      if (row < 0 || row >= mode.rows || stateBoard.status !== "playing") {
-        return;
-      }
-      const [_row, setRow] = board[row];
-      batch(() => {
-        setReveal(row);
-        setRow(attempt);
-      });
+      if (attempt === null) {
+        // TODO: animate error
+        done();
+      } else {
+        const [row, _col] = position();
+        if (row < 0 || row >= mode.rows || status() !== "playing") {
+          return;
+        }
 
-      animateTimeout = setTimeout(() => {
+        const [_row, setRow] = board()[row];
+
         batch(() => {
-          setAnimatedAttempts(true);
-          setReveal(-1);
+          setReveal(row);
+          setRow(attempt);
         });
-      }, mode.columns * 180 + 160);
+
+        animateTimeout = setTimeout(() => {
+          setReveal(-1);
+          done();
+        }, mode.columns * 180 + 160);
+      }
     })
   );
 
@@ -152,7 +161,7 @@ const GameBoard: Component<Props> = ({
 
   return (
     <div class={`board ${mode.mode}`}>
-      <Index each={board}>
+      <Index each={board()}>
         {(row, i) => {
           const [attempt, _] = row();
 
@@ -161,7 +170,7 @@ const GameBoard: Component<Props> = ({
               class="row letters"
               classList={{
                 disabled: i != innerPosition()[0],
-                locked: stateBoard.status === "playing" && lock(),
+                locked: status() === "playing" && lock(),
               }}
             >
               <Letters
