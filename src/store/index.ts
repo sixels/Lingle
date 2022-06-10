@@ -48,91 +48,99 @@ function makeStore<T>(value: T): [T, SetStoreFunction<T>] {
   return store;
 }
 
-function createAppState(
-  gameState: GameState,
-  prefsState: PrefsState
-): AppState {
+function createGameState(state: GameState): AppState["game"] {
   const [game, setGame] = makeStore(
-    getOrElse(storageKeyFromMode(gameState.mode), gameState)
+    getOrElse(storageKeyFromMode(state.mode), state)
   );
-  const [prefs, setPrefs] = makeStore(getOrElse(STORE_PREFS_KEY, prefsState));
 
   createEffect(() => {
     localStorage.setItem(storageKeyFromMode(game.mode), JSON.stringify(game));
+  });
+
+  return [game, setGame];
+}
+
+function createPrefsState(state: PrefsState): AppState["prefs"] {
+  const [prefs, setPrefs] = makeStore(getOrElse(STORE_PREFS_KEY, state));
+
+  createEffect(() => {
     localStorage.setItem(STORE_PREFS_KEY, JSON.stringify(prefs));
   });
 
-  return {
-    game: [game, setGame],
-    prefs: [prefs, setPrefs],
-  };
+  return [prefs, setPrefs];
+}
+
+export function createGameStore(mode: Mode): GameStore {
+  const [game, setGame] = createGameState(defaultGameState(mode));
+  return [
+    game,
+    {
+      setMode: (mode: Mode) => {
+        if (game.mode === mode.mode) {
+          return;
+        }
+
+        setGame(() =>
+          getOrElse(storageKeyFromMode(mode.mode), defaultGameState(mode))
+        );
+      },
+      setRow: (row: number) => {
+        setGame("state", "row", row);
+      },
+      setBoardStatus: (board: number, status: GameStatus) => {
+        if (board >= game.state.boards.length) {
+          return;
+        }
+
+        setGame(({ state }) => {
+          state.boards[board].status = status;
+        });
+      },
+      createAttempts: (attempts: WordAttempt[]): boolean => {
+        attempts.forEach((attempt, i) => {
+          setGame(
+            "state",
+            "boards",
+            (b, n) => b.status === "playing" && i == n,
+            produce((b) => {
+              if (attempt.every((l) => (l ? l.type === "right" : false))) {
+                b.status = "won";
+                b.solution = attempt.map((l) => l?.letter).join("");
+              } else if (game.state.row === new Mode(game.mode).rows - 1) {
+                b.status = "lost";
+                b.solution = attempt.map((l) => l?.letter).join("");
+              }
+              b.attempts = b.attempts.concat([[...attempt]]);
+            })
+          );
+        });
+
+        return true;
+      },
+      setGameNumber: (n: number) => {
+        setGame("state", "gameNumber", n);
+      },
+    },
+  ];
+}
+
+export function createPrefsStore(): PrefsStore {
+  const [prefs, setPrefs] = createPrefsState(defaultPrefsState());
+
+  return [
+    prefs,
+    {
+      setTheme: (theme: Theme) => {
+        setPrefs("theme", theme);
+      },
+    },
+  ];
 }
 
 export function createLingleStore(mode: Mode): LingleStore {
   // create state with default values
-  const state = createAppState(defaultGameState(mode), defaultPrefsState());
-
-  const [game, setGame] = state.game;
-  const [prefs, setPrefs] = state.prefs;
-
   return {
-    game: [
-      game,
-      {
-        setMode: (mode: Mode) => {
-          if (game.mode === mode.mode) {
-            return;
-          }
-
-          setGame(() =>
-            getOrElse(storageKeyFromMode(mode.mode), defaultGameState(mode))
-          );
-        },
-        setRow: (row: number) => {
-          setGame("state", "row", row);
-        },
-        setBoardStatus: (board: number, status: GameStatus) => {
-          if (board >= game.state.boards.length) {
-            return;
-          }
-
-          setGame(({ state }) => {
-            state.boards[board].status = status;
-          });
-        },
-        createAttempts: (attempts: WordAttempt[]): boolean => {
-          attempts.forEach((attempt, i) => {
-            setGame(
-              "state",
-              "boards",
-              (b, n) => b.status === "playing" && i == n,
-              produce((b) => {
-                if (attempt.every((l) => (l ? l.type === "right" : false))) {
-                  b.status = "won";
-                  b.solution = attempt.map((l) => l?.letter).join("");
-                } else if (game.state.row === new Mode(game.mode).rows - 1) {
-                  b.status = "lost";
-                  b.solution = attempt.map((l) => l?.letter).join("");
-                }
-                b.attempts = b.attempts.concat([[...attempt]]);
-              })
-            );
-          });
-
-          return true;
-        },
-        setGameNumber: (n: number) => {
-          setGame("state", "gameNumber", n);
-        },
-      },
-    ],
-    prefs: [
-      prefs,
-      {
-        setTheme: (theme: Theme) => {
-          setPrefs("theme", theme);
-        },
-      },
-    ],
+    game: createGameStore(mode),
+    prefs: createPrefsStore(),
   };
 }

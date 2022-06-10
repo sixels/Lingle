@@ -4,22 +4,25 @@ import { Mode, Modes } from "@/game/mode";
 import { initWordlists } from "@/wordlist";
 
 import { RouteDefinition, useRoutes } from "solid-app-router";
+import { createPrefsStore } from "@/store";
 
 const routeModes: { path: string; mode: Modes }[] = [
   { path: "/", mode: "lingle" },
   { path: "/duo", mode: "duolingle" },
 ];
 
-const routes: RouteDefinition[] = routeModes.map((route) => {
-  return {
-    path: route.path,
-    data: () => ({ mode: new Mode(route.mode) }),
-    component: lazy(() => import("./Game")),
-  };
-});
-
 const App: Component = () => {
-  const Routes = useRoutes(routes);
+  const prefsStore = createPrefsStore(),
+    [prefs] = prefsStore;
+
+  const routes: RouteDefinition[] = routeModes.map((route) => {
+      return {
+        path: route.path,
+        data: () => ({ mode: new Mode(route.mode), prefsStore }),
+        component: lazy(() => import("./Game")),
+      };
+    }),
+    Routes = useRoutes(routes);
 
   onMount(() => {
     initWordlists();
@@ -27,7 +30,7 @@ const App: Component = () => {
 
   return (
     <>
-      <div id="app" data-theme={"claro"}>
+      <div id="app" data-theme={prefs.theme}>
         <Routes />
       </div>
     </>

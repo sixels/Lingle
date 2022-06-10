@@ -1,7 +1,7 @@
 import { useRouteData } from "solid-app-router";
 import { Component, createEffect, createSignal, on } from "solid-js";
 
-import { createLingleStore } from "@/store";
+import { createGameStore, createLingleStore, LingleStore } from "@/store";
 import { DynamicModal, Modals } from "./Modal";
 
 import Board from "./Board";
@@ -11,12 +11,10 @@ import Keyboard from "./Keyboard";
 import keyboard from "@/keyboardProvider";
 
 const Game: Component = () => {
-  const { mode } = useRouteData();
+  const { mode, prefsStore } = useRouteData();
 
-  const store = createLingleStore(mode),
-    {
-      game: [game, { setRow, setGameNumber, createAttempts }],
-    } = store;
+  const gameStore = createGameStore(mode),
+    [game, { setRow, setGameNumber, createAttempts }] = gameStore;
 
   const openModalSignal = createSignal<keyof Modals>("none"),
     [_, setOpenModal] = openModalSignal;
@@ -29,7 +27,10 @@ const Game: Component = () => {
 
   return (
     <>
-      <DynamicModal openModalSignal={openModalSignal} store={store} />
+      <DynamicModal
+        openModalSignal={openModalSignal}
+        store={{ game: gameStore, prefs: prefsStore }}
+      />
 
       <Header gameState={game} openModalSignal={openModalSignal} />
 
