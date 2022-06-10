@@ -163,15 +163,7 @@
         // background-color: #fff;
         padding: 0.2em 0 !important;
 
-        &:not(.selected) {
-          color: var(--letter-default-color-bd) !important;
-          &:hover {
-            color: var(--default-color-fg) !important;
-          }
-        }
-        &.selected {
-          color: var(--default-color-fg) !important;
-        }
+        color: var(--letter-default-color-fg) !important;
       }
     }
 
