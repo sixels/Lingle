@@ -1,5 +1,5 @@
-export const ALL_MODES = ["lingle", "duolingle"] as const;
-export type Modes = typeof ALL_MODES[number];
+export const MODES = ["lingle", "duolingle"] as const;
+export type Modes = typeof MODES[number];
 
 const modeBoards: { [key: string]: number } = {
   lingle: 1,
