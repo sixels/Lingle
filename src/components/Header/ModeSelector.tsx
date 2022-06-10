@@ -1,14 +1,15 @@
 import { For, Component } from "solid-js";
-import { ALL_MODES, Mode, Modes } from "@/game/mode";
-import { GameState, GameStoreMethods } from "@/store/game";
+import { Modes } from "@/game/mode";
+import { GameState } from "@/store/game";
+import { Link } from "solid-app-router";
 
-const ModeSelector: Component<{
-  gameState: GameState;
-  setMode: GameStoreMethods["setMode"];
-}> = ({ gameState, setMode }) => {
-  const changeMode = (m: Modes) => {
-    setMode(new Mode(m));
-  };
+type SelectorProps = { state: GameState };
+
+const ModeSelector: Component<SelectorProps> = ({ state }) => {
+  const modes: { path: string; mode: Modes }[] = [
+    { path: "/", mode: "lingle" },
+    { path: "/duo", mode: "duolingle" },
+  ];
 
   return (
     <div id="mode-selector" class="btn open" aria-label="Modo">
@@ -17,15 +18,15 @@ const ModeSelector: Component<{
         <i class="ri-input-method-fill"></i>
       </div>
       <div class="modes">
-        <For each={ALL_MODES}>
+        <For each={modes}>
           {(mode) => (
-            <span
+            <Link
+              href={mode.path}
               class="mode"
-              classList={{ selected: mode == gameState.mode }}
-              onClick={[changeMode, mode]}
+              classList={{ selected: mode.mode == state.mode }}
             >
-              {mode}
-            </span>
+              {mode.mode}
+            </Link>
           )}
         </For>
       </div>

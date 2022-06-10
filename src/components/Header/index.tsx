@@ -2,20 +2,18 @@ import { Component, createRenderEffect, on, Signal } from "solid-js";
 
 import { createSignal } from "solid-js";
 import ModeSelector from "./ModeSelector";
-import { GameState, GameStoreMethods } from "@/store/game";
+import { GameState } from "@/store/game";
 import Button from "./Button";
 
 import "@styles/header.scss";
 
 type Props = {
   gameState: GameState;
-  setMode: GameStoreMethods["setMode"];
   openModalSignal: Signal<string>;
 };
 
 const Header: Component<Props> = ({
   gameState,
-  setMode,
   openModalSignal: [openModal, setOpenModal],
 }) => {
   const [menuOpen, setMenuOpen] = createSignal(false);
@@ -44,7 +42,7 @@ const Header: Component<Props> = ({
         <span class="strong">{gameState.mode}</span>
       </div>
       <div class="right" id="menu" classList={{ visible: menuOpen() }}>
-        <ModeSelector gameState={gameState} setMode={setMode} />
+        <ModeSelector state={gameState} />
         <Button
           label="Estatísticas"
           icon="bar-chart"
