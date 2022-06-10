@@ -1,7 +1,7 @@
 import { useRouteData } from "solid-app-router";
 import { Component, createEffect, createSignal, on } from "solid-js";
 
-import { createGameStore, createLingleStore, LingleStore } from "@/store";
+import { createGameStore } from "@/store";
 import { DynamicModal, Modals } from "./Modal";
 
 import Board from "./Board";
