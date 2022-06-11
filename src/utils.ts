@@ -10,7 +10,12 @@ function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
       if (target[k] === undefined) {
         Object.assign(target, { [k]: new v.__proto__.constructor() });
       }
-      recursiveMerge(v, target[k]);
+
+      if (v instanceof Date) {
+        target[k] = new Date(v);
+      } else {
+        recursiveMerge(v, target[k]);
+      }
     } else {
       // if key already exists in target, do nothing.
       if (target[k] != null) continue;
