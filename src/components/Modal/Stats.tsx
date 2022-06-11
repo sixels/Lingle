@@ -1,5 +1,7 @@
+import { Component, createEffect, createSignal, For, on, Show } from "solid-js";
+
+import { useTicker } from "@/providers/ticker";
 import { getGamesPlayed, getWinRate } from "@/store/game/stats";
-import { Component, For, Show } from "solid-js";
 import { Modal, StatefulModalProps } from ".";
 
 const StatsModal: Component<StatefulModalProps> = ({
@@ -8,6 +10,48 @@ const StatsModal: Component<StatefulModalProps> = ({
   },
   close,
 }) => {
+  const { onEachSecond, tomorrow } = useTicker();
+
+  const [countdown, setCountdown] = createSignal<[number, number, number]>([
+      0, 0, 0,
+    ]),
+    countdownFormat = () => {
+      const [hours, minutes, seconds] = countdown().map((value) =>
+        value.toString().padStart(2, "0")
+      );
+      return `${hours}:${minutes}:${seconds}`;
+    };
+  let shareBtnRef: HTMLButtonElement | undefined = undefined;
+
+  const isGameOver = () =>
+    state.boards.every((board) => board.status != "playing");
+
+  createEffect(
+    on(isGameOver, (isOver) => {
+      if (!shareBtnRef) return;
+
+      shareBtnRef.disabled = !isOver;
+
+      const styles = window.getComputedStyle(shareBtnRef, null);
+      shareBtnRef.style.backgroundImage = styles.backgroundImage.replace(
+        "[...]",
+        styles.getPropertyValue("--self-color-bd")
+      );
+    })
+  );
+
+  onEachSecond((time) => {
+    if (!time) return;
+
+    const rem = tomorrow().getTime() - time;
+
+    const hours = Math.floor((rem % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      minutes = Math.floor((rem % (1000 * 60 * 60)) / (1000 * 60)),
+      seconds = Math.floor((rem % (1000 * 60)) / 1000);
+
+    setCountdown([hours, minutes, seconds]);
+  });
+
   return (
     <Modal name="stats" close={close}>
       <section class="summary">
@@ -32,7 +76,7 @@ const StatsModal: Component<StatefulModalProps> = ({
         </div>
       </section>
 
-      <Show when={state.boards.every((board) => board.status != "playing")}>
+      <Show when={isGameOver()}>
         <section class="solutions">
           <h1 class="title"> As palavras de hoje eram </h1>
           <div class="content">
@@ -74,12 +118,17 @@ const StatsModal: Component<StatefulModalProps> = ({
       </section>
 
       <div class="footer">
-        <button class="btn copy-btn" onClick={() => console.error("TODO")}>
+        <button
+          class="btn copy-btn"
+          onClick={() => console.error("TODO")}
+          id="copy-btn"
+          ref={shareBtnRef}
+        >
           <i class="ri-share-fill"></i> Compartilhar
         </button>
         <div class="timer">
           <span class="label">Próxima palavra em</span>
-          <span class="time">00:00:00 (TODO)</span>
+          <span class="time">{countdownFormat()}</span>
         </div>
       </div>
     </Modal>
