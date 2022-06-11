@@ -20,6 +20,7 @@ export interface GameStoreMethods {
   setBoardStatus: (board: number, status: GameStatus) => void;
   createAttempts: (attempts: WordAttempt[]) => boolean;
   setGameNumber: (n: number) => void;
+  resetState: () => void;
 }
 
 interface IGameState {
