@@ -12,10 +12,14 @@ import "@styles/fonts.scss";
 import "@styles/media.scss";
 import "@styles/style.scss";
 
+import { Ticker } from "./providers/ticker";
+
 render(
   () => (
     <Router>
-      <App />
+      <Ticker date={new Date()}>
+        <App />
+      </Ticker>
     </Router>
   ),
   document.getElementById("root") as MountableElement
