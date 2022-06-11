@@ -1,6 +1,6 @@
 import { Component, createEffect, For, on, onCleanup } from "solid-js";
 
-import { isKeySpecial, KeyboardState } from "@/keyboardProvider";
+import { isKeySpecial, KeyboardState } from "@/providers/keyboard";
 import { Key, KeyboardKey } from "./Key";
 
 import "@styles/keyboard.scss";

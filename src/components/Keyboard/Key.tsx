@@ -1,4 +1,4 @@
-import { isKeySpecial, SpecialKey } from "@/keyboardProvider";
+import { isKeySpecial, SpecialKey } from "@/providers/keyboard";
 import { Component } from "solid-js";
 
 interface KeyInterface<T> {
