@@ -11,7 +11,7 @@ import { GameState, GameStoreMethods } from "@/store/game";
 import GameBoard from "./GameBoards";
 import { Mode } from "@/game/mode";
 
-import { KeyboardState } from "@/keyboardProvider";
+import { KeyboardState } from "@/providers/keyboard";
 import {
   compareWordWithSolution,
   getGameNumber,
@@ -22,6 +22,7 @@ import { WordListNormalized } from "@/wordlist";
 import "@styles/board.scss";
 import "@styles/letters.scss";
 import { WordAttempt } from "@/game/attempt";
+import { useTicker } from "@/providers/ticker";
 
 type Props = {
   gameState: GameState;
@@ -40,6 +41,8 @@ const Board: Component<Props> = ({
   createAttempts,
   setGameNumber,
 }) => {
+  const { onEachDay } = useTicker();
+
   const newAttempt = (mode: Mode): string[] => {
     return [...new Array(mode.columns).fill(" ")];
   };
@@ -58,9 +61,9 @@ const Board: Component<Props> = ({
     );
 
   const [submittedAttempt, setSubmittedAttempt] = createSignal<
-    AttemptAnimation | undefined
-  >(undefined);
-  const [animating, setAnimating] = createSignal(false);
+      AttemptAnimation | undefined
+    >(undefined),
+    [animating, setAnimating] = createSignal(false);
 
   const submitAttempt = (attempts: WordAttempt[], cb: () => void) => {
     const done = () => {
@@ -175,8 +178,9 @@ const Board: Component<Props> = ({
     Escape() {},
   };
 
-  // TODO: update on daily ticker
-  setGameNumber(getGameNumber(new Date()));
+  onEachDay(() => {
+    setGameNumber(getGameNumber(new Date()));
+  });
 
   // handle keyboard
   createEffect(
