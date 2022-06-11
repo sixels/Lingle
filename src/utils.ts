@@ -19,7 +19,7 @@ function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
       recursiveMerge(v, target[k]);
     } else {
       // if key already exists in target, do nothing.
-      if (target[k] != null) continue;
+      if (target[k] != null && typeof target[k] === typeof v) continue;
 
       let value = v;
       if (v instanceof Date) {
