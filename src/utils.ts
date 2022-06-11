@@ -6,20 +6,26 @@ type MergeObject = Record<string, any>;
 
 function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
   for (const [k, v] of Object.entries(source)) {
-    if (v !== null && typeof v === "object" && !Array.isArray(v)) {
+    if (
+      v !== null &&
+      typeof v === "object" &&
+      !Array.isArray(v) &&
+      !(v instanceof Date)
+    ) {
       if (target[k] === undefined) {
         Object.assign(target, { [k]: new v.__proto__.constructor() });
       }
 
-      if (v instanceof Date) {
-        target[k] = new Date(v);
-      } else {
-        recursiveMerge(v, target[k]);
-      }
+      recursiveMerge(v, target[k]);
     } else {
       // if key already exists in target, do nothing.
       if (target[k] != null) continue;
-      Object.assign(target, { [k]: v });
+
+      let value = v;
+      if (v instanceof Date) {
+        value = new Date(v);
+      }
+      Object.assign(target, { [k]: value });
     }
   }
 
