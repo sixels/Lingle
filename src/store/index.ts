@@ -60,6 +60,15 @@ function createGameState(state: GameState): AppState["game"] {
     })
   );
 
+  // check if the state has expired
+  if (new Date().getTime() >= game.expires.getTime()) {
+    setGame(
+      produce((g) => {
+        g.expires = state.expires;
+        g.state = { ...state.state };
+      })
+    );
+  }
 
   createEffect(() => {
     localStorage.setItem(storageKeyFromMode(game.mode), JSON.stringify(game));
