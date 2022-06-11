@@ -59,16 +59,6 @@ function createGameState(state: GameState): AppState["game"] {
     })
   );
 
-  // check if the state has expired
-  if (new Date().getTime() >= game.expires.getTime()) {
-    setGame(
-      produce((g) => {
-        g.expires = state.expires;
-        g.state = { ...state.state };
-      })
-    );
-  }
-
   createEffect(() => {
     localStorage.setItem(storageKeyFromMode(game.mode), JSON.stringify(game));
   });
@@ -135,6 +125,18 @@ export function createGameStore(mode: Mode): GameStore {
       },
       setGameNumber: (n: number) => {
         setGame("state", "gameNumber", n);
+      },
+      resetState: () => {
+        const defaultState = defaultGameState(new Mode(game.mode));
+        setGame(
+          produce((g) => {
+            g.expires = new Date(defaultState.expires);
+            g.state = utils.mergeObjectWith(
+              {} as typeof defaultState.state,
+              defaultState.state
+            );
+          })
+        );
       },
     },
   ];
