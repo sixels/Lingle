@@ -50,8 +50,16 @@ function makeStore<T>(value: T): [T, SetStoreFunction<T>] {
 
 function createGameState(state: GameState): AppState["game"] {
   const [game, setGame] = makeStore(
-    getOrElse(storageKeyFromMode(state.mode), state)
+    getOrElse(storageKeyFromMode(state.mode), state, (key, value) => {
+      switch (key as keyof GameState) {
+        case "expires":
+          return new Date(value);
+        default:
+          return value;
+      }
+    })
   );
+
 
   createEffect(() => {
     localStorage.setItem(storageKeyFromMode(game.mode), JSON.stringify(game));
