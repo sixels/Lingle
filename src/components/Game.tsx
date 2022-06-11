@@ -8,16 +8,26 @@ import Board from "./Board";
 import Header from "./Header";
 import Keyboard from "./Keyboard";
 
-import keyboard from "@/keyboardProvider";
+import keyboard from "@/providers/keyboard";
+import { useTicker } from "@/providers/ticker";
 
 const Game: Component = () => {
+  const { onEachDay } = useTicker();
   const { mode, prefsStore } = useRouteData();
 
   const gameStore = createGameStore(mode),
-    [game, { setRow, setGameNumber, createAttempts }] = gameStore;
+    [game, { setRow, setGameNumber, createAttempts, resetState }] = gameStore;
 
   const openModalSignal = createSignal<keyof Modals>("none"),
     [_, setOpenModal] = openModalSignal;
+
+  onEachDay(() => {
+    if (new Date().getTime() >= game.expires.getTime()) {
+      resetState();
+    }
+  });
+
+  // check if the state has expired
 
   createEffect(
     on(keyboard.keyPressed, () => {
