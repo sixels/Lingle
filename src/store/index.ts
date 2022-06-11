@@ -44,8 +44,7 @@ function getOrElse<T extends Object>(
 }
 
 function makeStore<T>(value: T): [T, SetStoreFunction<T>] {
-  const store = createStore(value);
-  return store;
+  return createStore(value);
 }
 
 function createGameState(state: GameState): AppState["game"] {
