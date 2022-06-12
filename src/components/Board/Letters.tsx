@@ -54,8 +54,9 @@ const Letters: Component<LettersProps> = ({
 
   createEffect(
     on(
-      () => [letters(), isRevealing(row)],
-      async () => {
+      () =>
+        [letters(), isRevealing(row)] as [ReturnType<typeof letters>, boolean],
+      async ([attempt]) => {
         if (!isRevealing(row)) {
           setLetters(letters());
           return;
@@ -65,11 +66,25 @@ const Letters: Component<LettersProps> = ({
           const column = columnsRef[i];
           setLettersColumn(i, letters()[i] as LetterAttempt<AttemptType.Any>);
           column.classList.add("reveal");
+
           await new Promise((r) => setTimeout(r, 65));
           column.classList.add("bouncing");
           await new Promise((r) => setTimeout(r, 70));
           column.classList.remove("bouncing");
           await new Promise((r) => setTimeout(r, 65));
+        }
+
+        if (attempt.every((letter) => letter?.type == "right")) {
+          for (let i = 0; i < columnsRef.length; i++) {
+            const column = columnsRef[i];
+
+            setTimeout(() => {
+              column.classList.add("jumping");
+              setTimeout(() => {
+                column.classList.remove("jumping");
+              }, 1000 * 10);
+            }, ((4 * 180) / 9) * i);
+          }
         }
       }
     )
