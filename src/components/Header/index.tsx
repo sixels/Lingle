@@ -1,25 +1,47 @@
-import { Component, createRenderEffect, on, Signal } from "solid-js";
+import {
+  Component,
+  createRenderEffect,
+  on,
+  onCleanup,
+  onMount,
+  Signal,
+  createSignal,
+} from "solid-js";
+import { useRouteData } from "solid-app-router";
 
-import { createSignal } from "solid-js";
 import ModeSelector from "./ModeSelector";
-import { GameState } from "@/store/game";
 import Button from "./Button";
 
 import "@styles/header.scss";
 
 type Props = {
-  gameState: GameState;
   openModalSignal: Signal<string>;
 };
 
 const Header: Component<Props> = ({
-  gameState,
   openModalSignal: [openModal, setOpenModal],
 }) => {
-  const [menuOpen, setMenuOpen] = createSignal(false);
-  const toggleMenu = () => {
+  const { mode } = useRouteData();
+
+  let menuRef: HTMLElement | null = null,
+    [menuOpen, setMenuOpen] = createSignal(false);
+
+  const handleClickMenu = (event: Event) => {
+    event.stopPropagation();
     setMenuOpen(menuOpen() !== true);
   };
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef && !menuRef.contains(event.target as Node)) {
+      setMenuOpen(false);
+    }
+  };
+
+  onMount(() => {
+    document.addEventListener("click", handleClickOutside, true);
+  });
+  onCleanup(() => {
+    document.removeEventListener("click", handleClickOutside, true);
+  });
 
   createRenderEffect(
     on(openModal, (modal) => {
@@ -39,10 +61,17 @@ const Header: Component<Props> = ({
             setOpenModal(openModal() === "about" ? "none" : "about");
           }}
         />
-        <span class="strong">{gameState.mode}</span>
+        <span class="strong">{mode.mode}</span>
       </div>
-      <div class="right" id="menu" classList={{ visible: menuOpen() }}>
-        <ModeSelector state={gameState} />
+      <div
+        class="right"
+        id="menu"
+        classList={{ visible: menuOpen() }}
+        ref={(elem) => {
+          menuRef = elem;
+        }}
+      >
+        <ModeSelector currentMode={mode.mode} />
         <Button
           label="Estatísticas"
           icon="bar-chart"
@@ -58,7 +87,11 @@ const Header: Component<Props> = ({
           }}
         />
       </div>
-      <Button icon="menu" classList={{ menu: true }} onClick={toggleMenu} />
+      <Button
+        icon="menu"
+        classList={{ menu: true }}
+        onClick={handleClickMenu}
+      />
     </header>
   );
 };

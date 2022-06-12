@@ -1,11 +1,10 @@
 import { For, Component } from "solid-js";
 import { Modes } from "@/game/mode";
-import { GameState } from "@/store/game";
 import { Link } from "solid-app-router";
 
-type SelectorProps = { state: GameState };
+type SelectorProps = { currentMode: Modes };
 
-const ModeSelector: Component<SelectorProps> = ({ state }) => {
+const ModeSelector: Component<SelectorProps> = ({ currentMode }) => {
   const modes: { path: string; mode: Modes }[] = [
     { path: "/", mode: "lingle" },
     { path: "/duo", mode: "duolingle" },
@@ -23,7 +22,7 @@ const ModeSelector: Component<SelectorProps> = ({ state }) => {
             <Link
               href={mode.path}
               class="mode"
-              classList={{ selected: mode.mode == state.mode }}
+              classList={{ selected: mode.mode == currentMode }}
             >
               {mode.mode}
             </Link>

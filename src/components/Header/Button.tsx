@@ -1,10 +1,10 @@
-import { Component } from "solid-js";
+import { Component, JSX } from "solid-js";
 
 const Button: Component<{
   label?: string;
   icon: string;
   classList?: { [key: string]: boolean };
-  onClick: () => void;
+  onClick: JSX.EventHandlerUnion<HTMLElement, MouseEvent> | undefined;
 }> = ({ label, icon, classList, onClick }) => {
   return (
     <div class="btn" classList={classList} onClick={onClick}>
