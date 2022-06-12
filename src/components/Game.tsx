@@ -42,7 +42,7 @@ const Game: Component = () => {
         store={{ game: gameStore, prefs: prefsStore }}
       />
 
-      <Header gameState={game} openModalSignal={openModalSignal} />
+      <Header openModalSignal={openModalSignal} />
 
       <Board
         gameState={game}
