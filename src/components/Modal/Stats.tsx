@@ -3,10 +3,13 @@ import { Component, createEffect, createSignal, For, on, Show } from "solid-js";
 import { useTicker } from "@/providers/ticker";
 import { getGamesPlayed, getWinRate } from "@/store/game/stats";
 import { Modal, StatefulModalProps } from ".";
+import { renderAsText } from "@/game/share";
+
+import utils from "@/utils";
 
 const StatsModal: Component<StatefulModalProps> = ({
   store: {
-    game: [{ stats, state }],
+    game: [{ stats, state, mode }],
   },
   close,
 }) => {
@@ -120,7 +123,20 @@ const StatsModal: Component<StatefulModalProps> = ({
       <div class="footer">
         <button
           class="btn copy-btn"
-          onClick={() => console.error("TODO")}
+          onClick={() => {
+            utils
+              .copyText(
+                renderAsText(
+                  mode,
+                  Object.freeze(state.boards.map((board) => board.attempts))
+                )
+              )
+              .then((target) => {
+                if (target == "clipboard") {
+                  // TODO: notify
+                }
+              });
+          }}
           id="copy-btn"
           ref={shareBtnRef}
         >
