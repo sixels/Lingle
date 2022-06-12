@@ -19,7 +19,6 @@ function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
       recursiveMerge(v, target[k]);
     } else {
       // if key already exists in target, do nothing.
-      if (k == "expires") console.log(typeof target[k], typeof v);
       if (target[k] != null && typeof target[k] === typeof v) continue;
 
       let value = v;
