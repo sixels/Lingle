@@ -125,13 +125,12 @@ const GameBoard: Component<Props> = ({
 
   // update row after attempting a word
   createEffect(
-    on(submittedAttempt, (attemptAnimation, prev) => {
+    on(submittedAttempt, (attemptAnimation) => {
       if (!attemptAnimation) return;
 
       const [attempts, done] = attemptAnimation;
 
       if (attempts.length == 0) {
-        if (!prev) return;
         // animate invalid word
         setInvalidAttemptRow(position()[0]);
         setTimeout(() => {

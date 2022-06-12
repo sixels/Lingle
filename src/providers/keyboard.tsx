@@ -26,13 +26,12 @@ export function isKeySpecial(key: string): key is SpecialKey {
 export const LETTER_KEYS = new Set([..."abcdefghijklmnopqrstuvwxyz"]);
 
 const createKeyboard = () => {
-  const [pressed, setPressed] = createSignal<string | null>(null, {
-      equals: false,
-    }),
+  const [pressed, setPressed] = createSignal<string | null>(null),
     state: KeyboardState = {
       keyPressed: pressed,
       pressKey: (key: string | null) => {
         setPressed(key);
+        setPressed(null);
       },
     };
 
@@ -42,6 +41,7 @@ const createKeyboard = () => {
     if ((isKeySpecial(key) || LETTER_KEYS.has(key)) && !event.ctrlKey) {
       setPressed(key);
     }
+    setPressed(null);
   });
 
   return state;

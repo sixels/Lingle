@@ -61,9 +61,8 @@ const Board: Component<Props> = ({
       createSignal(board.status)
     );
 
-  const [submittedAttempt, setSubmittedAttempt] = createSignal<
-      AttemptAnimation | undefined
-    >(undefined),
+  const [submittedAttempt, setSubmittedAttempt] =
+      createSignal<AttemptAnimation>(),
     [animating, setAnimating] = createSignal(false);
 
   const submitAttempt = (attempts: (WordAttempt | null)[], cb: () => void) => {
@@ -72,7 +71,6 @@ const Board: Component<Props> = ({
       cb();
     };
 
-    console.log("Submit attempt", attempts);
     setSubmittedAttempt([attempts, done]);
   };
 
@@ -98,9 +96,7 @@ const Board: Component<Props> = ({
 
   const submitAttemptInvalidWord = () => {
     submitAttempt([], () => {
-      batch(() => {
-        setAnimating(false);
-      });
+      setAnimating(false);
     });
   };
 
@@ -237,9 +233,12 @@ const Board: Component<Props> = ({
     })
   );
   createRenderEffect(
-    on(()=>gameState.state.row, (row) => {
-      if (!animating()) setPosition([row, 0]);
-    })
+    on(
+      () => gameState.state.row,
+      (row) => {
+        if (!animating()) setPosition([row, 0]);
+      }
+    )
   );
 
   return (
