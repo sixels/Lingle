@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { batch, createEffect } from "solid-js";
 import { createStore, produce, SetStoreFunction } from "solid-js/store";
 
 import { Mode, Modes } from "@/game/mode";
@@ -102,12 +102,15 @@ export function createGameStore(mode: Mode): GameStore {
           state.boards[board].status = status;
         });
       },
-      createAttempts: (attempts: WordAttempt[]): boolean => {
+      createAttempts: (attempts: (WordAttempt | null)[]): boolean => {
         attempts.forEach((attempt, i) => {
+          if (!attempt) return;
+
           setGame(
             "state",
             "boards",
             (b, n) => b.status === "playing" && i == n,
+
             produce((b) => {
               if (attempt.every((l) => (l ? l.type === "right" : false))) {
                 b.status = "won";
@@ -128,15 +131,10 @@ export function createGameStore(mode: Mode): GameStore {
       },
       resetState: () => {
         const defaultState = defaultGameState(new Mode(game.mode));
-        setGame(
-          produce((g) => {
-            g.expires = new Date(defaultState.expires);
-            g.state = utils.mergeObjectWith(
-              {} as typeof defaultState.state,
-              defaultState.state
-            );
-          })
-        );
+        batch(() => {
+          setGame("state", defaultState.state);
+          setGame("expires", new Date(defaultState.expires));
+        });
       },
     },
   ];

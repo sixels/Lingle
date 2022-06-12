@@ -2,6 +2,7 @@ import {
   batch,
   Component,
   createEffect,
+  createRenderEffect,
   createSignal,
   For,
   on,
@@ -32,7 +33,7 @@ type Props = {
   setGameNumber: GameStoreMethods["setGameNumber"];
 };
 
-export type AttemptAnimation = [WordAttempt[], () => void];
+export type AttemptAnimation = [(WordAttempt | null)[], () => void];
 
 const Board: Component<Props> = ({
   gameState,
@@ -65,7 +66,7 @@ const Board: Component<Props> = ({
     >(undefined),
     [animating, setAnimating] = createSignal(false);
 
-  const submitAttempt = (attempts: WordAttempt[], cb: () => void) => {
+  const submitAttempt = (attempts: (WordAttempt | null)[], cb: () => void) => {
     const done = () => {
       if (!animating()) return;
       cb();
@@ -75,7 +76,7 @@ const Board: Component<Props> = ({
     setSubmittedAttempt([attempts, done]);
   };
 
-  const submitAttemptValidWord = (attempts: WordAttempt[]) => {
+  const submitAttemptValidWord = (attempts: (WordAttempt | null)[]) => {
     submitAttempt(attempts, () => {
       batch(() => {
         setAnimating(false);
@@ -95,26 +96,37 @@ const Board: Component<Props> = ({
     });
   };
 
+  const submitAttemptInvalidWord = () => {
+    submitAttempt([], () => {
+      batch(() => {
+        setAnimating(false);
+      });
+    });
+  };
+
   const keyboardHandler: any = {
     Enter() {
       const attemptStr = attempt().join("");
 
       if (attemptStr.includes(" ")) {
         // invalid attempt size
-        console.info("Invalid attempt size");
+        submitAttemptInvalidWord();
         return;
       }
 
       const word = WordListNormalized.get(attemptStr);
       if (!word) {
         // invalid word
-        console.info("Unknown word");
+        submitAttemptInvalidWord();
         return;
       }
 
-      const attempts = solutions.map((solution) =>
-        compareWordWithSolution(word, solution)
-      );
+      const attempts = solutions.map((solution, i) => {
+        if (gameState.state.boards[i].status == "playing") {
+          return compareWordWithSolution(word, solution);
+        }
+        return null;
+      });
       batch(() => {
         setAnimating(true);
 
@@ -123,6 +135,8 @@ const Board: Component<Props> = ({
 
         submitAttemptValidWord(attempts);
       });
+
+      setAnimating(true);
     },
     Backspace() {
       let word = [...attempt()];
@@ -220,6 +234,11 @@ const Board: Component<Props> = ({
   createEffect(
     on(position, () => {
       setLock(false);
+    })
+  );
+  createRenderEffect(
+    on(()=>gameState.state.row, (row) => {
+      if (!animating()) setPosition([row, 0]);
     })
   );
 

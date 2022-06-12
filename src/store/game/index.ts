@@ -18,7 +18,7 @@ export interface GameStoreMethods {
   setMode: (mode: Mode) => void;
   setRow: (row: number) => void;
   setBoardStatus: (board: number, status: GameStatus) => void;
-  createAttempts: (attempts: WordAttempt[]) => boolean;
+  createAttempts: (attempts: (WordAttempt | null)[]) => boolean;
   setGameNumber: (n: number) => void;
   resetState: () => void;
 }

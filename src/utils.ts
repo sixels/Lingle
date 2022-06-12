@@ -19,6 +19,7 @@ function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
       recursiveMerge(v, target[k]);
     } else {
       // if key already exists in target, do nothing.
+      if (k == "expires") console.log(typeof target[k], typeof v);
       if (target[k] != null && typeof target[k] === typeof v) continue;
 
       let value = v;
@@ -34,7 +35,16 @@ function recursiveMerge(target: MergeObject, source: MergeObject): MergeObject {
 
 export default Object.freeze({
   mergeObjectWith: <T extends MergeObject>(target: T, source: T): T => {
-    const targetClone: typeof target = JSON.parse(JSON.stringify(target));
+    const targetClone: typeof target = JSON.parse(
+      JSON.stringify(target),
+      (key, value) => {
+        if (target[key] !== null && typeof target[key] === "object") {
+          return new target[key].__proto__.constructor(value);
+        } else {
+          return value;
+        }
+      }
+    );
     recursiveMerge(targetClone, source);
     return targetClone;
   },

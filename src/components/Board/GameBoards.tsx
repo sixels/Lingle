@@ -60,6 +60,8 @@ const GameBoard: Component<Props> = ({
     [reveal, setReveal] = createSignal(-1),
     isRevealing = createSelector(reveal);
 
+  const [invalidAttemptRow, setInvalidAttemptRow] = createSignal(-1);
+
   // sharded signals
   const [board, setBoard] = createSignal<Signal<WordAttempt>[]>([]);
 
@@ -126,32 +128,40 @@ const GameBoard: Component<Props> = ({
     on(submittedAttempt, (attemptAnimation) => {
       if (!attemptAnimation) return;
 
-      const [attempts, done] = attemptAnimation,
-        attempt = attempts[boardNumber];
+      const [attempts, done] = attemptAnimation;
 
-      if (attempt === undefined) return;
-
-      if (attempt === null) {
-        // TODO: animate error
+      if (attempts.length == 0) {
+        // animate invalid word
+        setInvalidAttemptRow(position()[0]);
+        setTimeout(() => {
+          setInvalidAttemptRow(-1);
+        }, 305);
+        // call done() outside of the timeout so we don't block the keyboard
         done();
-      } else {
-        const [row, _col] = position();
-        if (row < 0 || row >= mode.rows || status() !== "playing") {
-          return;
-        }
-
-        const [_row, setRow] = board()[row];
-
-        batch(() => {
-          setReveal(row);
-          setRow(attempt);
-        });
-
-        animateTimeout = setTimeout(() => {
-          setReveal(-1);
-          done();
-        }, mode.columns * 180 + 160);
+        return;
       }
+
+      const attempt = attempts[boardNumber];
+      if (attempt == null) {
+        return;
+      }
+
+      const [row, _col] = position();
+      if (row < 0 || row >= mode.rows || status() !== "playing") {
+        return;
+      }
+
+      const [_row, setRow] = board()[row];
+
+      batch(() => {
+        setReveal(row);
+        setRow(attempt);
+      });
+
+      animateTimeout = setTimeout(() => {
+        setReveal(-1);
+        done();
+      }, mode.columns * 180 + 160);
     })
   );
 
@@ -171,6 +181,7 @@ const GameBoard: Component<Props> = ({
               classList={{
                 disabled: i != innerPosition()[0],
                 locked: status() === "playing" && lock(),
+                shaking: status() === "playing" && invalidAttemptRow() == i,
               }}
             >
               <Letters
@@ -179,7 +190,7 @@ const GameBoard: Component<Props> = ({
                 isFocused={isFocused}
                 selectLetter={selectLetter}
                 isRevealing={isRevealing}
-              ></Letters>
+              />
             </div>
           );
         }}
