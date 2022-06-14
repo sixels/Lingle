@@ -137,6 +137,7 @@ const Board: Component<Props> = ({
       }
 
       batch(() => {
+        setLock(false);
         createAttempts(attempts);
         setRow(position()[0] + 1);
         submitAttemptValidWord(attempts);
