@@ -128,21 +128,16 @@ const GameBoard: Component<Props> = ({
     on(submittedAttempt, (attemptAnimation) => {
       if (!attemptAnimation) return;
 
-      const [attempts, done] = attemptAnimation;
+      const [attempts, done] = attemptAnimation,
+        attempt = attempts[boardNumber];
 
-      if (attempts.length == 0) {
+      if (attempt == null) {
         // animate invalid word
         setInvalidAttemptRow(position()[0]);
         setTimeout(() => {
           setInvalidAttemptRow(-1);
+          done();
         }, 305);
-        // call done() outside of the timeout so we don't block the keyboard
-        done();
-        return;
-      }
-
-      const attempt = attempts[boardNumber];
-      if (attempt == null) {
         return;
       }
 

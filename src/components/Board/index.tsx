@@ -75,8 +75,10 @@ const Board: Component<Props> = ({
   };
 
   const submitAttemptValidWord = (attempts: (WordAttempt | null)[]) => {
-    submitAttempt(attempts, () => {
-      batch(() => {
+    setAnimating(true);
+
+    const updateState = () => {
+      batch(async () => {
         setAnimating(false);
 
         for (let i = 0; i < gameState.state.boards.length; i++) {
@@ -91,48 +93,54 @@ const Board: Component<Props> = ({
         setAttempt(attempt().map(() => " "));
         setLock(false);
       });
+    };
+
+    submitAttempt(attempts, () => {
+      if (gameState.state.boards.some((board) => board.status === "lost")) {
+        // animate only lost attempts
+        const lost_attempts = attempts.map((attempt, i) =>
+          gameState.state.boards[i].status !== "won" ? null : attempt
+        );
+        submitAttemptInvalidWord(lost_attempts, updateState);
+      } else {
+        updateState();
+      }
     });
   };
 
-  const submitAttemptInvalidWord = () => {
-    submitAttempt([], () => {
+  const submitAttemptInvalidWord = (
+    attempts: (WordAttempt | null)[],
+    then?: () => void
+  ) => {
+    setAnimating(true);
+
+    submitAttempt(attempts, () => {
       setAnimating(false);
+      then && then();
     });
   };
 
   const keyboardHandler: any = {
     Enter() {
-      const attemptStr = attempt().join("");
-
-      if (attemptStr.includes(" ")) {
-        // invalid attempt size
-        submitAttemptInvalidWord();
-        return;
-      }
-
-      const word = WordListNormalized.get(attemptStr);
-      if (!word) {
-        // invalid word
-        submitAttemptInvalidWord();
-        return;
-      }
+      const attemptStr = attempt().join(""),
+        word = WordListNormalized.get(attemptStr);
 
       const attempts = solutions.map((solution, i) => {
-        if (gameState.state.boards[i].status == "playing") {
-          return compareWordWithSolution(word, solution);
-        }
-        return null;
+        return gameState.state.boards[i].status == "playing" && word
+          ? compareWordWithSolution(word, solution)
+          : null;
       });
-      batch(() => {
-        setAnimating(true);
 
+      if (word == null) {
+        submitAttemptInvalidWord(attempts);
+        return;
+      }
+
+      batch(() => {
         createAttempts(attempts);
         setRow(position()[0] + 1);
-
         submitAttemptValidWord(attempts);
       });
-
-      setAnimating(true);
     },
     Backspace() {
       let word = [...attempt()];
