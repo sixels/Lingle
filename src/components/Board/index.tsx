@@ -91,7 +91,8 @@ const Board: Component<Props> = ({
         setPosition([gameState.state.row, 0]);
 
         setAttempt(attempt().map(() => " "));
-        setLock(false);
+
+        keyboard.sendAttempt(attempts);
       });
     };
 

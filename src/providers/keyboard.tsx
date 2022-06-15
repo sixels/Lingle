@@ -1,8 +1,11 @@
-import { Accessor, createRoot, createSignal } from "solid-js";
+import { WordAttempt } from "@/game/attempt";
+import { Accessor, createRoot, createSignal, Setter } from "solid-js";
 
 export type KeyboardState = {
   keyPressed: Accessor<string | null>;
   pressKey: (key: string | null) => void;
+  sentAttempt: Accessor<(WordAttempt | null)[] | undefined>;
+  sendAttempt: Setter<(WordAttempt | null)[] | undefined>;
 };
 
 export const SPECIAL_KEYS = [
@@ -27,12 +30,15 @@ export const LETTER_KEYS = new Set([..."abcdefghijklmnopqrstuvwxyz"]);
 
 const createKeyboard = () => {
   const [pressed, setPressed] = createSignal<string | null>(null),
+    [sentAttempt, sendAttempt] = createSignal<(WordAttempt | null)[]>(),
     state: KeyboardState = {
       keyPressed: pressed,
       pressKey: (key: string | null) => {
         setPressed(key);
         setPressed(null);
       },
+      sentAttempt,
+      sendAttempt,
     };
 
   document.addEventListener("keyup", (event: KeyboardEvent) => {
