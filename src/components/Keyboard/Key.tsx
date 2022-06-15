@@ -1,5 +1,5 @@
 import { isKeySpecial, SpecialKey } from "@/providers/keyboard";
-import { Component } from "solid-js";
+import { Component, Ref } from "solid-js";
 
 interface KeyInterface<T> {
   key: T;
@@ -10,10 +10,14 @@ export type KeyboardKey = LetterKeyWrapper | SpecialKeyWrapper;
 
 type KeyProps = {
   key: KeyboardKey;
-  onClick?: (event: MouseEvent, key: KeyboardKey) => void;
+  onClick?: (key: KeyboardKey) => void;
 };
 
-export const Key: Component<KeyProps> = ({ key, onClick }) => {
+export const Key: Component<{ ref: Ref<HTMLDivElement> } & KeyProps> = ({
+  ref,
+  key,
+  onClick,
+}) => {
   const isSpecial = (key: KeyboardKey): key is SpecialKeyWrapper => {
     return isKeySpecial(key.key);
   };
@@ -22,14 +26,13 @@ export const Key: Component<KeyProps> = ({ key, onClick }) => {
 
   return (
     <div
+      ref={ref}
       class="key"
       classList={{
         special: isSpecial(key),
         [keyName.toLowerCase()]: isSpecial(key),
       }}
-      onClick={(event) => {
-        onClick && onClick(event, key);
-      }}
+      onClick={onClick && [onClick, key]}
       data-key={key.key}
     >
       {isSpecial(key) && key.icon ? (
