@@ -128,9 +128,13 @@ const GameBoard: Component<Props> = ({
     on(submittedAttempt, (attemptAnimation) => {
       if (!attemptAnimation) return;
 
+      const [row, _col] = position();
+      if (row < 0 || row >= mode.rows || status() !== "playing") {
+        return;
+      }
+
       const [attempts, done] = attemptAnimation,
         attempt = attempts[boardNumber];
-
       if (attempt == null) {
         // animate invalid word
         setInvalidAttemptRow(position()[0]);
@@ -138,11 +142,6 @@ const GameBoard: Component<Props> = ({
           setInvalidAttemptRow(-1);
           done();
         }, 305);
-        return;
-      }
-
-      const [row, _col] = position();
-      if (row < 0 || row >= mode.rows || status() !== "playing") {
         return;
       }
 
