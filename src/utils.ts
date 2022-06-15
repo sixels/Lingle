@@ -48,9 +48,13 @@ export default Object.freeze({
     return targetClone;
   },
 
-  normalizedWord: (word: string): string => {
-    return word.normalize("NFD").replace(/\p{Diacritic}/gu, "");
-  },
+  combineArray: <A, B>(
+    a: A[] | readonly A[],
+    b: B[] | readonly B[]
+  ): [A, B][] => a.map((av) => b.map((bv) => [av, bv] as [A, B])).flat(1),
+
+  normalizedWord: (word: string): string =>
+    word.normalize("NFD").replace(/\p{Diacritic}/gu, ""),
 
   copyCanvas: (canvas: HTMLCanvasElement | undefined): Promise<void> => {
     if (canvas === undefined) {
