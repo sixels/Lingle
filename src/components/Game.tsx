@@ -27,8 +27,6 @@ const Game: Component = () => {
     }
   });
 
-  // check if the state has expired
-
   createEffect(
     on(keyboard.keyPressed, () => {
       setOpenModal("none");
@@ -52,7 +50,7 @@ const Game: Component = () => {
         setRow={setRow}
       />
 
-      <Keyboard keyboard={keyboard} />
+      <Keyboard state={game} keyboard={keyboard} />
     </>
   );
 };
