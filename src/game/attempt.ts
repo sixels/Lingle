@@ -3,14 +3,11 @@ export namespace AttemptType {
   export const Right: "right" = "right" as const;
   export const Wrong: "wrong" = "wrong" as const;
   export const None: "none" = "none" as const;
-  export type Any =
-    | typeof AttemptType.Occur
-    | typeof AttemptType.Right
-    | typeof AttemptType.Wrong
-    | typeof AttemptType.None;
+  export const ALL = [Occur, Right, Wrong, None] as const;
+  export type Any = typeof ALL[number];
 }
 
-export interface LetterAttempt<T> {
+export interface LetterAttempt<T = AttemptType.Any> {
   // Non-normalized letter
   letter: string;
   // Normalized letter
@@ -20,7 +17,7 @@ export interface LetterAttempt<T> {
   type: T;
 }
 
-export type WordAttempt = (LetterAttempt<AttemptType.Any> | undefined)[];
+export type WordAttempt = (LetterAttempt | undefined)[];
 
 /**
  * Create a WordAttempt from a given array
