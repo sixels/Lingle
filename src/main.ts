@@ -10,8 +10,11 @@ import { GameManager } from "./game";
 import { KeyboardManager } from "./keyboard";
 import { Message, MessageKind } from "./message";
 import { LingleStore } from "./store";
-import { Menu, StatsModal, HTPModal, PrefsModal } from "./ui";
 import { init_wordlists } from "./wordlist";
+import { Menu } from "./ui/menu";
+import { StatsModal } from "./ui/stats";
+import { HTPModal } from "./ui/htp";
+import { PrefsModal } from "./ui/prefs";
 
 init_wordlists();
 
