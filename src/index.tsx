@@ -4,8 +4,6 @@ import { Router } from "solid-app-router";
 import { Ticker } from "./providers/ticker";
 import App from "./components/App";
 
-import { Analytics } from "@vercel/analytics/react";
-
 import "normalize.css/normalize.css";
 import "remixicon/fonts/remixicon.css";
 
@@ -19,6 +17,8 @@ if (typeof window !== "undefined") {
   import("./pwa");
 }
 
+console.log(process.env.NODE_ENV);
+
 render(
   () => (
     <>
@@ -27,7 +27,6 @@ render(
           <App />
         </Ticker>
       </Router>
-      <Analytics />
     </>
   ),
   document.getElementById("root") as MountableElement
