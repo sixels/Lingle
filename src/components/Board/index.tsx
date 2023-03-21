@@ -48,6 +48,7 @@ const Board: Component<Props> = ({
   setGameNumber,
   updateStats,
 }) => {
+  console.log("building the board");
   const { onEachDay } = useTicker();
 
   const newAttempt = (mode: Mode): string[] => {

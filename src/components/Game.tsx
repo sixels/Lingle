@@ -27,17 +27,41 @@ const Game: Component = () => {
   const openModalSignal = createSignal<keyof Modals>("none"),
     [_, setOpenModal] = openModalSignal;
 
-  onEachDay(() => {
-    if (new Date().getTime() >= game.expires.getTime()) {
-      resetState();
-    }
-  });
-
   createEffect(
     on(keyboard.keyPressed, () => {
       setOpenModal("none");
     })
   );
+
+  const [board, setBoard] = createSignal(
+    <Board
+      gameState={game}
+      keyboard={keyboard}
+      createAttempts={createAttempts}
+      setGameNumber={setGameNumber}
+      setOpenModal={setOpenModal}
+      setRow={setRow}
+      updateStats={updateStats}
+    />
+  );
+
+  onEachDay(() => {
+    if (new Date() >= game.expires) {
+      console.log("reseting state");
+      resetState();
+      setBoard(
+        <Board
+          gameState={game}
+          keyboard={keyboard}
+          createAttempts={createAttempts}
+          setGameNumber={setGameNumber}
+          setOpenModal={setOpenModal}
+          setRow={setRow}
+          updateStats={updateStats}
+        />
+      );
+    }
+  });
 
   return (
     <>
@@ -48,15 +72,7 @@ const Game: Component = () => {
 
       <Header openModalSignal={openModalSignal} />
 
-      <Board
-        gameState={game}
-        keyboard={keyboard}
-        createAttempts={createAttempts}
-        setGameNumber={setGameNumber}
-        setOpenModal={setOpenModal}
-        setRow={setRow}
-        updateStats={updateStats}
-      />
+      {board()}
 
       <Keyboard state={game} keyboard={keyboard} setOpenModal={setOpenModal} />
     </>
