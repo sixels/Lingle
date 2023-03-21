@@ -49,3 +49,64 @@ a {
 :is(i) {
   font-weight: normal !important;
 }
+
+
+.my-toast {
+  padding: 9px 12px;
+  border-radius: 10px;
+  // max-width: min(75%, 525px);
+  width: fit-content;
+
+  background-color: var(--dropdown-color-bg);
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  min-height: 36px;
+
+  border: 1px solid var(--key-color-bd);
+  box-shadow: 5px 6px 12px -6px #0000002f;
+  * {
+    color: var(--default-color-fg)
+  }
+  // .message {
+     ;
+    word-break: break-word;
+    flex-wrap: wrap;
+    // flex: 1;
+  // }
+
+  
+  .options {
+      display: flex;
+      gap: 8px;
+      min-height: 36px;
+      position: relative;
+
+      // overflow-x: auto;
+
+
+  
+    .option {
+      cursor: pointer;
+      background-color: #dde0e6;
+      padding: 6px 9px;
+      font-size: 0.95em;
+      border-radius: 8px;
+      min-width: fit-content;
+
+      
+      transition: box-shadow 300ms ease;
+      border: none;
+
+      * {
+        color: #000 !important;
+      }
+      
+      &:hover {
+        box-shadow: 3px 5px 12px -5px #0000002f
+      }
+    }
+  }
+}

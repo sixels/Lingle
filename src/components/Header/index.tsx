@@ -6,6 +6,7 @@ import {
   onMount,
   Signal,
   createSignal,
+  createEffect,
 } from "solid-js";
 import { useRouteData } from "solid-app-router";
 
@@ -13,6 +14,8 @@ import ModeSelector from "./ModeSelector";
 import Button from "./Button";
 
 import "@styles/header.scss";
+import { Mode } from "@/game/mode";
+import { getGameNumber } from "@/game/solution";
 
 type Props = {
   openModalSignal: Signal<string>;
@@ -21,19 +24,27 @@ type Props = {
 const Header: Component<Props> = ({
   openModalSignal: [openModal, setOpenModal],
 }) => {
-  const { mode } = useRouteData();
+  const { mode } = useRouteData<{ mode: Mode }>();
 
-  let menuRef: HTMLElement | null = null,
+  let menuBtnRef: HTMLElement | null = null,
+    menuRef: HTMLElement | null = null,
     [menuOpen, setMenuOpen] = createSignal(false);
 
-  const handleClickMenu = (event: Event) => {
-    event.stopPropagation();
-    setMenuOpen(menuOpen() !== true);
+  const handleClickMenu = () => {
+    setMenuOpen(!menuOpen());
   };
+
+  createEffect(on(menuOpen, console.debug, { defer: true }));
+
   const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef && !menuRef.contains(event.target as Node)) {
-      setMenuOpen(false);
+    if (
+      (menuBtnRef && menuBtnRef.contains(event.target as Node)) ||
+      (menuRef && menuRef.contains(event.target as Node))
+    ) {
+      return;
     }
+
+    setMenuOpen(false);
   };
 
   onMount(() => {
@@ -58,10 +69,13 @@ const Header: Component<Props> = ({
           label="Sobre"
           icon="information"
           onClick={() => {
-            setOpenModal(openModal() === "about" ? "none" : "about");
+            setOpenModal(openModal() == "about" ? "none" : "about");
           }}
         />
-        <span class="strong">{mode.mode}</span>
+        <span class="strong">
+          {mode.displayName}{" "}
+          <span class="game-number">#{getGameNumber(new Date())}</span>
+        </span>
       </div>
       <div
         class="right"
@@ -89,6 +103,9 @@ const Header: Component<Props> = ({
       </div>
       <Button
         icon="menu"
+        refFn={(e) => {
+          menuBtnRef = e;
+        }}
         classList={{ menu: true }}
         onClick={handleClickMenu}
       />

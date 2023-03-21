@@ -55,6 +55,8 @@
   --header-height: 3rem;
   --keyboard-height: clamp(7rem, 30%, 12.4rem);
   --boards-height: calc(100% - var(--keyboard-height) - var(--header-height));
+
+  --icon-color-fg: hsl(208, 44%, 92%);
 }
 
 [data-theme="alternativo"] {
@@ -123,4 +125,6 @@
   --message-error-color-bd: hsl(0, 41%, 35%);
   --message-error-color-bg: hsl(0, 53%, 49%);
   --message-error-color-fg: var(--letter-wrong-color-fg);
+
+  --icon-color-fg: hsl(230, 3%, 88%);
 }

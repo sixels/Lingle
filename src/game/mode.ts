@@ -1,9 +1,23 @@
-export const MODES = ["lingle", "duolingle"] as const;
+export const MODES = [
+  "lingle",
+  "duolingle",
+  "quadlingle",
+  "octolingle",
+] as const;
 export type Modes = typeof MODES[number];
+
+const ModeNames = {
+  lingle: "Lingle",
+  duolingle: "Duo-lingle",
+  quadlingle: "Quad-lingle",
+  octolingle: "Octo-lingle",
+};
 
 const modeBoards: { [key: string]: number } = {
   lingle: 1,
   duolingle: 2,
+  quadlingle: 4,
+  octolingle: 8,
 };
 
 export class Mode {
@@ -13,6 +27,9 @@ export class Mode {
   }
   get boards(): number {
     return modeBoards[this.mode];
+  }
+  get displayName(): string {
+    return ModeNames[this._mode];
   }
   get rows(): number {
     return this.boards + this.columns;

@@ -24,13 +24,17 @@ import "@styles/board.scss";
 import "@styles/letters.scss";
 import { WordAttempt } from "@/game/attempt";
 import { useTicker } from "@/providers/ticker";
+import toast from "solid-toast";
+import { MyToast } from "../Toast";
 
 type Props = {
   gameState: GameState;
   keyboard: KeyboardState;
   setRow: GameStoreMethods["setRow"];
+  updateStats: GameStoreMethods["updateStats"];
   createAttempts: GameStoreMethods["createAttempts"];
   setGameNumber: GameStoreMethods["setGameNumber"];
+  setOpenModal: (modal: string) => void;
 };
 
 export type AttemptAnimation = [(WordAttempt | null)[], () => void];
@@ -38,9 +42,11 @@ export type AttemptAnimation = [(WordAttempt | null)[], () => void];
 const Board: Component<Props> = ({
   gameState,
   keyboard,
+  setOpenModal,
   setRow,
   createAttempts,
   setGameNumber,
+  updateStats,
 }) => {
   const { onEachDay } = useTicker();
 
@@ -92,7 +98,43 @@ const Board: Component<Props> = ({
 
         setAttempt(attempt().map(() => " "));
 
+        updateStats();
         keyboard.sendAttempt(attempts);
+
+        if (gameState.state.boards.every((b) => b.status == "won")) {
+          setTimeout(() => {
+            toast.custom(
+              (t) => <MyToast message="Parabéns, você ganhou!" toast={t} />,
+              {
+                duration: 10_000,
+              }
+            );
+            setOpenModal("stats");
+          }, 1000);
+        } else if (gameState.state.boards.some((b) => b.status == "lost")) {
+          const pluralStr = (p: string) => {
+            return gameState.state.boards.length > 1 ? p : "";
+          };
+
+          setTimeout(() => {
+            toast.custom(
+              (t) => (
+                <MyToast
+                  message={`Você perdeu, a${pluralStr("s")} palavra${pluralStr(
+                    "s"
+                  )} de hoje era${pluralStr("m")}: ${gameState.state.boards
+                    .map((b) => `"${b.solution}"`)
+                    .join(", ")}`}
+                  toast={t}
+                />
+              ),
+              {
+                duration: 10_000,
+              }
+            );
+            setOpenModal("stats");
+          }, 300);
+        }
       });
     };
 
@@ -127,6 +169,7 @@ const Board: Component<Props> = ({
         word = WordListNormalized.get(attemptStr);
 
       const attempts = solutions.map((solution, i) => {
+        console.log(attemptStr, solution);
         return gameState.state.boards[i].status == "playing" && word
           ? compareWordWithSolution(word, solution)
           : null;
@@ -196,6 +239,9 @@ const Board: Component<Props> = ({
       });
     },
     Escape() {},
+    Lock() {
+      setLock(!lock());
+    },
   };
 
   onEachDay(() => {

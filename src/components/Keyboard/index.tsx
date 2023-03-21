@@ -1,44 +1,61 @@
-import {
-  Component,
-  createEffect,
-  createSignal,
-  For,
-  on,
-  onCleanup,
-  onMount,
-} from "solid-js";
+import { Component, createEffect, For, on, onCleanup, onMount } from "solid-js";
 
 import { KeyboardState } from "@/providers/keyboard";
 import { Key, KeyboardKey } from "./Key";
 
 import "@styles/keyboard.scss";
 import { GameState } from "@/store/game";
-import { LetterAttempt, AttemptType, WordAttempt } from "@/game/attempt";
-import utils from "@/utils";
+import { LetterAttempt, WordAttempt } from "@/game/attempt";
 
-const SIDES = ["left", "right"] as const;
-type Side = typeof SIDES[number] | "all";
+interface svgRectProps {
+  fill: string;
+  fg: string;
+  x: string;
+  y: string;
+  w: string;
+  h: string;
+  i: number;
+}
+function svgRect({ fill, fg, x, y, w, h, i }: svgRectProps) {
+  const svg =
+    `<svg xmlns='http://www.w3.org/2000/svg'><g>` +
+    `<rect fill='${fill}' x='${x}'  y='${y}' width='${w}' height='${h}'/>` +
+    `<text font-family='sans-serif' font-weight='bold' font-size='10' fill='${fg}' y='${y}'> <tspan x='${x}' dy='9' dx='4'> ${i} </tspan> </text>` +
+    `</g></svg>`;
 
-type Props = { state: GameState; keyboard: KeyboardState };
+  return `url("data:image/svg+xml,${encodeURI(svg)}")`;
+}
 
-const Keyboard: Component<Props> = ({ state, keyboard }) => {
+type Props = {
+  state: GameState;
+  keyboard: KeyboardState;
+  setOpenModal: (modal: string) => void;
+};
+
+const Keyboard: Component<Props> = ({ state, keyboard, setOpenModal }) => {
   const makeKeys = (keys: string): KeyboardKey[] => {
     return [...keys].map((k) => ({ key: k }));
   };
   const keys: KeyboardKey[][] = [
       makeKeys("qwertyuiop"),
       [...makeKeys("asdfghjkl"), { key: "Backspace", icon: "delete-back-2" }],
-      [...makeKeys("zxcvbnm"), { key: "Enter", icon: undefined }],
+      [
+        { key: "Lock", icon: "lock-2" },
+        ...makeKeys("zxcvbnm"),
+        { key: "Enter", icon: undefined },
+      ],
     ],
     keysRef: Map<string, HTMLElement> = new Map();
 
-  const [playingBoards, setPlayingBoards] = createSignal(
-    state.state.boards.filter((b) => b.status === "playing").length
-  );
+  // const [playingBoards, setPlayingBoards] = createSignal(
+  //   state.state.boards.filter((b) => b.status === "playing").length
+  // );
 
   let timeout: NodeJS.Timeout;
 
   const highlightKey = (keyName: string) => {
+    setOpenModal("_");
+
     const key = keysRef.get(keyName);
     if (!key) return;
 
@@ -53,52 +70,83 @@ const Keyboard: Component<Props> = ({ state, keyboard }) => {
   };
 
   const resetKey = (key: HTMLElement) => {
-    const typesAndSides = utils
-      .combineArray(AttemptType.ALL, SIDES)
-      .map(([a, b]) => `${a}-${b}`);
-    key.classList.remove(...AttemptType.ALL);
-    key.classList.remove(...typesAndSides);
+    key.dataset["paint"] = "";
   };
   const resetKeyboard = () => {
-    keysRef.forEach((key) => {
+    for (const [name, key] of keysRef.entries()) {
+      if (name.length > 1) {
+        continue;
+      }
       resetKey(key);
-    });
+    }
   };
 
+  const updateKeyPaint = (keyRef: HTMLElement, paints: string[]) => {
+    const total = paints.length;
+
+    const paintWidth = 100 / Math.min(2, total),
+      paintHeight = 100 / (total / 2);
+
+    const makeRect = (kind: "right" | "occur" | "wrong", i: number) => {
+      const fill = getCSSVariable(`--key-${kind}-color-bg`);
+      const fg = getCSSVariable(`--key-${kind}-color-fg`);
+
+      return svgRect({
+        fill,
+        fg,
+        h: `${paintHeight}%`,
+        w: `${paintWidth}%`,
+        x: `${(i % 2) * paintWidth}%`,
+        y: `${Math.floor(i / 2) * paintHeight}%`,
+        i: i + 1,
+      });
+    };
+
+    const paintMap: { [key: string]: (i: number) => string } = {
+      right: (i) => makeRect("right", i),
+      occur: (i) => makeRect("occur", i),
+      wrong: (i) => makeRect("wrong", i),
+    };
+
+    const backgrounds = paints.map((paint, i) =>
+      paint in paintMap ? paintMap[paint](i) : paintMap["wrong"](i)
+    );
+    keyRef.style.backgroundImage = backgrounds.join(",");
+  };
   const paintKey = (letter: LetterAttempt, board: number, boards: number) => {
     const key = keysRef.get(letter.normalized);
     if (!key) return;
 
-    const side: Side = boards === 1 ? "all" : SIDES[board],
-      paintSide = side === "all" ? "" : "-" + side;
+    const keyPaints = [
+      ...(key.dataset["paint"]?.split(",") || []),
+      ...new Array(state.state.boards.length).fill("wrong"),
+    ].slice(0, state.state.boards.length);
 
-    let paintType = "";
     switch (letter.type) {
       case "right":
-        if (key.classList.contains("occur" + paintSide)) {
-          key.classList.remove("occur" + paintSide);
-        }
-        paintType = "right";
+        keyPaints[board] = "right";
         break;
       case "occur":
-        if (key.classList.contains("right" + paintSide)) {
+        if (keyPaints[board] == "right") {
           break;
         }
-        paintType = "occur";
-        break;
-      case "wrong":
-        if (
-          key.classList.contains("occur" + paintSide) ||
-          key.classList.contains("right" + paintSide)
-        ) {
-          break;
-        }
-        paintType = "wrong";
+        keyPaints[board] = "occur";
         break;
       default:
+        if (keyPaints[board] == "occur" || keyPaints[board] == "right") {
+          break;
+        }
+        keyPaints[board] = "wrong";
         break;
     }
-    paintType && key.classList.add(paintType + paintSide);
+
+    let keyDataset: string = keyPaints[board];
+    if (boards > 1) {
+      keyDataset = keyPaints.join(",");
+    }
+    key.dataset["paint"] = keyDataset;
+
+    updateKeyPaint(key, keyDataset.split(","));
   };
 
   const paintAttempt = (attempt: WordAttempt, board: number) => {
@@ -106,23 +154,26 @@ const Keyboard: Component<Props> = ({ state, keyboard }) => {
       (board) => board.status === "playing"
     ).length;
 
-    if (playing !== playingBoards()) {
-      setPlayingBoards(playing);
+    if (state.state.boards[board].status != "playing") {
+      // setPlayingBoards(playing);
       resetKeyboard();
 
-      state.state.boards
-        .filter((board) => board.status === "playing")
-        .forEach((board, b) => {
-          board.attempts.forEach((attempt) => {
-            attempt.forEach((letter) => {
-              if (!letter) return;
-              paintKey(letter, b, playing);
-            });
+      state.state.boards.forEach((board, b) => {
+        if (board.status != "playing") {
+          return;
+        }
+
+        board.attempts.forEach((attempt) => {
+          attempt.forEach((letter) => {
+            if (!letter) return;
+            paintKey(letter, b, playing);
           });
         });
+      });
 
       return;
     }
+
     attempt.forEach((letter) => {
       if (!letter) return;
       paintKey(letter, board, playing);
@@ -131,9 +182,11 @@ const Keyboard: Component<Props> = ({ state, keyboard }) => {
 
   onMount(() => {
     state.state.boards
-      .filter((board) => board.status === "playing")
+      // .filter((board) => board.status === "playing")
       .forEach((board, b) => {
-        board.attempts.forEach((attempt) => paintAttempt(attempt, b));
+        if (board.status == "playing") {
+          board.attempts.forEach((attempt) => paintAttempt(attempt, b));
+        }
       });
   });
   onCleanup(() => {
@@ -186,3 +239,7 @@ const Keyboard: Component<Props> = ({ state, keyboard }) => {
 };
 
 export default Keyboard;
+
+const getCSSVariable = (name: string): string => {
+  return getComputedStyle(document.documentElement).getPropertyValue(name);
+};

@@ -10,13 +10,19 @@ import Keyboard from "./Keyboard";
 
 import keyboard from "@/providers/keyboard";
 import { useTicker } from "@/providers/ticker";
+import { PrefsStore } from "@/store/prefs";
+import { Mode } from "@/game/mode";
 
 const Game: Component = () => {
   const { onEachDay } = useTicker();
-  const { mode, prefsStore } = useRouteData();
+  const { mode, prefsStore } = useRouteData<{
+    mode: Mode;
+    prefsStore: PrefsStore;
+  }>();
 
   const gameStore = createGameStore(mode),
-    [game, { setRow, setGameNumber, createAttempts, resetState }] = gameStore;
+    [game, { setRow, setGameNumber, createAttempts, resetState, updateStats }] =
+      gameStore;
 
   const openModalSignal = createSignal<keyof Modals>("none"),
     [_, setOpenModal] = openModalSignal;
@@ -47,10 +53,12 @@ const Game: Component = () => {
         keyboard={keyboard}
         createAttempts={createAttempts}
         setGameNumber={setGameNumber}
+        setOpenModal={setOpenModal}
         setRow={setRow}
+        updateStats={updateStats}
       />
 
-      <Keyboard state={game} keyboard={keyboard} />
+      <Keyboard state={game} keyboard={keyboard} setOpenModal={setOpenModal} />
     </>
   );
 };

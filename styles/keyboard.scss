@@ -1,5 +1,14 @@
 @import "./common.scss";
 
+
+@function str-remove-whitespace($str) {
+  @while (str-index($str, ' ') != null) {
+    $index: str-index($str, ' ');
+    $str: "#{str-slice($str, 0, $index - 1)}#{str-slice($str, $index + 1)}";
+  }
+  @return $str;
+}
+
 .keyboard-wrapper {
   @extend .no-select;
 
@@ -8,11 +17,16 @@
   display: grid;
   place-items: center;
   grid-area: "keyboard";
+
+  // flex: 1;
+  min-height: 134px;
+
+  padding: 6px 0;
 }
 
 .keyboard {
   width: min(700px, 100%);
-  height: 90%;
+  height: 100%;
   position: relative;
 
   .row {
@@ -34,26 +48,33 @@
 
       height: 90%;
       width: 8%;
+
       margin: 0 min(0.2rem, 0.6%);
 
       i {
         color: var(--key-color-fg);
       }
 
-      display: grid;
-      place-items: center;
-      font-size: 1em;
+      // display: grid;
+      // place-items: center;
+      font-size: 0.72em;
 
-      border-radius: 4px;
-      border: none;
-
+      border-radius: 6px;
+      text-shadow: 0 0 12px  #000;
+      
       background-image: linear-gradient(
         90deg,
         var(--self-left-bg) 50%,
         var(--self-right-bg) 50%
-      );
+        );
       color: var(--key-color-fg);
-      box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+      // border: 2px solid #ffffff1a;
+      border-bottom: none;
+      border-right: none;
+      padding: 7px 0 0 8px;
+      box-shadow: 
+        inset -1px -2px 0 4px #ffffff1f;
 
       text-transform: uppercase;
       font-weight: 500;
@@ -62,54 +83,45 @@
       transition-timing-function: ease;
       transition-property: background-image, color;
 
+      $paints: (wrong, right, occur);
+      @each $paint in $paints {
+        @for $i from 1 through 8 {
+          $selector: ();
+          @for $j from 1 through $i {
+            $selector: append($selector, $paint, comma)
+          }
+
+          &[data-paint="#{str-remove-whitespace(#{$selector})}"] {
+            color: var(--key-#{$paint}-color-fg);
+          }
+        }
+      }
+
+
+      // &[data-paint="wrong"], &[data-paint="wrong,wrong"] {
+      //   color: var(--key-wrong-color-fg); 
+      // }
+      // &[data-paint="right"], &[data-paint="right,right"] {
+      //   color: var(--key-right-color-fg);
+      // }
+      // &[data-paint="occur"], &[data-paint="occur,occur"] {
+      //   color: var(--key-occur-color-fg);
+      // }
+
       &.special {
+        &.lock {
+          margin-right: 0.3rem;
+          --self-width: min(2.7rem, 11%)
+        }
         &.backspace {
           margin-left: 0.3rem;
           --self-width: min(4.8rem, 11%);
         }
         &.enter {
-          margin-left: 0.5rem;
-          --self-width: min(7rem, 22.2%);
+          margin-left: 0.3rem;
+          --self-width: min(6rem, 18.2%);
         }
         width: var(--self-width);
-      }
-
-      &.wrong,
-      &.wrong-left.wrong-right {
-        --self-left-bg: var(--key-wrong-color-bg);
-        --self-right-bg: var(--key-wrong-color-bg);
-        color: var(--key-wrong-color-fg);
-      }
-      &.right,
-      &.right.left.right-right {
-        --self-left-bg: var(--key-right-color-bg);
-        --self-right-bg: var(--key-right-color-bg);
-        color: var(--key-right-color-fg);
-      }
-      &.occur,
-      &.occur-left.occur-right {
-        --self-left-bg: var(--key-occur-color-bg);
-        --self-right-bg: var(--key-occur-color-bg);
-        color: var(--key-occur-color-fg);
-      }
-
-      &.wrong-left {
-        --self-left-bg: var(--key-wrong-color-bg);
-      }
-      &.wrong-right {
-        --self-right-bg: var(--key-wrong-color-bg);
-      }
-      &.right-left {
-        --self-left-bg: var(--key-right-color-bg);
-      }
-      &.right-right {
-        --self-right-bg: var(--key-right-color-bg);
-      }
-      &.occur-left {
-        --self-left-bg: var(--key-occur-color-bg);
-      }
-      &.occur-right {
-        --self-right-bg: var(--key-occur-color-bg);
       }
 
       &.highlighted {

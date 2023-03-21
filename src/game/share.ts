@@ -100,7 +100,6 @@ export const renderAsText = (
     wrong: "⬛",
   };
   const word_len = 5;
-  const n_words = word_len + attempts.length;
 
   // get maximum attempt number
   let max_attempt = 0;
@@ -128,28 +127,25 @@ export const renderAsText = (
     });
   };
 
-  const attempt_numbers = attempts.map((attempt) => {
-    return attempt.length === n_words &&
-      attempt[attempt.length - 1].map(
-        (letter) => letter?.type === AttemptType.Right
-      ).length < word_len
-      ? "🟥"
-      : `${emoji_numbers[attempt.length]}`;
+  const attempt_numbers = attempts.map((attempt, i) => {
+    return attempt.at(-1)?.every((l) => l?.type == "right")
+      ? `${emoji_numbers[i + 1]}:${attempt.length}`
+      : `${emoji_numbers[i + 1]}:❌`;
   });
 
   fill_attempts();
-  let board: string[][] = [...new Array(max_attempt)].map(() =>
-    [...new Array(word_len * attempts.length + attempts.length - 1)].map(
+  let board: string[][] = [...new Array(max_attempt)].map(() => [
+    ...[...new Array(word_len * attempts.length + attempts.length - 1)].map(
       () => " "
-    )
-  );
+    ),
+  ]);
   renderBoard(1, 1, 0, 0, attempts_, (ls, x, y) => {
     const board_n = Math.floor(x / 5);
     x += board_n;
     board[y][x] = ls !== undefined ? chars[ls] || "x" : "x";
   });
 
-  const attempts_string = attempt_numbers.join(" ");
+  const attempts_string = attempt_numbers.join("  ");
   const board_string = board.join("\n").replaceAll(",", "").trimEnd();
 
   return `${game_name}

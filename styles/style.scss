@@ -88,11 +88,8 @@ a {
 }
 
 #app {
-  display: grid;
-  grid-template-rows: var(--header-height) var(--boards-height) var(
-      --keyboard-height
-    );
-  grid-template-areas: "header" "boards" "keyboard";
+  display: flex;
+  flex-direction: column;
 
   .message {
     position: absolute;

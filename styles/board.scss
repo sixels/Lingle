@@ -9,15 +9,22 @@
   // margin-top: 2.1rem;
   padding: 1rem 0;
 
-  display: grid;
-  overflow-y: visible;
+  display: flex;
+  overflow-y: auto;
   overflow-x: hidden;
-  place-items: center;
 
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 26px 18px;
+
+  flex-wrap: wrap;
+
+  flex: 1;
 }
 
+.board {
+  place-items: center;
+}
 .board.lingle {
   grid-column: 1 / span 4;
   grid-row: 1 / span 2;
@@ -30,6 +37,22 @@
   grid-template-rows: repeat(7, 1em);
   font-size: clamp(1.4rem, 5.6vh, 4rem);
 }
+
+.board.quadlingle {
+  // width: calc(50% - 2em);
+  grid-column: auto auto;
+  grid-row: 1 / span 2;
+  grid-template-rows: repeat(9, 1em);
+  font-size: clamp(1.4rem, 4.6vh, 4rem);
+}
+
+.board.octolingle {
+  // grid-column: auto auto;
+  // grid-row: 1 / span 2;
+  grid-template-rows: repeat(13, 1em);
+  font-size: clamp(1.4rem, 5.7vh, 4rem);
+}
+
 .board {
   display: grid;
   gap: 0.44em;
@@ -60,10 +83,15 @@
   .board.lingle {
     font-size: clamp(1.2rem, 10vw, 10rem) !important;
   }
-
 }
 @media screen and (max-width: 600px) {
   .board.duolingle {
     font-size: clamp(1.2rem, 6.2vw, 3.8rem) !important;
+  }
+  .board.quadlingle {
+    font-size: clamp(1.2rem, 5.2vw, 3.8rem) !important;
+  }
+  .board.octolingle {
+    font-size: clamp(1.2rem, 5.2vw, 3.8rem) !important;
   }
 }

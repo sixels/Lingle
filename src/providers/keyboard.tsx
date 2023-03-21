@@ -18,6 +18,7 @@ export const SPECIAL_KEYS = [
   "Delete",
   "Escape",
   " ", // Space
+  "Lock",
 ] as const;
 export type SpecialKey = typeof SPECIAL_KEYS[number];
 

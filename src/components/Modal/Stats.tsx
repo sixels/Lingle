@@ -1,4 +1,5 @@
 import { Component, createEffect, createSignal, For, on, Show } from "solid-js";
+import { toast } from "solid-toast";
 
 import { useTicker } from "@/providers/ticker";
 import { getGamesPlayed, getWinRate } from "@/store/game/stats";
@@ -6,6 +7,8 @@ import { Modal, StatefulModalProps } from ".";
 import { renderAsText } from "@/game/share";
 
 import utils from "@/utils";
+import { MyToast } from "../Toast";
+import { Mode } from "@/game/mode";
 
 const StatsModal: Component<StatefulModalProps> = ({
   store: {
@@ -55,6 +58,11 @@ const StatsModal: Component<StatefulModalProps> = ({
     setCountdown([hours, minutes, seconds]);
   });
 
+  const maxHistoryCount = stats.history.reduce(
+    (cur, h) => Math.max(cur, h.count),
+    0
+  );
+
   return (
     <Modal name="stats" close={close}>
       <section class="summary">
@@ -65,7 +73,9 @@ const StatsModal: Component<StatefulModalProps> = ({
             <span class="label">jogos</span>
           </div>
           <div class="stat win-rate">
-            <span class="value">{getWinRate(stats)}%</span>
+            <span class="value">
+              {(getWinRate(stats) * 100).toFixed(2).replace(/\.00$/, "")}%
+            </span>
             <span class="label">taxa de vitórias</span>
           </div>
           <div class="stat current-sequency">
@@ -110,8 +120,18 @@ const StatsModal: Component<StatefulModalProps> = ({
               {({ attempt, count }) => {
                 return (
                   <div class="line-wrapper" classList={{ empty: count === 0 }}>
-                    <span class="legend">{attempt}</span>
-                    <div class="line">{count}</div>
+                    <span class="legend">
+                      {attempt - new Mode(mode).boards ==
+                      stats.history.length - 1
+                        ? "X"
+                        : attempt}
+                    </span>
+                    <div
+                      class="line"
+                      style={{ width: `${(count / maxHistoryCount) * 100}%` }}
+                    >
+                      {count}
+                    </div>
                   </div>
                 );
               }}
@@ -133,14 +153,19 @@ const StatsModal: Component<StatefulModalProps> = ({
               )
               .then((target) => {
                 if (target == "clipboard") {
-                  // TODO: notify
+                  toast.custom((t) => (
+                    <MyToast
+                      toast={t}
+                      message="Copiado para área de transferência"
+                    />
+                  ));
                 }
               });
           }}
           id="copy-btn"
           ref={shareBtnRef}
         >
-          <i class="ri-share-fill"></i> Compartilhar
+          <i class="ri-share-fill" /> Compartilhar
         </button>
         <div class="timer">
           <span class="label">Próxima palavra em</span>

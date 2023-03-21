@@ -13,7 +13,7 @@
   }
 }
 
-@media screen and (max-width: 750px) {
+// @media screen and (max-width: 750px) {
   .header {
     #mode-selector.open {
       flex-direction: column !important;
@@ -136,7 +136,7 @@
       padding: 0 !important;
     }
   }
-}
+// }
 
 @media screen and (max-width: 600px) {
   .header {

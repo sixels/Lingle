@@ -5,9 +5,11 @@ import { Link } from "solid-app-router";
 type SelectorProps = { currentMode: Modes };
 
 const ModeSelector: Component<SelectorProps> = ({ currentMode }) => {
-  const modes: { path: string; mode: Modes }[] = [
-    { path: "/", mode: "lingle" },
-    { path: "/duo", mode: "duolingle" },
+  const modes: { path: string; mode: Modes; label: string }[] = [
+    { path: "/", mode: "lingle", label: "Lingle" },
+    { path: "/duo", mode: "duolingle", label: "DuoLingle" },
+    { path: "/quad", mode: "quadlingle", label: "QuadLingle" },
+    { path: "/octo", mode: "octolingle", label: "OctoLingle" },
   ];
 
   return (
@@ -24,7 +26,7 @@ const ModeSelector: Component<SelectorProps> = ({ currentMode }) => {
               class="mode"
               classList={{ selected: mode.mode == currentMode }}
             >
-              {mode.mode}
+              {mode.label}
             </Link>
           )}
         </For>

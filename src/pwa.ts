@@ -1,23 +1,34 @@
+import toast from "solid-toast";
 import { registerSW } from "virtual:pwa-register";
-import events from "./events";
-import { MessageKind } from "./message";
+
+import { MyToast } from "./components/Toast";
 
 const refresh = registerSW({
   onNeedRefresh: () => {
-    events.dispatchSendMessageEvent({
-      data: "Atualização disponível! Deseja atualizar agora?",
-      kind: MessageKind.Info,
-      timeout: 30_000,
-      callback: undefined,
-      options: {
-        Sim: () => {
-          console.log("Refreshing the page");
-          if (refresh) refresh(true);
-        },
-        Não: () => {
-          if (refresh) refresh(false);
-        },
-      },
-    });
+    toast.custom(
+      (t) =>
+        MyToast({
+          toast: t,
+          message: "Atualização disponível! Deseja atualizar agora?",
+          options: [
+            {
+              name: "Sim",
+              callback: () => {
+                console.log("Refreshing the page");
+                refresh && refresh(true);
+              },
+            },
+            {
+              name: "Não",
+              callback: () => {
+                refresh && refresh(false);
+              },
+            },
+          ],
+        }),
+      {
+        duration: 30_000,
+      }
+    );
   },
 });

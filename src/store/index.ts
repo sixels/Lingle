@@ -8,9 +8,12 @@ import { defaultPrefsState, PrefsState, PrefsStore } from "./prefs";
 import { WordAttempt } from "@/game/attempt";
 import { Theme } from "@/theme";
 import utils from "@/utils";
+import { generateSolution } from "@/game/solution";
 
 const STORE_LINGLE_KEY: string = "v2.lingle.normal" as const;
 const STORE_DUOLINGLE_KEY: string = "v2.lingle.duo" as const;
+const STORE_QUAD_KEY: string = "v2.lingle.quad" as const;
+const STORE_OCTO_KEY: string = "v2.lingle.octo" as const;
 const STORE_PREFS_KEY: string = "v2.prefs" as const;
 
 export interface LingleStore {
@@ -27,6 +30,8 @@ function storageKeyFromMode(mode: Modes): string {
   const table = {
     lingle: STORE_LINGLE_KEY,
     duolingle: STORE_DUOLINGLE_KEY,
+    quadlingle: STORE_QUAD_KEY,
+    octolingle: STORE_OCTO_KEY,
   };
   return table[mode];
 }
@@ -43,7 +48,7 @@ function getOrElse<T extends Object>(
     : fallback;
 }
 
-function makeStore<T>(value: T): [T, SetStoreFunction<T>] {
+function makeStore<T extends object>(value: T): [T, SetStoreFunction<T>] {
   return createStore(value);
 }
 
@@ -60,6 +65,7 @@ function createGameState(state: GameState): AppState["game"] {
   );
 
   createEffect(() => {
+    console.log("saving the state");
     localStorage.setItem(storageKeyFromMode(game.mode), JSON.stringify(game));
   });
 
@@ -98,13 +104,16 @@ export function createGameStore(mode: Mode): GameStore {
           return;
         }
 
-        setGame(({ state }) => {
-          state.boards[board].status = status;
+        setGame((game) => {
+          game.state.boards[board].status = status;
+          return game;
         });
       },
       createAttempts: (attempts: (WordAttempt | null)[]): boolean => {
         attempts.forEach((attempt, i) => {
           if (!attempt) return;
+
+          const solutions = generateSolution(new Mode(game.mode), new Date());
 
           setGame(
             "state",
@@ -117,7 +126,7 @@ export function createGameStore(mode: Mode): GameStore {
                 b.solution = attempt.map((l) => l?.letter).join("");
               } else if (game.state.row === new Mode(game.mode).rows - 1) {
                 b.status = "lost";
-                b.solution = attempt.map((l) => l?.letter).join("");
+                b.solution = solutions[i];
               }
               b.attempts = b.attempts.concat([[...attempt]]);
             })
@@ -135,6 +144,40 @@ export function createGameStore(mode: Mode): GameStore {
           setGame("state", defaultState.state);
           setGame("expires", new Date(defaultState.expires));
         });
+      },
+      updateStats: () => {
+        if (game.state.boards.some((b) => b.status == "playing")) {
+          return;
+        }
+
+        console.log("updating stats");
+
+        const isLost = game.state.boards.some((b) => b.status == "lost");
+        console.log("is game lost:", isLost);
+
+        setGame(
+          "stats",
+          produce((stats) => {
+            const attemptNumber = game.state.row + Number(isLost);
+
+            console.log("finished at attempt:", attemptNumber);
+
+            let historyIndex = stats.history.findIndex(
+              (h) => h.attempt == attemptNumber
+            );
+            if (historyIndex < 0) {
+              stats.history.push({ attempt: attemptNumber, count: 0 });
+              historyIndex = stats.history.length - 1;
+            }
+            stats.history[historyIndex].count += 1;
+
+            console.log("stats changed");
+            console.table(stats.history);
+
+            stats.bestStreak = Math.max(stats.winStreak, stats.bestStreak);
+            stats.winStreak = isLost ? 0 : stats.winStreak + 1;
+          })
+        );
       },
     },
   ];

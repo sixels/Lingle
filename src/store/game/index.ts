@@ -20,6 +20,7 @@ export interface GameStoreMethods {
   setBoardStatus: (board: number, status: GameStatus) => void;
   createAttempts: (attempts: (WordAttempt | null)[]) => boolean;
   setGameNumber: (n: number) => void;
+  updateStats: () => void;
   resetState: () => void;
 }
 
@@ -51,7 +52,7 @@ export const defaultGameState = (mode: Mode): GameState => {
     for (let i = mode.boards; i <= mode.rows; i++) {
       history.push({ attempt: i, count: 0 });
     }
-    history.push({ attempt: "X", count: 0 });
+    history.push({ attempt: mode.rows + 1, count: 0 });
     return history;
   };
 

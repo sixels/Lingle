@@ -40,15 +40,16 @@
   color: var(--self-color-fg);
 
   text-transform: uppercase;
+  position: relative;
   font-weight: 700;
 
-  border-radius: 5%;
+  border-radius: 10%;
 
   transition: transform 69ms ease-in-out, box-shadow 80ms ease-in-out;
 
   &.focused {
     box-shadow: var(--self-box-shadow), inset 0 0 0 2px var(--self-color-bd),
-      inset 0px clamp(-10px, -1.5vh, -8px) 0px var(--self-color-bd);
+      inset 0px clamp(-10px, -1.5vw, -7px) 0px var(--self-color-bd);
   }
 
   &.right {
@@ -69,7 +70,7 @@
     box-shadow: var(--self-box-shadow);
   }
 
-  --self-bounce-scale: 1.2;
+  --self-bounce-scale: 1.15;
   &.bouncing {
     transform: scale(var(--self-bounce-scale));
   }

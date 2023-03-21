@@ -1,7 +1,7 @@
 export interface IGameStats {
   winStreak: number;
   bestStreak: number;
-  history: { attempt: number | string; count: number }[];
+  history: { attempt: number; count: number }[];
 }
 
 export function getGamesPlayed(stats: IGameStats): number {
