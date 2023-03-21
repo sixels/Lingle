@@ -14,13 +14,13 @@ interface svgRectProps {
   y: string;
   w: string;
   h: string;
-  i: number;
+  content: string;
 }
-function svgRect({ fill, fg, x, y, w, h, i }: svgRectProps) {
+function svgRect({ fill, fg, x, y, w, h, content }: svgRectProps) {
   const svg =
     `<svg xmlns='http://www.w3.org/2000/svg'><g>` +
     `<rect fill='${fill}' x='${x}'  y='${y}' width='${w}' height='${h}'/>` +
-    `<text font-family='sans-serif' font-weight='bold' font-size='10' fill='${fg}' y='${y}'> <tspan x='${x}' dy='9' dx='4'> ${i} </tspan> </text>` +
+    `<text font-family='sans-serif' font-weight='bold' font-size='10' fill='${fg}' y='${y}'> <tspan x='${x}' dy='9' dx='4'> ${content} </tspan> </text>` +
     `</g></svg>`;
 
   return `url("data:image/svg+xml,${encodeURI(svg)}")`;
@@ -81,13 +81,20 @@ const Keyboard: Component<Props> = ({ state, keyboard, setOpenModal }) => {
     }
   };
 
-  const updateKeyPaint = (keyRef: HTMLElement, paints: string[]) => {
+  const updateKeyPaint = (
+    keyRef: HTMLElement,
+    paints: { kind: string; board: number }[]
+  ) => {
     const total = paints.length;
 
     const paintWidth = 100 / Math.min(2, total),
       paintHeight = 100 / (total / 2);
 
-    const makeRect = (kind: "right" | "occur" | "wrong", i: number) => {
+    const makeRect = (
+      kind: "right" | "occur" | "wrong",
+      content: string,
+      i: number
+    ) => {
       const fill = getCSSVariable(`--key-${kind}-color-bg`);
       const fg = getCSSVariable(`--key-${kind}-color-fg`);
 
@@ -98,18 +105,25 @@ const Keyboard: Component<Props> = ({ state, keyboard, setOpenModal }) => {
         w: `${paintWidth}%`,
         x: `${(i % 2) * paintWidth}%`,
         y: `${Math.floor(i / 2) * paintHeight}%`,
-        i: i + 1,
+        content,
       });
     };
 
-    const paintMap: { [key: string]: (i: number) => string } = {
-      right: (i) => makeRect("right", i),
-      occur: (i) => makeRect("occur", i),
-      wrong: (i) => makeRect("wrong", i),
+    const paintMap: {
+      [key: string]: (board: number, i: number) => string;
+    } = {
+      right: (board, i) =>
+        makeRect("right", total == 1 ? "" : `${board + 1}`, i),
+      occur: (board, i) =>
+        makeRect("occur", total == 1 ? "" : `${board + 1}`, i),
+      wrong: (board, i) =>
+        makeRect("wrong", total == 1 ? "" : `${board + 1}`, i),
     };
 
     const backgrounds = paints.map((paint, i) =>
-      paint in paintMap ? paintMap[paint](i) : paintMap["wrong"](i)
+      paint.kind in paintMap
+        ? paintMap[paint.kind](paint.board, i)
+        : paintMap["wrong"](paint.board, i)
     );
     keyRef.style.backgroundImage = backgrounds.join(",");
   };
@@ -146,7 +160,10 @@ const Keyboard: Component<Props> = ({ state, keyboard, setOpenModal }) => {
     }
     key.dataset["paint"] = keyDataset;
 
-    updateKeyPaint(key, keyDataset.split(","));
+    updateKeyPaint(
+      key,
+      keyDataset.split(",").map((kind, i) => ({ kind, board: i }))
+    );
   };
 
   const paintAttempt = (attempt: WordAttempt, board: number) => {
