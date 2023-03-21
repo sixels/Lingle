@@ -118,7 +118,7 @@ const Keyboard: Component<Props> = ({ state, keyboard, setOpenModal }) => {
     if (!key) return;
 
     const keyPaints = [
-      ...(key.dataset["paint"]?.split(",") || []),
+      ...(key.dataset["paint"]?.split(",") || []).filter((p) => p.length > 0),
       ...new Array(state.state.boards.length).fill("wrong"),
     ].slice(0, state.state.boards.length);
 

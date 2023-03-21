@@ -170,7 +170,6 @@ const Board: Component<Props> = ({
         word = WordListNormalized.get(attemptStr);
 
       const attempts = solutions.map((solution, i) => {
-        console.log(attemptStr, solution);
         return gameState.state.boards[i].status == "playing" && word
           ? compareWordWithSolution(word, solution)
           : null;

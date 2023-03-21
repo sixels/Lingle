@@ -17,8 +17,6 @@ if (typeof window !== "undefined") {
   import("./pwa");
 }
 
-console.log(process.env.NODE_ENV);
-
 render(
   () => (
     <>

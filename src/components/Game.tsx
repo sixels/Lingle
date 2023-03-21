@@ -47,7 +47,7 @@ const Game: Component = () => {
 
   onEachDay(() => {
     if (new Date() >= game.expires) {
-      console.log("reseting state");
+      console.log("reseting the state");
       resetState();
       setBoard(
         <Board

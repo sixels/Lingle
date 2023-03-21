@@ -174,17 +174,12 @@ export function createGameStore(mode: Mode): GameStore {
           return;
         }
 
-        console.log("updating stats");
-
         const isLost = game.state.boards.some((b) => b.status == "lost");
-        console.log("is game lost:", isLost);
 
         setGame(
           "stats",
           produce((stats) => {
             const attemptNumber = game.state.row + Number(isLost);
-
-            console.log("finished at attempt:", attemptNumber);
 
             let historyIndex = stats.history.findIndex(
               (h) => h.attempt == attemptNumber
@@ -194,9 +189,6 @@ export function createGameStore(mode: Mode): GameStore {
               historyIndex = stats.history.length - 1;
             }
             stats.history[historyIndex].count += 1;
-
-            console.log("stats changed");
-            console.table(stats.history);
 
             stats.bestStreak = Math.max(stats.winStreak, stats.bestStreak);
             stats.winStreak = isLost ? 0 : stats.winStreak + 1;

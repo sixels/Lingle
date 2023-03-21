@@ -34,8 +34,6 @@ const Header: Component<Props> = ({
     setMenuOpen(!menuOpen());
   };
 
-  createEffect(on(menuOpen, console.debug, { defer: true }));
-
   const handleClickOutside = (event: MouseEvent) => {
     if (
       (menuBtnRef && menuBtnRef.contains(event.target as Node)) ||
