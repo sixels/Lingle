@@ -6,7 +6,6 @@ import {
   onMount,
   Signal,
   createSignal,
-  createEffect,
 } from "solid-js";
 import { useRouteData } from "solid-app-router";
 
