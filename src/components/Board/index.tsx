@@ -238,7 +238,9 @@ const Board: Component<Props> = ({
         return !l;
       });
     },
-    Escape() {},
+    Escape() {
+      setLock(false);
+    },
     Lock() {
       setLock(!lock());
     },
