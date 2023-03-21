@@ -84,6 +84,30 @@ function createPrefsState(state: PrefsState): AppState["prefs"] {
 
 export function createGameStore(mode: Mode): GameStore {
   const [game, setGame] = createGameState(defaultGameState(mode));
+
+  const v1state = localStorage.getItem(mode.mode);
+  if (v1state) {
+    const v1 = JSON.parse(v1state) as V1State;
+    if ("stats" in v1) {
+      const { stats: migrated } = migrateState(mode.mode, v1 as V1State);
+      setGame(
+        "stats",
+        produce((stats) => {
+          for (let i = 0; i < stats.history.length; i += 1) {
+            const histDecrement = Math.floor(mode.boards / 2);
+            if (i >= histDecrement && i < migrated.history.length) {
+              stats.history[i - histDecrement].count +=
+                migrated.history[i].count;
+            }
+          }
+          stats.bestStreak = Math.max(migrated.bestStreak, stats.bestStreak);
+          stats.winStreak += migrated.winStreak;
+        })
+      );
+    }
+    localStorage.removeItem(mode.mode);
+  }
+
   return [
     game,
     {
@@ -201,5 +225,35 @@ export function createLingleStore(mode: Mode): LingleStore {
   return {
     game: createGameStore(mode),
     prefs: createPrefsStore(),
+  };
+}
+
+interface V1State {
+  stats: {
+    win_streak: number;
+    longest_streak: number;
+    history: number[];
+    played_games: number;
+  };
+}
+
+function migrateState(mode: Modes, input: V1State): GameState {
+  const { win_streak, longest_streak, history } = input.stats;
+
+  const newHistory = history.map((count, index) => ({
+    attempt: index + 1,
+    count,
+  }));
+  const stats = {
+    winStreak: win_streak,
+    bestStreak: longest_streak,
+    history: newHistory,
+  };
+
+  return {
+    expires: new Date(),
+    state: { boards: [], gameNumber: 0, row: 0 },
+    mode,
+    stats,
   };
 }
