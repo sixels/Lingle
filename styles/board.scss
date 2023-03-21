@@ -22,9 +22,6 @@
   flex: 1;
 }
 
-.board {
-  place-items: center;
-}
 .board.lingle {
   grid-column: 1 / span 4;
   grid-row: 1 / span 2;
@@ -56,6 +53,26 @@
 .board {
   display: grid;
   gap: 0.44em;
+
+  place-items: center;
+  position: relative;
+
+  &:not(.lingle):before {
+    content: attr(data-board);
+    position: absolute;
+    background-color: var(--key-color-bg);
+    color: var(--key-color-fg);
+    right: -0.7em;
+    top: -0.7em;
+    height: 1.3em;
+    width: 1.3em;
+    font-size: 0.5em;
+    opacity: 0.85;
+    display: grid;
+    place-items: center;
+    border-radius: 100px;
+    z-index: 1;
+  }
 
   .row.letters {
     .letter {

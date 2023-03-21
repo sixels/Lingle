@@ -164,7 +164,7 @@ const GameBoard: Component<Props> = ({
   });
 
   return (
-    <div class={`board ${mode.mode}`}>
+    <div class={`board ${mode.mode}`} data-board={`${boardNumber + 1}`}>
       <Index each={board()}>
         {(row, i) => {
           const [attempt, _] = row();
