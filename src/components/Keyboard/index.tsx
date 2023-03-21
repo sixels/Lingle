@@ -71,6 +71,7 @@ const Keyboard: Component<Props> = ({ state, keyboard, setOpenModal }) => {
 
   const resetKey = (key: HTMLElement) => {
     key.dataset["paint"] = "";
+    key.style.backgroundImage = "";
   };
   const resetKeyboard = () => {
     for (const [name, key] of keysRef.entries()) {
@@ -170,6 +171,11 @@ const Keyboard: Component<Props> = ({ state, keyboard, setOpenModal }) => {
     const playing = state.state.boards.filter(
       (board) => board.status === "playing"
     ).length;
+
+    if (playing == 0) {
+      resetKeyboard();
+      return;
+    }
 
     if (state.state.boards[board].status != "playing") {
       // setPlayingBoards(playing);
