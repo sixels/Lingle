@@ -12,6 +12,7 @@ const routeModes: { path: string; mode: Modes }[] = [
   { path: "/duo", mode: "duolingle" },
   { path: "/quad", mode: "quadlingle" },
   { path: "/octo", mode: "octolingle" },
+  { path: "/dec", mode: "declingle" },
 ];
 
 const App: Component = () => {

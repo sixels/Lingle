@@ -43,7 +43,7 @@
   font-size: clamp(1.4rem, 5.2vh, 4rem);
 }
 
-.board.octolingle {
+.board.octolingle, .board.declingle {
   // grid-column: auto auto;
   // grid-row: 1 / span 2;
   grid-template-rows: repeat(13, 1em);

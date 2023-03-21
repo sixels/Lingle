@@ -14,6 +14,7 @@ const STORE_LINGLE_KEY: string = "v2.lingle.normal" as const;
 const STORE_DUOLINGLE_KEY: string = "v2.lingle.duo" as const;
 const STORE_QUAD_KEY: string = "v2.lingle.quad" as const;
 const STORE_OCTO_KEY: string = "v2.lingle.octo" as const;
+const STORE_DEC_KEY: string = "v2.lingle.dec" as const;
 const STORE_PREFS_KEY: string = "v2.prefs" as const;
 
 export interface LingleStore {
@@ -32,6 +33,7 @@ function storageKeyFromMode(mode: Modes): string {
     duolingle: STORE_DUOLINGLE_KEY,
     quadlingle: STORE_QUAD_KEY,
     octolingle: STORE_OCTO_KEY,
+    declingle: STORE_DEC_KEY,
   };
   return table[mode];
 }

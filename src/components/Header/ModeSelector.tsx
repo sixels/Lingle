@@ -10,6 +10,7 @@ const ModeSelector: Component<SelectorProps> = ({ currentMode }) => {
     { path: "/duo", mode: "duolingle", label: "DuoLingle" },
     { path: "/quad", mode: "quadlingle", label: "QuadLingle" },
     { path: "/octo", mode: "octolingle", label: "OctoLingle" },
+    { path: "/dec", mode: "declingle", label: "DecLingle" },
   ];
 
   return (

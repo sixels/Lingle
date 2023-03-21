@@ -3,6 +3,7 @@ export const MODES = [
   "duolingle",
   "quadlingle",
   "octolingle",
+  "declingle",
 ] as const;
 export type Modes = typeof MODES[number];
 
@@ -11,6 +12,7 @@ const ModeNames = {
   duolingle: "Duo-lingle",
   quadlingle: "Quad-lingle",
   octolingle: "Octo-lingle",
+  declingle: "Dec-lingle",
 };
 
 const modeBoards: { [key: string]: number } = {
@@ -18,6 +20,7 @@ const modeBoards: { [key: string]: number } = {
   duolingle: 2,
   quadlingle: 4,
   octolingle: 8,
+  declingle: 10,
 };
 
 export class Mode {
