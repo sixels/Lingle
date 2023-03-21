@@ -43,14 +43,14 @@
   grid-column: auto auto;
   grid-row: 1 / span 2;
   grid-template-rows: repeat(9, 1em);
-  font-size: clamp(1.4rem, 4.6vh, 4rem);
+  font-size: clamp(1.4rem, 5.2vh, 4rem);
 }
 
 .board.octolingle {
   // grid-column: auto auto;
   // grid-row: 1 / span 2;
   grid-template-rows: repeat(13, 1em);
-  font-size: clamp(1.4rem, 5.7vh, 4rem);
+  font-size: clamp(1.4rem, 5.6vh, 4rem);
 }
 
 .board {
