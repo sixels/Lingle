@@ -42,6 +42,11 @@ const createKeyboard = () => {
       sendAttempt,
     };
 
+  document.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.code == "Space" && e.target == document.body) {
+      e.preventDefault();
+    }
+  });
   document.addEventListener("keyup", (event: KeyboardEvent) => {
     const key = event.key;
     // filter pressed key
