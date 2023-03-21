@@ -192,8 +192,8 @@ export function createGameStore(mode: Mode): GameStore {
             }
             stats.history[historyIndex].count += 1;
 
-            stats.bestStreak = Math.max(stats.winStreak, stats.bestStreak);
             stats.winStreak = isLost ? 0 : stats.winStreak + 1;
+            stats.bestStreak = Math.max(stats.winStreak, stats.bestStreak);
           })
         );
       },
