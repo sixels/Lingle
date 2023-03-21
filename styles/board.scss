@@ -43,10 +43,16 @@
   font-size: clamp(1.4rem, 5.2vh, 4rem);
 }
 
-.board.octolingle, .board.declingle {
+.board.octolingle {
   // grid-column: auto auto;
   // grid-row: 1 / span 2;
   grid-template-rows: repeat(13, 1em);
+  font-size: clamp(1.4rem, 5.6vh, 4rem);
+}
+.board.declingle {
+  // grid-column: auto auto;
+  // grid-row: 1 / span 2;
+  grid-template-rows: repeat(15, 1em);
   font-size: clamp(1.4rem, 5.6vh, 4rem);
 }
 
