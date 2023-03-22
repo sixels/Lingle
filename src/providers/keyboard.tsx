@@ -43,7 +43,10 @@ const createKeyboard = () => {
     };
 
   document.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.code == "Space" && e.target == document.body) {
+    if (
+      e.target == document.body &&
+      (e.code == "Space" || e.code == "End" || e.code == "Home")
+    ) {
       e.preventDefault();
     }
   });
