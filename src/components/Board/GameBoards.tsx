@@ -44,11 +44,13 @@ const GameBoard: Component<Props> = ({
   const createBoard = () => {
     const attempts = stateBoard.attempts;
     // fill the remaining attempts with undefined
-    const board = [...attempts].concat([
-      ...new Array(mode.rows - attempts.length).fill([
-        ...new Array(mode.columns).fill(undefined),
-      ]),
-    ]);
+    const board = [...attempts]
+      .concat([
+        ...new Array(Math.max(mode.rows - attempts.length, 0)).fill([
+          ...new Array(mode.columns).fill(undefined),
+        ]),
+      ])
+      .slice(0, mode.rows);
     return board;
   };
 
