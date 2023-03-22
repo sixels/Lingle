@@ -7,7 +7,7 @@
   background-color: var(--default-color-bg);
 
   // margin-top: 2.1rem;
-  padding: 1rem 0;
+  padding: 1rem 1.2em;
 
   display: flex;
   overflow-y: auto;
@@ -15,7 +15,7 @@
 
   justify-content: center;
   align-items: center;
-  gap: 26px 18px;
+  gap: 40px 22px;
 
   flex-wrap: wrap;
 
@@ -26,7 +26,7 @@
   grid-column: 1 / span 4;
   grid-row: 1 / span 2;
   grid-template-rows: repeat(6, 1em);
-  font-size: clamp(1.4rem, 6.8vh, 3.5rem);
+  font-size: clamp(1.4rem, 6.8vh, 4rem);
 }
 .board.duolingle {
   grid-column: auto / span 2;
@@ -47,13 +47,13 @@
   // grid-column: auto auto;
   // grid-row: 1 / span 2;
   grid-template-rows: repeat(13, 1em);
-  font-size: clamp(1.4rem, 5.6vh, 4rem);
+  font-size: clamp(1.4rem, 5.32vh, 4rem);
 }
 .board.declingle {
   // grid-column: auto auto;
   // grid-row: 1 / span 2;
   grid-template-rows: repeat(15, 1em);
-  font-size: clamp(1.4rem, 5.6vh, 4rem);
+  font-size: clamp(1.4rem, 4.8vh, 4rem);
 }
 
 .board {
