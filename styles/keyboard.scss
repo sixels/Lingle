@@ -85,7 +85,7 @@
 
       $paints: (wrong, right, occur);
       @each $paint in $paints {
-        @for $i from 1 through 8 {
+        @for $i from 1 through 10 {
           $selector: ();
           @for $j from 1 through $i {
             $selector: append($selector, $paint, comma)

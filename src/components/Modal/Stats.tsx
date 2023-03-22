@@ -102,8 +102,8 @@ const StatsModal: Component<StatefulModalProps> = ({
                       target="_blank"
                     >
                       {board.solution}
+                      {i() < state.boards.length - 1 ? "," : ""}
                     </a>
-                    {i() < state.boards.length - 1 ? "," : ""}
                   </span>
                 );
               }}
